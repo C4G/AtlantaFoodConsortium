@@ -1,0 +1,14 @@
+services:
+  atlanta-food-consortium-db:
+    image: postgres:17
+    ports:
+      - '${DATABASE_PORT:-5432}:5432'
+    environment:
+      - POSTGRES_PASSWORD=${DATABASE_PW}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_DB=${DATABASE_NAME}
+    restart: 'unless-stopped'
+    volumes:
+      - atlanta-food-consortium-db-data:/var/lib/postgresql/data
+volumes:
+  atlanta-food-consortium-db-data:

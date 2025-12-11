@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    network_mode: 'host'
+    restart: 'unless-stopped'
+    env_file:
+      - '.env'
+    healthcheck:
+      test: curl --fail http://localhost:$$PORT/ || exit 1
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 5s

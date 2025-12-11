@@ -1,0 +1,320 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+/**
+ * ------------------------ Default Models ------------------------
+ */
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+/**
+ * ------------------------ Custom Models ------------------------
+ */
+
+model User {
+  id              String            @id @default(cuid())
+  name            String?
+  title           String?
+  email           String            @unique
+  emailVerified   DateTime?
+  phoneNumber     String?
+  supplierId      String?
+  supplier        Supplier?         @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  nonprofitId     String?
+  nonprofit       Nonprofit?        @relation(fields: [nonprofitId], references: [id], onDelete: Cascade)
+  website         String?
+  image           String?
+  productSurveyId String?
+  productSurvey   ProductInterests? @relation(fields: [productSurveyId], references: [id], onDelete: Cascade)
+  role            UserRole?
+  accounts        Account[]
+  sessions        Session[]
+  announcements   Announcement[]
+  threads         Thread[]
+  comments        Comment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Supplier {
+  id       String           @id @default(cuid())
+  name     String           @unique
+  cadence  SupplierCadence
+  users    User[]
+  products ProductRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Nonprofit {
+  id                        String                    @id @default(cuid())
+  name                      String                    
+  organizationType          NonprofitOrganizationType
+  nonprofitDocumentId       String                    @unique
+  nonprofitDocument         NonprofitDocument?        @relation(fields: [nonprofitDocumentId], references: [id], onDelete: Cascade)
+  nonprofitDocumentApproval Boolean?
+  coldStorageSpace          Boolean
+  shelfSpace                Boolean
+  donationsOrPurchases      DonateOrPurchase[]
+  transportationAvailable   Boolean
+  users                     User[]
+  productsClaimed           ProductRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductRequest {
+  id                String          @id @default(cuid())
+  name              String
+  unit              MeasurementUnit
+  quantity          Int
+  description       String
+  productTypeId     String          @unique
+  productType       ProductType     @relation(fields: [productTypeId], references: [id], onDelete: Cascade)
+  status            ProductStatus   @default(AVAILABLE)
+  supplierId        String
+  supplier          Supplier        @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  claimedById       String?
+  claimingNonprofit Nonprofit?      @relation(fields: [claimedById], references: [id], onDelete: Cascade)
+  pickupInfoId      String?         @unique
+  pickupInfo        PickupInfo?     @relation(fields: [pickupInfoId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductType {
+  id                               String          @id @default(cuid())
+  protein                          Boolean?
+  proteinTypes                     ProteinType[]
+  otherProteinType                 String?
+  produce                          Boolean?
+  produceType                      String?
+  shelfStable                      Boolean?
+  shelfStableType                  String?
+  shelfStableIndividualServing     Boolean?
+  shelfStableIndividualServingType String?
+  alreadyPreparedFood              Boolean?
+  alreadyPreparedFoodType          String?
+  other                            Boolean?
+  otherType                        String?
+  product                          ProductRequest?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PickupInfo {
+  id                 String            @id @default(cuid())
+  pickupDate         DateTime
+  pickupTimeframe    PickupTimeframe[]
+  pickupLocation     String
+  pickupInstructions String
+  contactName        String
+  contactPhone       String
+  product            ProductRequest?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NonprofitDocument {
+  id         String     @id @default(cuid())
+  fileName   String
+  fileData   Bytes
+  fileType   String
+  uploadedAt DateTime   @default(now())
+  nonprofit  Nonprofit?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductInterests {
+  id                               String        @id @default(cuid())
+  protein                          Boolean?
+  proteinTypes                     ProteinType[]
+  otherProteinType                 String?
+  produce                          Boolean?
+  produceType                      String?
+  shelfStable                      Boolean?
+  shelfStableType                  String?
+  shelfStableIndividualServing     Boolean?
+  shelfStableIndividualServingType String?
+  alreadyPreparedFood              Boolean?
+  alreadyPreparedFoodType          String?
+  other                            Boolean?
+  otherType                        String?
+  users                            User[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Announcement {
+  id         String       @id @default(cuid())
+  title      String
+  content    String
+  groupType  GroupType
+  createdBy  String?
+  author     User?         @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  deletedAt  DateTime?    
+}
+
+model Thread {
+  id         String       @id @default(cuid())
+  title      String  
+  content    String  
+  groupType  GroupType     
+  createdBy  String?  
+  author     User?         @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  comments   Comment[]  
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  deletedAt  DateTime?
+}
+
+model Comment {
+  id        String        @id @default(cuid())
+  content   String
+  threadId  String     
+  thread    Thread        @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  createdBy String?     
+  author    User?          @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  deletedAt DateTime?
+}
+
+/**
+ * ------------------------ Enum Types ------------------------
+ */
+
+enum UserRole {
+  ADMIN
+  STAFF
+  SUPPLIER
+  NONPROFIT
+}
+
+enum ItemType {
+  PROTEIN
+  PRODUCE
+  SHELF_STABLE
+  SHELF_STABLE_INDIVIDUAL_SERVING
+  ALREADY_PREPARED_FOOD
+  OTHER
+}
+
+enum ProteinType {
+  FRESH
+  FROZEN
+  BEEF
+  SEAFOOD
+  POULTRY
+  OTHER
+}
+
+enum SupplierCadence {
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  TBD
+}
+
+enum DonateOrPurchase {
+  DONATIONS
+  BUDGET_TO_PURCHASE
+}
+
+enum MeasurementUnit {
+  POUNDS
+  OUNCES
+  GALLONS
+  QUARTS
+  PINTS
+  LITERS
+  KILOGRAMS
+  COUNT
+  CASES
+  BAGS
+  BOXES
+  BOTTLES
+  JARS
+  CANS
+  SERVINGS
+}
+
+enum ProductStatus {
+  AVAILABLE
+  RESERVED
+  PENDING
+}
+
+enum PickupTimeframe {
+  MORNING // 7 AM - 10 AM
+  MID_DAY // 10 AM - 2 PM
+  AFTERNOON // 2 PM - 5 PM
+}
+
+enum NonprofitOrganizationType {
+  FOOD_BANK
+  PANTRY
+  STUDENT_PANTRY
+  FOOD_RESCUE
+  AGRICULTURE
+  OTHER
+}
+
+enum GroupType {
+  ALL
+  NONPROFIT
+  SUPPLIER
+  ADMIN
+}
