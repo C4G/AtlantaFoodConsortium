@@ -1,0 +1,8 @@
+#!/bin/bash -e
+
+# If running the node server then create or migrate existing database
+if [ "${@: -2:1}" == "node" ] && [ "${@: -1:1}" == "server.js" ]; then
+  npx prisma@6.19.0 migrate deploy
+fi
+
+exec "${@}"
