@@ -2,11 +2,15 @@
   "name": "atlanta-food-consortium",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "init": "docker compose up -d && sleep 4 && npx prisma migrate dev && npx prisma db seed",
     "start": "next start",
+    "migrate:dev": "npx prisma migrate dev",
     "lint": "next lint",
     "format": "prettier --check --ignore-path .gitignore .",
     "format:fix": "prettier --write --ignore-path .gitignore .",
