@@ -66,6 +66,13 @@ NEXTAUTH_SECRET=your-secret-key-here
 NEXTAUTH_URL=http://localhost:3000
 ```
 
+> **Note:** Docker Compose also loads the `.env` file and uses `DATABASE_USER`, `DATABASE_PW`, and `DATABASE_NAME` to configure the PostgreSQL container. You can either:
+>
+> - Hard-code these values directly in `docker-compose.yml`, or
+> - Add them to your `.env` file so they're shared between Docker and your application
+>
+> The `DATABASE_URL` in your `.env` file should match the credentials set in Docker Compose to ensure your application can connect to the database.
+
 ### Stopping the Application
 
 To stop the Docker database:
