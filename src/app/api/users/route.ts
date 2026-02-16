@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import cuid from 'cuid';
+import type { Prisma } from '@prisma/client';
 
 async function parseLargeJsonBody(req: Request) {
   const reader = req.body?.getReader();
@@ -25,12 +26,27 @@ export async function GET() {
   try {
     const session = await auth();
 
-    if (
-      !session ||
-      !session.user ||
-      (session.user.role !== 'ADMIN' && session.user.role !== 'SUPPLIER')
-    ) {
+    if (!session || !session.user) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
+    if (session.user.role === 'ADMIN') {
+      const users = await prisma.user.findMany({
+        include: {
+          supplier: true,
+          nonprofit: true,
+          productSurvey: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      return NextResponse.json(users);
+    }
+
+    if (session.user.role !== 'SUPPLIER') {
+      return NextResponse.json({ error: 'Not authorized' }, { status: 403 });
     }
 
     const user = await prisma.user.findUnique({
@@ -63,13 +79,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const user = await req.json();
-    user.supplier = user.supplier || {};
-    user.nonprofit = user.nonprofit || {};
-    user.productSurvey = user.productSurvey || {};
+    const userData = await req.json();
+
+    const createData: Prisma.UserUncheckedCreateInput = userData;
 
     const newUser = await prisma.user.create({
-      data: user,
+      data: createData,
       include: {
         supplier: true,
         nonprofit: true,
@@ -91,17 +106,6 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-    });
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Current user not found' },
-        { status: 404 }
-      );
-    }
-
-    const userId = user?.id;
     const userData = await parseLargeJsonBody(req);
     if (!userData) {
       return NextResponse.json(
@@ -110,19 +114,38 @@ export async function PATCH(req: Request) {
       );
     }
 
-    if (userId && userId !== session.user.id && session.user.role !== 'ADMIN') {
+    const userId = userData.id || session.user.id;
+
+    if (userId !== session.user.id && session.user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    const documentData = userData.nonprofit?.create?.nonprofitDocument?.create;
+    const targetUser = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!targetUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
 
-    const fileBuffer = documentData?.fileData
-      ? Buffer.from(Object.values(documentData.fileData) as number[])
-      : null;
+    if (
+      userId === session.user.id &&
+      userData.role !== undefined &&
+      userData.role !== targetUser.role
+    ) {
+      return NextResponse.json(
+        { error: 'You cannot change your own role' },
+        { status: 403 }
+      );
+    }
 
-    const documentId = cuid();
-
+    // Handle nonprofit document uploads
     if (userData.nonprofit?.create) {
+      const documentData = userData.nonprofit.create.nonprofitDocument?.create;
+      const fileBuffer = documentData?.fileData
+        ? Buffer.from(Object.values(documentData.fileData) as number[])
+        : null;
+      const documentId = cuid();
+
       if (userData.nonprofit.create.nonprofitDocument?.create) {
         userData.nonprofit.create.nonprofitDocument.create = {
           ...userData.nonprofit.create.nonprofitDocument.create,
@@ -131,11 +154,35 @@ export async function PATCH(req: Request) {
         };
       }
       userData.nonprofit.create.nonprofitDocumentApproval = null;
+
+      const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: userData as Prisma.UserUpdateInput,
+        include: {
+          supplier: true,
+          nonprofit: true,
+          productSurvey: true,
+        },
+      });
+      return NextResponse.json(updatedUser);
     }
+
+    const updateData: Prisma.UserUncheckedUpdateInput = {
+      name: userData.name,
+      title: userData.title,
+      email: userData.email,
+      phoneNumber: userData.phoneNumber,
+      website: userData.website,
+      image: userData.image,
+      role: userData.role,
+      supplierId: userData.supplierId,
+      nonprofitId: userData.nonprofitId,
+      productSurveyId: userData.productSurveyId,
+    };
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: userData,
+      data: updateData,
       include: {
         supplier: true,
         nonprofit: true,
@@ -165,6 +212,13 @@ export async function DELETE(req: Request) {
       );
     }
 
+    if (userId === session.user.id) {
+      return NextResponse.json(
+        { error: 'You cannot delete your own account' },
+        { status: 403 }
+      );
+    }
+
     // Validate that user can only delete their own data unless they are an admin
     if (userId !== session.user.id && session.user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Not authorized' }, { status: 403 });
@@ -185,3 +239,5 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: 'Error deleting user' }, { status: 500 });
   }
 }
+
+export const PUT = PATCH;
