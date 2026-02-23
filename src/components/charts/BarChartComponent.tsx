@@ -59,9 +59,9 @@ export function BarChartComponent({
                 className='rounded border border-slate-300 p-1 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50'
                 aria-label='Previous page'
               >
-                <ChevronLeft className='h-4 w-4' />
+                <ChevronLeft className='h-4 w-4 text-slate-700' />
               </button>
-              <span className='px-3 text-sm font-medium'>
+              <span className='px-3 text-sm font-medium text-slate-700'>
                 {currentPage} / {totalPages}
               </span>
               <button
@@ -72,7 +72,7 @@ export function BarChartComponent({
                 className='rounded border border-slate-300 p-1 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50'
                 aria-label='Next page'
               >
-                <ChevronRight className='h-4 w-4' />
+                <ChevronRight className='h-4 w-4 text-slate-700' />
               </button>
             </div>
           </div>
