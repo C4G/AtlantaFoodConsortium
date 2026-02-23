@@ -83,16 +83,22 @@ const seedProductInterests = async (prisma, nonprofits) => {
   console.log('Seeding product interests...');
 
   const interestTemplates = [
-    { protein: true, proteinTypes: ['POULTRY', 'BEEF'], produce: true, produceType: 'All vegetables' },
-    { protein: true, proteinTypes: ['SEAFOOD', 'FROZEN'], shelfStable: true, shelfStableType: 'Canned goods' },
-    { produce: true, produceType: 'Fruits and vegetables', shelfStableIndividualServing: true, shelfStableIndividualServingType: 'Snacks' },
-    { protein: true, proteinTypes: ['BEEF', 'POULTRY'], alreadyPreparedFood: true, alreadyPreparedFoodType: 'Ready meals' },
-    { shelfStable: true, shelfStableType: 'Dry goods', other: true, otherType: 'Dairy products' },
+    { protein: true, proteinTypes: ['POULTRY', 'BEEF'], produce: true, produceType: 'Mixed seasonal vegetables' },
+    { protein: true, proteinTypes: ['SEAFOOD', 'FROZEN'], shelfStable: true, shelfStableType: 'Canned goods and soups' },
+    { produce: true, produceType: 'Fresh fruits and root vegetables', shelfStableIndividualServing: true, shelfStableIndividualServingType: 'Granola bars and snack packs' },
+    { protein: true, proteinTypes: ['BEEF', 'POULTRY'], alreadyPreparedFood: true, alreadyPreparedFoodType: 'Hot ready-to-eat meals' },
+    { shelfStable: true, shelfStableType: 'Rice, pasta and dry goods', other: true, otherType: 'Dairy — milk and cheese' },
+    { protein: true, proteinTypes: ['POULTRY'], shelfStable: true, shelfStableType: 'Canned beans and lentils', shelfStableIndividualServing: true, shelfStableIndividualServingType: 'Individual cereal boxes' },
+    { produce: true, produceType: 'Leafy greens and citrus fruits', protein: true, proteinTypes: ['BEEF', 'SEAFOOD'], other: true, otherType: 'Eggs and dairy' },
+    { alreadyPreparedFood: true, alreadyPreparedFoodType: 'Sandwiches and deli trays', shelfStable: true, shelfStableType: 'Peanut butter and jelly' },
+    { protein: true, proteinTypes: ['FROZEN', 'POULTRY', 'BEEF'], shelfStableIndividualServing: true, shelfStableIndividualServingType: 'Juice boxes and applesauce pouches' },
+    { produce: true, produceType: 'Seasonal produce variety', shelfStable: true, shelfStableType: 'Oats, flour and baking staples', alreadyPreparedFood: true, alreadyPreparedFoodType: 'Baked goods and breads' },
   ];
 
   const createdInterests = [];
-  for (const nonprofit of nonprofits) {
-    const interest = await prisma.productInterests.create({ data: buildProductTypeData(pick(interestTemplates)) });
+  for (let i = 0; i < nonprofits.length; i++) {
+    const template = interestTemplates[i % interestTemplates.length];
+    const interest = await prisma.productInterests.create({ data: buildProductTypeData(template) });
     createdInterests.push(interest);
   }
 
