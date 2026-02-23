@@ -6,7 +6,6 @@ import { SessionProvider } from 'next-auth/react';
 import { Toaster } from '@/components/ui/toaster';
 import { Footer } from '@/components/layout/footer';
 import { ThemeProvider } from '@/components/layout/theme-provider';
-import { auth } from '@/lib/auth';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -30,14 +29,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
   return (
     <html lang='en' suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <SessionProvider session={session}>
+          <SessionProvider>
             <Header />
             <div className='mt-16 min-h-[calc(100dvh-8.4rem)]'>{children}</div>
             <Footer />

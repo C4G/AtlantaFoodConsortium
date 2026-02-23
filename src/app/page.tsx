@@ -1,29 +1,19 @@
-'use client';
-
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { redirect } from 'next/navigation';
+import { auth } from '@/lib/auth';
 import { UserMenu } from '@/components/layout/user-menu';
 
-export default function HomePage() {
-  const { status, data: session } = useSession();
-  const router = useRouter();
+export default async function HomePage() {
+  const session = await auth();
 
-  useEffect(() => {
-    if (status === 'authenticated' && !session?.user?.role) {
-      router.push('/onboarding');
-    } else if (session?.user?.role) {
-      if (session?.user?.role === 'NONPROFIT') {
-        router.push('/nonprofit');
-      } else if (session?.user?.role === 'SUPPLIER') {
-        router.push('/supplier');
-      } else if (session?.user?.role === 'ADMIN') {
-        router.push('/admin');
-      }
-    } else {
-      router.push('/');
-    }
-  }, [status, router, session]);
+  if (session?.user?.role === 'NONPROFIT') {
+    redirect('/nonprofit');
+  } else if (session?.user?.role === 'SUPPLIER') {
+    redirect('/supplier');
+  } else if (session?.user?.role === 'ADMIN') {
+    redirect('/admin');
+  } else if (session?.user && !session.user.role) {
+    redirect('/onboarding');
+  }
 
   return (
     <div className='flex min-h-screen items-center justify-center bg-slate-50 p-4'>
