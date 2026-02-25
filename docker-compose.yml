@@ -38,14 +38,13 @@ services:
         - NEXT_PUBLIC_VAPID_PUBLIC_KEY=${NEXT_PUBLIC_VAPID_PUBLIC_KEY}
         - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
     ports:
-      - "${APP_PORT-3001:}3000"
+      - "${APP_PORT:-3001}:3000"
     environment:
       - DATABASE_URL=postgresql://${DATABASE_USER}:${DATABASE_PW}@atlanta-food-consortium-db:5432/${DATABASE_NAME}
       - DATABASE_PW=${DATABASE_PW}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_NAME=${DATABASE_NAME}
       - DATABASE_HOST=atlanta-food-consortium-db
-      - DATABASE_PORT=5432
       - AUTH_SECRET=${AUTH_SECRET}
       - AUTH_GOOGLE_ID=${AUTH_GOOGLE_ID}
       - AUTH_GOOGLE_SECRET=${AUTH_GOOGLE_SECRET}
