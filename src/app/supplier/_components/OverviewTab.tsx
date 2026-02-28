@@ -120,7 +120,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
       {/* Charts Grid */}
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         {/* Product Status Breakdown */}
-        <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
           <DonutChart
             title='Product Status Breakdown'
             info={SUPPLIER_CHART_INFO.productStatusBreakdown}
@@ -137,7 +137,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
         </div>
 
         {/* Claim Speed Analysis */}
-        <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
           <BarChartComponent
             title='Product Claim Speed'
             info={SUPPLIER_CHART_INFO.claimSpeed}
@@ -159,7 +159,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
         </div>
 
         {/* Product Type Breakdown */}
-        <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
           <DonutChart
             title='Product Type Distribution'
             info={SUPPLIER_CHART_INFO.productTypeDistribution}
@@ -184,7 +184,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
         </div>
 
         {/* Monthly Timeline */}
-        <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
           <AreaChartComponent
             title='Monthly Impact Timeline'
             info={SUPPLIER_CHART_INFO.monthlyTimeline}

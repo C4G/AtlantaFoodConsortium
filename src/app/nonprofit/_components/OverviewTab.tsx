@@ -103,7 +103,7 @@ const OverviewTab = ({
       {/* Charts Grid */}
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         {metricsData.availabilityTrends.length > 0 && (
-          <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
             <LineChartComponent
               title='Product Availability (Last 30 Days)'
               info={NONPROFIT_CHART_INFO.productAvailabilityTrend}
@@ -121,7 +121,7 @@ const OverviewTab = ({
         )}
 
         {metricsData.monthlyTimeline.length > 0 && (
-          <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
             <LineChartComponent
               title='Your Monthly Claims'
               info={NONPROFIT_CHART_INFO.monthlyClaimsTimeline}
@@ -139,7 +139,7 @@ const OverviewTab = ({
         )}
 
         {productInterests && (
-          <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
             <div className='mb-4 flex items-center justify-center gap-2'>
               <h3 className='text-center text-lg font-semibold text-slate-800'>
                 Product Interest Match Score
@@ -180,7 +180,7 @@ const OverviewTab = ({
         )}
 
         {Object.values(metricsData.typeBreakdown).some((v) => v > 0) && (
-          <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
             <DonutChart
               title='Your Claimed Product Types'
               info={NONPROFIT_CHART_INFO.claimedProductTypes}

@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsMobile } from '@/hooks/use-is-mobile';
 import { ChartInfoTooltip } from './ChartInfoTooltip';
 import {
   AreaChart,
@@ -26,6 +27,8 @@ export function AreaChartComponent({
   title,
   info,
 }: AreaChartComponentProps) {
+  const isMobile = useIsMobile();
+
   return (
     <div className='w-full'>
       {title && (
@@ -36,8 +39,11 @@ export function AreaChartComponent({
           {info && <ChartInfoTooltip info={info} position='top' />}
         </div>
       )}
-      <ResponsiveContainer width='100%' height={350}>
-        <AreaChart data={data} margin={{ bottom: 50, left: 10, right: 10 }}>
+      <ResponsiveContainer width='100%' height={isMobile ? 250 : 350}>
+        <AreaChart
+          data={data}
+          margin={{ bottom: isMobile ? 40 : 50, left: 10, right: 10 }}
+        >
           <CartesianGrid strokeDasharray='3 3' />
           <XAxis
             dataKey={xAxisKey}

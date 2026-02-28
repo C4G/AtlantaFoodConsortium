@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsMobile } from '@/hooks/use-is-mobile';
 import { ChartInfoTooltip } from './ChartInfoTooltip';
 import {
   LineChart,
@@ -27,6 +28,8 @@ export function LineChartComponent({
   title,
   info,
 }: LineChartComponentProps) {
+  const isMobile = useIsMobile();
+
   return (
     <div className='w-full'>
       {title && (
@@ -37,7 +40,7 @@ export function LineChartComponent({
           {info && <ChartInfoTooltip info={info} position='top' />}
         </div>
       )}
-      <ResponsiveContainer width='100%' height={400}>
+      <ResponsiveContainer width='100%' height={isMobile ? 260 : 400}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray='3 3' />
           <XAxis

@@ -23,7 +23,7 @@ export function KPICard({
   trend,
 }: KPICardProps) {
   return (
-    <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md transition-all hover:shadow-lg'>
+    <div className='rounded-lg border border-slate-200 bg-white p-4 shadow-md transition-all hover:shadow-lg sm:p-6'>
       <div className='flex items-start justify-between'>
         <div className='flex-1'>
           <div className='flex items-center gap-1.5'>
@@ -32,7 +32,9 @@ export function KPICard({
               <ChartInfoTooltip info={info} position='bottom' size='sm' />
             )}
           </div>
-          <p className='mt-2 text-3xl font-bold text-slate-900'>{value}</p>
+          <p className='mt-2 text-2xl font-bold text-slate-900 sm:text-3xl'>
+            {value}
+          </p>
           {subtitle && (
             <p className='mt-1 text-sm text-slate-500'>{subtitle}</p>
           )}

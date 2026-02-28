@@ -1,6 +1,7 @@
 'use client';
 
 import { memo, useRef } from 'react';
+import { useIsMobile } from '@/hooks/use-is-mobile';
 import { ChartInfoTooltip } from './ChartInfoTooltip';
 import {
   PieChart,
@@ -35,6 +36,7 @@ export const DonutChart = memo(function DonutChart({
   info,
 }: DonutChartProps) {
   const hasAnimated = useRef(false);
+  const isMobile = useIsMobile();
 
   return (
     <div className='w-full'>
@@ -46,14 +48,14 @@ export const DonutChart = memo(function DonutChart({
           {info && <ChartInfoTooltip info={info} position='top' />}
         </div>
       )}
-      <ResponsiveContainer width='100%' height={400} minWidth={300}>
+      <ResponsiveContainer width='100%' height={isMobile ? 300 : 400}>
         <PieChart>
           <Pie
             data={data}
             cx='50%'
             cy='45%'
-            innerRadius={60}
-            outerRadius={85}
+            innerRadius={isMobile ? 48 : 60}
+            outerRadius={isMobile ? 68 : 85}
             fill='#8884d8'
             paddingAngle={5}
             dataKey='value'
@@ -61,10 +63,13 @@ export const DonutChart = memo(function DonutChart({
             onAnimationEnd={() => {
               hasAnimated.current = true;
             }}
-            label={({ name, percent }) =>
-              `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
+            label={
+              isMobile
+                ? undefined
+                : ({ name, percent }) =>
+                    `${name}: ${percent ? (percent * 100).toFixed(0) : 0}%`
             }
-            labelLine={{ stroke: '#94a3b8', strokeWidth: 1 }}
+            labelLine={isMobile ? false : { stroke: '#94a3b8', strokeWidth: 1 }}
           >
             {data.map((entry, index) => (
               <Cell

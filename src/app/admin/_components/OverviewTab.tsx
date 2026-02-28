@@ -110,7 +110,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
       {/* Charts Grid */}
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         {/* Product Distribution Donut Chart */}
-        <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
           <DonutChart
             title='Product Type Distribution'
             info={ADMIN_CHART_INFO.productTypeDistribution}
@@ -147,7 +147,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         </div>
 
         {/* Product Status Trends Line Chart */}
-        <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
           <LineChartComponent
             title='Product Status Trends'
             info={ADMIN_CHART_INFO.productStatusTrends}
@@ -162,7 +162,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         </div>
 
         {/* Supplier Activity Bar Chart */}
-        <div className='flex h-[550px] flex-col rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+        <div className='flex h-[400px] flex-col rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:h-[550px] sm:p-6'>
           <BarChartComponent
             title='Top Suppliers by Products'
             info={ADMIN_CHART_INFO.topSuppliers}
@@ -180,7 +180,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         </div>
 
         {/* Nonprofit Engagement Bar Chart */}
-        <div className='flex h-[550px] flex-col rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+        <div className='flex h-[400px] flex-col rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:h-[550px] sm:p-6'>
           <BarChartComponent
             title='Top Nonprofits by Claims'
             info={ADMIN_CHART_INFO.topNonprofits}
@@ -198,7 +198,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         </div>
 
         {/* Organization Type Breakdown */}
-        <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
           <DonutChart
             title='Nonprofit Organization Types'
             info={ADMIN_CHART_INFO.nonprofitOrgTypes}
@@ -240,7 +240,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         </div>
 
         {/* Supplier Cadence Breakdown */}
-        <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
           <DonutChart
             title='Supplier Posting Cadence'
             info={ADMIN_CHART_INFO.supplierCadence}
@@ -270,7 +270,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         </div>
 
         {/* Claims Over Time Line Chart */}
-        <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md lg:col-span-2'>
+        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6 lg:col-span-2'>
           <LineChartComponent
             title='Claims Over Time'
             info={ADMIN_CHART_INFO.claimsOverTime}

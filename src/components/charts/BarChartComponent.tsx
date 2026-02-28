@@ -12,10 +12,11 @@ import {
 } from 'recharts';
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-is-mobile';
 import { ChartInfoTooltip } from './ChartInfoTooltip';
 
 interface BarChartComponentProps {
-  data: Array<Record<string, string | number>>;
+  data: Array<Record<string, unknown>>;
   bars: Array<{ dataKey: string; fill: string; name: string }>;
   xAxisKey: string;
   title?: string;
@@ -35,6 +36,7 @@ export function BarChartComponent({
 }: BarChartComponentProps) {
   const resolvedItemsPerPage = itemsPerPage || 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const isMobile = useIsMobile();
 
   // Pagination logic
   const totalPages = Math.ceil(data.length / resolvedItemsPerPage);
@@ -45,7 +47,11 @@ export function BarChartComponent({
 
   return (
     <div className='flex h-full w-full flex-col'>
-      <div className='mb-4 flex items-center justify-between'>
+      <div
+        className={`mb-4 flex flex-wrap items-center gap-y-2 ${
+          isPaginated ? 'justify-between' : 'justify-center'
+        }`}
+      >
         <div className='flex items-center gap-2'>
           {title && (
             <h3 className='text-lg font-semibold text-slate-800'>{title}</h3>
@@ -54,7 +60,7 @@ export function BarChartComponent({
         </div>
         {isPaginated && (
           <div className='flex items-center gap-3'>
-            <span className='text-sm text-slate-600'>
+            <span className='hidden text-sm text-slate-600 sm:inline'>
               Showing {startIndex + 1}-{Math.min(endIndex, data.length)} of{' '}
               {data.length}
             </span>
@@ -115,8 +121,8 @@ export function BarChartComponent({
                 <YAxis
                   dataKey={xAxisKey}
                   type='category'
-                  width={150}
-                  tick={{ fontSize: 11 }}
+                  width={isMobile ? 90 : 150}
+                  tick={{ fontSize: isMobile ? 9 : 11 }}
                   interval={0}
                 />
               </>
