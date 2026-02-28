@@ -1,4 +1,6 @@
 'use client';
+import { ChartInfoTooltip } from '@/components/charts/ChartInfoTooltip';
+import { NONPROFIT_CHART_INFO } from '@/components/charts/chart-info-text';
 import { LineChartComponent } from '@/components/charts/LineChartComponent';
 import { DonutChart } from '@/components/charts/DonutChart';
 import { KPICard } from '@/components/charts/KPICard';
@@ -34,6 +36,7 @@ const OverviewTab = ({
           title='Products Claimed'
           value={metricsData.totalClaimed}
           subtitle='Total claimed'
+          info={NONPROFIT_CHART_INFO.productsClaimed}
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -55,6 +58,7 @@ const OverviewTab = ({
           title='Upcoming Pickups'
           value={metricsData.upcomingPickups.length}
           subtitle='Next 30 days'
+          info={NONPROFIT_CHART_INFO.upcomingPickups}
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -76,6 +80,7 @@ const OverviewTab = ({
           title='Available Products'
           value={availableCount}
           subtitle='Ready to claim'
+          info={NONPROFIT_CHART_INFO.availableProducts}
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -101,6 +106,7 @@ const OverviewTab = ({
           <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
             <LineChartComponent
               title='Product Availability (Last 30 Days)'
+              info={NONPROFIT_CHART_INFO.productAvailabilityTrend}
               data={metricsData.availabilityTrends}
               xAxisKey='date'
               lines={[
@@ -118,6 +124,7 @@ const OverviewTab = ({
           <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
             <LineChartComponent
               title='Your Monthly Claims'
+              info={NONPROFIT_CHART_INFO.monthlyClaimsTimeline}
               data={metricsData.monthlyTimeline}
               xAxisKey='month'
               lines={[
@@ -133,9 +140,15 @@ const OverviewTab = ({
 
         {productInterests && (
           <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
-            <h3 className='mb-4 text-center text-lg font-semibold text-slate-800'>
-              Product Interest Match Score
-            </h3>
+            <div className='mb-4 flex items-center justify-center gap-2'>
+              <h3 className='text-center text-lg font-semibold text-slate-800'>
+                Product Interest Match Score
+              </h3>
+              <ChartInfoTooltip
+                info={NONPROFIT_CHART_INFO.interestMatchScore}
+                position='top'
+              />
+            </div>
             <div className='space-y-3'>
               {Object.entries(metricsData.matchScore)
                 .filter(([key, value]) => {
@@ -170,6 +183,7 @@ const OverviewTab = ({
           <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
             <DonutChart
               title='Your Claimed Product Types'
+              info={NONPROFIT_CHART_INFO.claimedProductTypes}
               data={[
                 { name: 'Protein', value: metricsData.typeBreakdown.protein },
                 { name: 'Produce', value: metricsData.typeBreakdown.produce },

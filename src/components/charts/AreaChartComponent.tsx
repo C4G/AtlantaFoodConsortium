@@ -1,5 +1,6 @@
 'use client';
 
+import { ChartInfoTooltip } from './ChartInfoTooltip';
 import {
   AreaChart,
   Area,
@@ -15,6 +16,7 @@ interface AreaChartComponentProps {
   areas: Array<{ dataKey: string; stroke: string; fill: string; name: string }>;
   xAxisKey: string;
   title?: string;
+  info?: string;
 }
 
 export function AreaChartComponent({
@@ -22,13 +24,17 @@ export function AreaChartComponent({
   areas,
   xAxisKey,
   title,
+  info,
 }: AreaChartComponentProps) {
   return (
     <div className='w-full'>
       {title && (
-        <h3 className='mb-4 text-center text-lg font-semibold text-slate-800'>
-          {title}
-        </h3>
+        <div className='mb-4 flex items-center justify-center gap-2'>
+          <h3 className='text-center text-lg font-semibold text-slate-800'>
+            {title}
+          </h3>
+          {info && <ChartInfoTooltip info={info} position='top' />}
+        </div>
       )}
       <ResponsiveContainer width='100%' height={350}>
         <AreaChart data={data} margin={{ bottom: 50, left: 10, right: 10 }}>

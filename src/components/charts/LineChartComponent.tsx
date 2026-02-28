@@ -1,5 +1,6 @@
 'use client';
 
+import { ChartInfoTooltip } from './ChartInfoTooltip';
 import {
   LineChart,
   Line,
@@ -16,6 +17,7 @@ interface LineChartComponentProps {
   lines: Array<{ dataKey: string; stroke: string; name: string }>;
   xAxisKey: string;
   title?: string;
+  info?: string;
 }
 
 export function LineChartComponent({
@@ -23,13 +25,17 @@ export function LineChartComponent({
   lines,
   xAxisKey,
   title,
+  info,
 }: LineChartComponentProps) {
   return (
     <div className='w-full'>
       {title && (
-        <h3 className='mb-4 text-center text-lg font-semibold text-slate-800'>
-          {title}
-        </h3>
+        <div className='mb-4 flex items-center justify-center gap-2'>
+          <h3 className='text-center text-lg font-semibold text-slate-800'>
+            {title}
+          </h3>
+          {info && <ChartInfoTooltip info={info} position='top' />}
+        </div>
       )}
       <ResponsiveContainer width='100%' height={400}>
         <LineChart data={data}>

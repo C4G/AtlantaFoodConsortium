@@ -1,6 +1,7 @@
 'use client';
 
 import { memo, useRef } from 'react';
+import { ChartInfoTooltip } from './ChartInfoTooltip';
 import {
   PieChart,
   Pie,
@@ -14,6 +15,7 @@ interface DonutChartProps {
   data: Array<{ name: string; value: number }>;
   colors?: string[];
   title?: string;
+  info?: string;
 }
 
 const DEFAULT_COLORS = [
@@ -30,15 +32,19 @@ export const DonutChart = memo(function DonutChart({
   data,
   colors = DEFAULT_COLORS,
   title,
+  info,
 }: DonutChartProps) {
   const hasAnimated = useRef(false);
 
   return (
     <div className='w-full'>
       {title && (
-        <h3 className='mb-4 text-center text-lg font-semibold text-slate-800'>
-          {title}
-        </h3>
+        <div className='mb-4 flex items-center justify-center gap-2'>
+          <h3 className='text-center text-lg font-semibold text-slate-800'>
+            {title}
+          </h3>
+          {info && <ChartInfoTooltip info={info} position='top' />}
+        </div>
       )}
       <ResponsiveContainer width='100%' height={400} minWidth={300}>
         <PieChart>

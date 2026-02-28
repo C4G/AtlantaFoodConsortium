@@ -3,6 +3,7 @@ import { DonutChart } from '@/components/charts/DonutChart';
 import { BarChartComponent } from '@/components/charts/BarChartComponent';
 import { AreaChartComponent } from '@/components/charts/AreaChartComponent';
 import { KPICard } from '@/components/charts/KPICard';
+import { SUPPLIER_CHART_INFO } from '@/components/charts/chart-info-text';
 import { SupplierMetrics } from '../_types';
 
 interface OverviewTabProps {
@@ -27,6 +28,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
           title='Total Products'
           value={metricsData.totalProducts}
           subtitle='Posted to date'
+          info={SUPPLIER_CHART_INFO.totalProducts}
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -48,6 +50,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
           title='Available'
           value={metricsData.statusBreakdown.AVAILABLE}
           subtitle='Currently available'
+          info={SUPPLIER_CHART_INFO.available}
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -72,6 +75,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
             metricsData.statusBreakdown.PENDING
           }
           subtitle='Successfully claimed'
+          info={SUPPLIER_CHART_INFO.claimed}
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -93,6 +97,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
           title='Fast Claims'
           value={metricsData.claimSpeeds.within24h}
           subtitle='Claimed within 24hrs'
+          info={SUPPLIER_CHART_INFO.fastClaims}
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -118,6 +123,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
         <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
           <DonutChart
             title='Product Status Breakdown'
+            info={SUPPLIER_CHART_INFO.productStatusBreakdown}
             data={[
               {
                 name: 'Available',
@@ -134,6 +140,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
         <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
           <BarChartComponent
             title='Product Claim Speed'
+            info={SUPPLIER_CHART_INFO.claimSpeed}
             data={[
               { timeframe: '< 24h', count: metricsData.claimSpeeds.within24h },
               { timeframe: '24-48h', count: metricsData.claimSpeeds.within48h },
@@ -155,6 +162,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
         <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
           <DonutChart
             title='Product Type Distribution'
+            info={SUPPLIER_CHART_INFO.productTypeDistribution}
             data={[
               { name: 'Protein', value: metricsData.typeBreakdown.protein },
               { name: 'Produce', value: metricsData.typeBreakdown.produce },
@@ -179,6 +187,7 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
         <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
           <AreaChartComponent
             title='Monthly Impact Timeline'
+            info={SUPPLIER_CHART_INFO.monthlyTimeline}
             data={metricsData.monthlyTimeline}
             xAxisKey='month'
             areas={[

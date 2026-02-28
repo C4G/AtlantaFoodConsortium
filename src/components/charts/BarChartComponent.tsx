@@ -12,12 +12,14 @@ import {
 } from 'recharts';
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChartInfoTooltip } from './ChartInfoTooltip';
 
 interface BarChartComponentProps {
   data: Array<Record<string, string | number>>;
   bars: Array<{ dataKey: string; fill: string; name: string }>;
   xAxisKey: string;
   title?: string;
+  info?: string;
   layout?: 'horizontal' | 'vertical';
   itemsPerPage?: number;
 }
@@ -27,6 +29,7 @@ export function BarChartComponent({
   bars,
   xAxisKey,
   title,
+  info,
   layout = 'horizontal',
   itemsPerPage,
 }: BarChartComponentProps) {
@@ -43,9 +46,12 @@ export function BarChartComponent({
   return (
     <div className='flex h-full w-full flex-col'>
       <div className='mb-4 flex items-center justify-between'>
-        {title && (
-          <h3 className='text-lg font-semibold text-slate-800'>{title}</h3>
-        )}
+        <div className='flex items-center gap-2'>
+          {title && (
+            <h3 className='text-lg font-semibold text-slate-800'>{title}</h3>
+          )}
+          {info && <ChartInfoTooltip info={info} position='top' />}
+        </div>
         {isPaginated && (
           <div className='flex items-center gap-3'>
             <span className='text-sm text-slate-600'>

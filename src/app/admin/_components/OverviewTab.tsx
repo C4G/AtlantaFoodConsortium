@@ -2,6 +2,7 @@ import { DonutChart } from '@/components/charts/DonutChart';
 import { LineChartComponent } from '@/components/charts/LineChartComponent';
 import { BarChartComponent } from '@/components/charts/BarChartComponent';
 import { KPICard } from '@/components/charts/KPICard';
+import { ADMIN_CHART_INFO } from '@/components/charts/chart-info-text';
 import { AnalyticsData } from '../_types';
 
 interface OverviewTabProps {
@@ -20,6 +21,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
           title='Total Users'
           value={analyticsData.systemHealth.totalUsers}
           subtitle='Active in system'
+          info={ADMIN_CHART_INFO.totalUsers}
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -41,6 +43,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
           title='Avg Claim Time'
           value={`${analyticsData.systemHealth.avgClaimTimeHours}h`}
           subtitle='Hours to claim'
+          info={ADMIN_CHART_INFO.avgClaimTime}
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -62,6 +65,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
           title='Approval Rate'
           value={`${Math.round(analyticsData.systemHealth.approvalRate * 100)}%`}
           subtitle='Nonprofit approvals'
+          info={ADMIN_CHART_INFO.approvalRate}
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -83,6 +87,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
           title='Available Products'
           value={analyticsData.systemHealth.productsByStatus.AVAILABLE}
           subtitle='Ready to claim'
+          info={ADMIN_CHART_INFO.availableProducts}
           icon={
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -108,6 +113,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
           <DonutChart
             title='Product Type Distribution'
+            info={ADMIN_CHART_INFO.productTypeDistribution}
             data={[
               {
                 name: 'Protein',
@@ -144,6 +150,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
           <LineChartComponent
             title='Product Status Trends'
+            info={ADMIN_CHART_INFO.productStatusTrends}
             data={analyticsData.trends.trends}
             xAxisKey='date'
             lines={[
@@ -158,6 +165,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         <div className='flex h-[550px] flex-col rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
           <BarChartComponent
             title='Top Suppliers by Products'
+            info={ADMIN_CHART_INFO.topSuppliers}
             data={analyticsData.supplierActivity.activity}
             xAxisKey='name'
             layout='vertical'
@@ -175,6 +183,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         <div className='flex h-[550px] flex-col rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
           <BarChartComponent
             title='Top Nonprofits by Claims'
+            info={ADMIN_CHART_INFO.topNonprofits}
             data={analyticsData.nonprofitEngagement.engagement}
             xAxisKey='name'
             layout='vertical'
@@ -192,6 +201,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
           <DonutChart
             title='Nonprofit Organization Types'
+            info={ADMIN_CHART_INFO.nonprofitOrgTypes}
             data={[
               {
                 name: 'Food Bank',
@@ -233,6 +243,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
           <DonutChart
             title='Supplier Posting Cadence'
+            info={ADMIN_CHART_INFO.supplierCadence}
             data={[
               {
                 name: 'Daily',
@@ -262,6 +273,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
         <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md lg:col-span-2'>
           <LineChartComponent
             title='Claims Over Time'
+            info={ADMIN_CHART_INFO.claimsOverTime}
             data={analyticsData.claimsOverTime.timeline}
             xAxisKey='month'
             lines={[{ dataKey: 'count', stroke: '#ec4899', name: 'Claims' }]}
