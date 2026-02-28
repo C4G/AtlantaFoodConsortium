@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { Header } from '@/components/layout/header';
 import { SessionProvider } from 'next-auth/react';
+import { auth } from '@/lib/auth';
 import { Toaster } from '@/components/ui/toaster';
 import { Footer } from '@/components/layout/footer';
 import { ThemeProvider } from '@/components/layout/theme-provider';
@@ -29,13 +30,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html lang='en' suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-          <SessionProvider>
+          <SessionProvider session={session} refetchOnWindowFocus={false}>
             <Header />
             <div className='mt-16 min-h-[calc(100dvh-8.4rem)]'>{children}</div>
             <Footer />
