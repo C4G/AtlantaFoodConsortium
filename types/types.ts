@@ -191,7 +191,8 @@ export interface PickupInfo {
 export interface NonprofitDocument {
   id: string;
   fileName: string;
-  fileData: Buffer;
+  fileData?: Buffer | null; // present only for legacy records
+  filePath?: string | null; // present for all new uploads
   fileType: string;
   uploadedAt: Date;
   nonprofitId: string | null;
