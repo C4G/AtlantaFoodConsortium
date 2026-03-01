@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 export default function OnboardingPage() {
-  const [role, setRole] = useState<string>('');
+  const [, setRole] = useState<string>('');
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -17,17 +17,11 @@ export default function OnboardingPage() {
       router.replace('/');
       return;
     }
-
     // If user already has a role, redirect to the appropriate dashboard
-    if (session?.user?.role) {
-      if (session.user.role === 'NONPROFIT') {
-        router.push('/nonprofit');
-      } else if (session.user.role === 'SUPPLIER') {
-        router.push('/supplier');
-      } else if (session.user.role === 'ADMIN') {
-        router.push('/admin');
-      }
-    }
+    const role = session?.user?.role;
+    if (role === 'NONPROFIT') router.push('/nonprofit');
+    else if (role === 'SUPPLIER') router.push('/supplier');
+    else if (role === 'ADMIN') router.push('/admin');
   }, [session, status, router]);
 
   const handleRoleSelection = (selectedRole: string) => {
@@ -50,28 +44,32 @@ export default function OnboardingPage() {
           </h1>
         </div>
 
-        <div className='space-y-6'>
-          <div>
-            <label className='mb-2 block text-sm font-medium text-slate-700'>
-              Select Role
-            </label>
-            <select
-              className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400'
-              onChange={(e) => handleRoleSelection(e.target.value)}
-              value={role}
-            >
-              <option value=''>Select your role</option>
-              <option value='nonprofit'>Nonprofit</option>
-              <option value='supplier'>Supplier</option>
-            </select>
-          </div>
+        <p className='text-sm text-slate-600'>
+          To post or claim food donations, register as a supplier or nonprofit
+          below. You can continue using discussions and announcements without
+          completing this step.
+        </p>
 
-          <div className='text-center text-sm text-slate-600'>
-            <p>
-              Please select your role to continue with the appropriate
-              registration process.
+        <div className='space-y-4'>
+          <button
+            onClick={() => handleRoleSelection('nonprofit')}
+            className='w-full rounded-lg border border-slate-200 p-4 text-left transition hover:border-slate-400 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400'
+          >
+            <p className='font-semibold text-slate-800'>🏢 Nonprofit</p>
+            <p className='mt-1 text-sm text-slate-500'>
+              Receive food donations for your community organization.
             </p>
-          </div>
+          </button>
+
+          <button
+            onClick={() => handleRoleSelection('supplier')}
+            className='w-full rounded-lg border border-slate-200 p-4 text-left transition hover:border-slate-400 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400'
+          >
+            <p className='font-semibold text-slate-800'>🚚 Supplier</p>
+            <p className='mt-1 text-sm text-slate-500'>
+              Post surplus food available for donation or pickup.
+            </p>
+          </button>
         </div>
       </div>
     </div>

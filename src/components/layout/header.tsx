@@ -18,8 +18,9 @@ export function Header() {
   const { data, status } = useSession();
   const pathname = usePathname();
 
-  const role = status === 'authenticated' && data?.user.role; // 'ADMIN', 'SUPPLIER', 'NONPROFIT'
+  const role = status === 'authenticated' && data?.user.role; // 'ADMIN', 'SUPPLIER', 'NONPROFIT', 'OTHER'
   const isAdminOrStaff = role === UserRole.ADMIN || role === UserRole.STAFF;
+  const isOther = role === UserRole.OTHER;
 
   // Map routes to labels
   const pageLabels: Record<string, string> = {
@@ -90,6 +91,13 @@ export function Header() {
             <DropdownMenuItem asChild>
               <Link href='/discussion'>Discussion</Link>
             </DropdownMenuItem>
+
+            {/* Prompt OTHER users to complete their profile */}
+            {isOther && (
+              <DropdownMenuItem asChild>
+                <Link href='/onboarding'>Complete Profile</Link>
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
