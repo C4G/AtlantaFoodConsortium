@@ -164,7 +164,8 @@ model PickupInfo {
 model NonprofitDocument {
   id         String     @id @default(cuid())
   fileName   String
-  fileData   Bytes
+  fileData   Bytes?     // kept for existing records
+  filePath   String?    // set for all new uploads
   fileType   String
   uploadedAt DateTime   @default(now())
   nonprofit  Nonprofit?

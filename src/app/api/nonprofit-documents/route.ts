@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
+import { writeFile, mkdir, unlink } from 'fs/promises';
+import path from 'path';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(request: Request) {
+const UPLOAD_DIR = path.join(process.cwd(), 'uploads', 'nonprofit-documents');
+
+export async function GET() {
   try {
     const session = await auth();
 
@@ -10,16 +14,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { searchParams } = new URL(request.url);
-    const includeFileData = searchParams.get('includeFileData') === 'true';
-
     const documents = await prisma.nonprofitDocument.findMany({
       select: {
         id: true,
         fileName: true,
         fileType: true,
+        filePath: true,
         uploadedAt: true,
-        fileData: includeFileData,
         nonprofit: {
           select: {
             id: true,
@@ -37,14 +38,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const processedDocuments = documents.map((doc) => ({
-      ...doc,
-      fileData: doc.fileData
-        ? Buffer.from(doc.fileData).toString('base64')
-        : undefined,
-    }));
-
-    return NextResponse.json(processedDocuments);
+    return NextResponse.json(documents);
   } catch (error) {
     console.error('Error fetching documents:', error);
     return NextResponse.json(
@@ -75,7 +69,6 @@ export async function POST(req: Request) {
 
     const formData = await req.formData();
     const file = formData.get('file') as File;
-    const arrayBuffer = await file.arrayBuffer();
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
@@ -123,14 +116,30 @@ export async function POST(req: Request) {
       where: { id: nonprofitDocumentId },
     });
 
+    // Write new file to disk
+    await mkdir(UPLOAD_DIR, { recursive: true });
+    const diskFileName = `${Date.now()}-${file.name}`;
+    const filePath = path.join(UPLOAD_DIR, diskFileName);
+    await writeFile(filePath, Buffer.from(await file.arrayBuffer()));
+
     let document;
     if (existingDocument) {
+      // Delete the old file from disk when replacing
+      if (existingDocument.filePath) {
+        try {
+          await unlink(existingDocument.filePath);
+        } catch {
+          // Ignore – file may already be gone
+        }
+      }
+
       document = await prisma.nonprofitDocument.update({
         where: { id: existingDocument.id },
         data: {
           fileName: file.name,
           fileType: file.type,
-          fileData: new Uint8Array(arrayBuffer),
+          filePath,
+          fileData: null, // clear any legacy blob
         },
       });
     } else {
@@ -138,7 +147,7 @@ export async function POST(req: Request) {
         data: {
           fileName: file.name,
           fileType: file.type,
-          fileData: new Uint8Array(arrayBuffer),
+          filePath,
         },
       });
     }
@@ -193,7 +202,6 @@ export async function PATCH(req: Request) {
       );
     }
 
-    // Validate file size (5MB limit)
     if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
         { error: 'File size must be less than 5MB' },
@@ -201,7 +209,25 @@ export async function PATCH(req: Request) {
       );
     }
 
-    const arrayBuffer = await file.arrayBuffer();
+    // Fetch the current document so we can delete the old file from disk
+    const currentDoc = await prisma.nonprofitDocument.findUnique({
+      where: { id: user.nonprofit.nonprofitDocumentId },
+    });
+
+    // Write new file to disk
+    await mkdir(UPLOAD_DIR, { recursive: true });
+    const diskFileName = `${Date.now()}-${file.name}`;
+    const filePath = path.join(UPLOAD_DIR, diskFileName);
+    await writeFile(filePath, Buffer.from(await file.arrayBuffer()));
+
+    // Delete the old file from disk when replacing
+    if (currentDoc?.filePath) {
+      try {
+        await unlink(currentDoc.filePath);
+      } catch {
+        // Ignore, may already be gone
+      }
+    }
 
     // Update document and reset approval status
     const updatedNonprofit = await prisma.nonprofit.update({
@@ -211,7 +237,8 @@ export async function PATCH(req: Request) {
           update: {
             fileName: file.name,
             fileType: file.type,
-            fileData: new Uint8Array(arrayBuffer),
+            filePath,
+            fileData: null, // clear any legacy blob
             uploadedAt: new Date(),
           },
         },

@@ -410,6 +410,72 @@ describe('/api/users - PATCH', () => {
     expect(data).toEqual({ error: 'User not found' });
   });
 
+  it('should allow a roleless user to set their own role during onboarding', async () => {
+    const userId = '2';
+    const userData = {
+      id: userId,
+      role: 'NONPROFIT',
+      nonprofit: {
+        create: {
+          name: 'Test Food Bank',
+          nonprofitDocument: {
+            create: { fileName: 'cert.pdf', fileType: 'application/pdf' },
+          },
+        },
+      },
+    };
+
+    vi.mocked(auth).mockResolvedValue({
+      user: { id: userId, email: 'new@test.com', role: null },
+    } as any);
+
+    vi.mocked(prisma.user.findUnique).mockResolvedValue({
+      id: userId,
+      email: 'new@test.com',
+      role: null,
+    } as any);
+
+    vi.mocked(prisma.user.update).mockResolvedValue({
+      id: userId,
+      role: 'NONPROFIT',
+      nonprofit: { id: 'np1' },
+    } as any);
+
+    const req = new NextRequest('http://localhost/api/users', {
+      method: 'PATCH',
+      body: JSON.stringify(userData),
+    });
+
+    const response = await PATCH(req);
+    expect(response.status).toBe(200);
+  });
+
+  it('should block a user from changing their own role after it is already set', async () => {
+    const userId = '2';
+    const userData = { id: userId, role: 'ADMIN' };
+
+    vi.mocked(auth).mockResolvedValue({
+      user: { id: userId, email: 'user@test.com', role: 'NONPROFIT' },
+    } as any);
+
+    vi.mocked(prisma.user.findUnique).mockResolvedValue({
+      id: userId,
+      email: 'user@test.com',
+      role: 'NONPROFIT',
+    } as any);
+
+    const req = new NextRequest('http://localhost/api/users', {
+      method: 'PATCH',
+      body: JSON.stringify(userData),
+    });
+
+    const response = await PATCH(req);
+    const data = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(data).toEqual({ error: 'You cannot change your own role' });
+  });
+
   it('should handle nonprofit document uploads separately', async () => {
     const userData = {
       id: '2',
