@@ -240,6 +240,7 @@ enum UserRole {
   STAFF
   SUPPLIER
   NONPROFIT
+  OTHER
 }
 
 enum ItemType {

@@ -38,7 +38,7 @@ const createColumnDefs = (currentUserId?: string): ColDef[] => [
     field: 'role',
     cellEditor: 'agSelectCellEditor',
     cellEditorParams: {
-      values: [null, 'ADMIN', 'STAFF'],
+      values: ['ADMIN', 'STAFF', 'SUPPLIER', 'NONPROFIT', 'OTHER'],
     },
     editable: (params) => params.data?.id !== currentUserId,
   },
