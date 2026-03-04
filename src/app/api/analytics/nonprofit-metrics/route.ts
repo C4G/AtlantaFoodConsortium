@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireRole } from '@/lib/api-auth';
 
 export async function GET(request: Request) {
+  const authResult = await requireRole('ADMIN', 'NONPROFIT');
+  if (authResult.error) return authResult.error;
+
+  const { session } = authResult;
+  const { role } = session.user;
+
   try {
     const { searchParams } = new URL(request.url);
     const nonprofitId = searchParams.get('nonprofitId');
@@ -11,6 +18,17 @@ export async function GET(request: Request) {
         { error: 'Nonprofit ID is required' },
         { status: 400 }
       );
+    }
+
+    // Nonprofits can only view their own metrics
+    if (role === 'NONPROFIT') {
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { nonprofitId: true },
+      });
+      if (user?.nonprofitId !== nonprofitId) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     // Get nonprofit's claimed products

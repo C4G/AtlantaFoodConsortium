@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { NextResponse } from 'next/server';
 import { GET } from './route';
 import { prisma } from '@/lib/prisma';
+import { requireRole } from '@/lib/api-auth';
 
 vi.mock('@/lib/prisma', () => ({
   prisma: {
@@ -24,10 +26,18 @@ vi.mock('@/lib/prisma', () => ({
   },
 }));
 
+vi.mock('@/lib/api-auth', () => ({
+  requireRole: vi.fn(),
+  requireAuth: vi.fn(),
+}));
+
 describe('/api/analytics/system-health - GET', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.mocked(requireRole).mockResolvedValue({
+      session: { user: { id: 'user-1', role: 'ADMIN' } } as any,
+    });
   });
 
   it('should return full system health metrics', async () => {
@@ -137,5 +147,25 @@ describe('/api/analytics/system-health - GET', () => {
 
     expect(response.status).toBe(500);
     expect(data).toEqual({ error: 'Failed to fetch system health' });
+  });
+
+  it('should return 401 when not authenticated', async () => {
+    vi.mocked(requireRole).mockResolvedValue({
+      error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
+    } as any);
+
+    const response = await GET();
+
+    expect(response.status).toBe(401);
+  });
+
+  it('should return 403 when the role is not allowed', async () => {
+    vi.mocked(requireRole).mockResolvedValue({
+      error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }),
+    } as any);
+
+    const response = await GET();
+
+    expect(response.status).toBe(403);
   });
 });

@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireRole } from '@/lib/api-auth';
 
 export async function GET() {
+  const auth = await requireRole('ADMIN');
+  if (auth.error) return auth.error;
+
   try {
     // Get all product requests with their status and creation date
     const products = await prisma.productRequest.findMany({

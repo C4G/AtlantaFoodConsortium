@@ -1,15 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { GET } from './route';
 import { prisma } from '@/lib/prisma';
+import { requireRole } from '@/lib/api-auth';
 
 vi.mock('@/lib/prisma', () => ({
   prisma: {
     productRequest: {
       findMany: vi.fn(),
     },
+    user: {
+      findUnique: vi.fn(),
+    },
   },
+}));
+
+vi.mock('@/lib/api-auth', () => ({
+  requireRole: vi.fn(),
+  requireAuth: vi.fn(),
 }));
 
 const makeRequest = (supplierId?: string) =>
@@ -44,6 +53,9 @@ describe('/api/analytics/supplier-metrics - GET', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.mocked(requireRole).mockResolvedValue({
+      session: { user: { id: 'user-1', role: 'ADMIN' } } as any,
+    });
   });
 
   it('should return 400 when supplierId is missing', async () => {
@@ -155,5 +167,40 @@ describe('/api/analytics/supplier-metrics - GET', () => {
 
     expect(response.status).toBe(500);
     expect(data).toEqual({ error: 'Failed to fetch supplier metrics' });
+  });
+
+  it('should return 401 when not authenticated', async () => {
+    vi.mocked(requireRole).mockResolvedValue({
+      error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
+    } as any);
+
+    const response = await GET(makeRequest('supplier-1'));
+
+    expect(response.status).toBe(401);
+  });
+
+  it('should return 403 when the role is not allowed', async () => {
+    vi.mocked(requireRole).mockResolvedValue({
+      error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }),
+    } as any);
+
+    const response = await GET(makeRequest('supplier-1'));
+
+    expect(response.status).toBe(403);
+  });
+
+  it("should return 403 when a SUPPLIER requests another supplier's metrics", async () => {
+    vi.mocked(requireRole).mockResolvedValue({
+      session: { user: { id: 'user-supplier', role: 'SUPPLIER' } } as any,
+    });
+    vi.mocked(prisma.user.findUnique).mockResolvedValue({
+      supplierId: 'different-supplier',
+    } as any);
+
+    const response = await GET(makeRequest('supplier-1'));
+    const data = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(data).toEqual({ error: 'Forbidden' });
   });
 });

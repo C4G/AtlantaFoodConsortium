@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireRole } from '@/lib/api-auth';
 
 export async function GET() {
+  const auth = await requireRole('ADMIN');
+  if (auth.error) return auth.error;
+
   try {
     // Get all suppliers with their product counts
     const suppliers = await prisma.supplier.findMany({

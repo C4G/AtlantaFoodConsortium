@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireRole } from '@/lib/api-auth';
 
 export async function GET(request: Request) {
+  const authResult = await requireRole('ADMIN', 'SUPPLIER');
+  if (authResult.error) return authResult.error;
+
+  const { session } = authResult;
+  const { role } = session.user;
+
   try {
     const { searchParams } = new URL(request.url);
     const supplierId = searchParams.get('supplierId');
@@ -11,6 +18,17 @@ export async function GET(request: Request) {
         { error: 'Supplier ID is required' },
         { status: 400 }
       );
+    }
+
+    // Suppliers can only view their own metrics
+    if (role === 'SUPPLIER') {
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { supplierId: true },
+      });
+      if (user?.supplierId !== supplierId) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     // Get supplier's products

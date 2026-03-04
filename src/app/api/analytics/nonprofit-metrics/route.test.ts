@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { GET } from './route';
 import { prisma } from '@/lib/prisma';
+import { requireRole } from '@/lib/api-auth';
 
 vi.mock('@/lib/prisma', () => ({
   prisma: {
@@ -12,7 +13,15 @@ vi.mock('@/lib/prisma', () => ({
     nonprofit: {
       findUnique: vi.fn(),
     },
+    user: {
+      findUnique: vi.fn(),
+    },
   },
+}));
+
+vi.mock('@/lib/api-auth', () => ({
+  requireRole: vi.fn(),
+  requireAuth: vi.fn(),
 }));
 
 const makeRequest = (nonprofitId?: string) =>
@@ -24,6 +33,9 @@ describe('/api/analytics/nonprofit-metrics - GET', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.mocked(requireRole).mockResolvedValue({
+      session: { user: { id: 'user-1', role: 'ADMIN' } } as any,
+    });
   });
 
   it('should return 400 when nonprofitId is missing', async () => {
@@ -179,5 +191,40 @@ describe('/api/analytics/nonprofit-metrics - GET', () => {
 
     expect(response.status).toBe(500);
     expect(data).toEqual({ error: 'Failed to fetch nonprofit metrics' });
+  });
+
+  it('should return 401 when not authenticated', async () => {
+    vi.mocked(requireRole).mockResolvedValue({
+      error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
+    } as any);
+
+    const response = await GET(makeRequest('nonprofit-123'));
+
+    expect(response.status).toBe(401);
+  });
+
+  it('should return 403 when the role is not allowed', async () => {
+    vi.mocked(requireRole).mockResolvedValue({
+      error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }),
+    } as any);
+
+    const response = await GET(makeRequest('nonprofit-123'));
+
+    expect(response.status).toBe(403);
+  });
+
+  it("should return 403 when a NONPROFIT requests another nonprofit's metrics", async () => {
+    vi.mocked(requireRole).mockResolvedValue({
+      session: { user: { id: 'user-nonprofit', role: 'NONPROFIT' } } as any,
+    });
+    vi.mocked(prisma.user.findUnique).mockResolvedValue({
+      nonprofitId: 'different-nonprofit',
+    } as any);
+
+    const response = await GET(makeRequest('nonprofit-123'));
+    const data = await response.json();
+
+    expect(response.status).toBe(403);
+    expect(data).toEqual({ error: 'Forbidden' });
   });
 });
