@@ -410,7 +410,7 @@ describe('/api/users - PATCH', () => {
     expect(data).toEqual({ error: 'User not found' });
   });
 
-  it('should allow a roleless user to set their own role during onboarding', async () => {
+  it('should allow a roleless user to set their role to NONPROFIT or SUPPLIER after submitting the onboarding form', async () => {
     const userId = '2';
     const userData = {
       id: userId,

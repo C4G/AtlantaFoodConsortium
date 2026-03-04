@@ -268,7 +268,7 @@ describe('POST /api/nonprofit-documents', () => {
       expect.objectContaining({
         data: expect.objectContaining({
           filePath: expect.stringContaining('new.pdf'),
-          fileData: null,
+          fileData: undefined,
         }),
       })
     );
@@ -380,7 +380,7 @@ describe('PATCH /api/nonprofit-documents', () => {
           nonprofitDocument: {
             update: expect.objectContaining({
               filePath: expect.stringContaining('renewal.pdf'),
-              fileData: null,
+              fileData: undefined,
             }),
           },
           nonprofitDocumentApproval: null,

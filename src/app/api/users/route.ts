@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import cuid from 'cuid';
 import type { Prisma } from '@prisma/client';
-
-const UPLOAD_DIR = path.join(process.cwd(), 'uploads', 'nonprofit-documents');
+import {
+  NONPROFIT_DOCUMENTS_DIR,
+  generatePrefixedFileName,
+  writeFileToDisk,
+} from '@/lib/file-storage';
 
 async function parseLargeJsonBody(req: Request) {
   const reader = req.body?.getReader();
@@ -143,6 +144,19 @@ export async function PATCH(req: Request) {
       );
     }
 
+    const ALLOWED_ONBOARDING_ROLES = ['NONPROFIT', 'SUPPLIER'];
+    if (
+      userId === session.user.id &&
+      userData.role !== undefined &&
+      targetUser.role === null &&
+      !ALLOWED_ONBOARDING_ROLES.includes(userData.role)
+    ) {
+      return NextResponse.json(
+        { error: 'Invalid role. Must be NONPROFIT or SUPPLIER.' },
+        { status: 403 }
+      );
+    }
+
     // Handle nonprofit document uploads
     if (userData.nonprofit?.create) {
       const documentData = userData.nonprofit.create.nonprofitDocument?.create;
@@ -155,10 +169,15 @@ export async function PATCH(req: Request) {
           const fileBuffer = Buffer.from(
             Object.values(documentData.fileData) as number[]
           );
-          await mkdir(UPLOAD_DIR, { recursive: true });
-          const diskFileName = `${documentId}-${documentData.fileName || 'document'}`;
-          filePath = path.join(UPLOAD_DIR, diskFileName);
-          await writeFile(filePath, fileBuffer);
+          const diskFileName = generatePrefixedFileName(
+            documentId,
+            documentData.fileName || 'document'
+          );
+          filePath = await writeFileToDisk(
+            NONPROFIT_DOCUMENTS_DIR,
+            diskFileName,
+            fileBuffer
+          );
         }
 
         userData.nonprofit.create.nonprofitDocument.create = {
