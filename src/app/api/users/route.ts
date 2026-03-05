@@ -3,6 +3,11 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import cuid from 'cuid';
 import type { Prisma } from '@prisma/client';
+import {
+  NONPROFIT_DOCUMENTS_DIR,
+  generatePrefixedFileName,
+  writeFileToDisk,
+} from '@/lib/file-storage';
 
 async function parseLargeJsonBody(req: Request) {
   const reader = req.body?.getReader();
@@ -130,7 +135,8 @@ export async function PATCH(req: Request) {
     if (
       userId === session.user.id &&
       userData.role !== undefined &&
-      userData.role !== targetUser.role
+      userData.role !== targetUser.role &&
+      targetUser.role !== null
     ) {
       return NextResponse.json(
         { error: 'You cannot change your own role' },
@@ -138,19 +144,47 @@ export async function PATCH(req: Request) {
       );
     }
 
+    const ALLOWED_ONBOARDING_ROLES = ['NONPROFIT', 'SUPPLIER'];
+    if (
+      userId === session.user.id &&
+      userData.role !== undefined &&
+      targetUser.role === null &&
+      !ALLOWED_ONBOARDING_ROLES.includes(userData.role)
+    ) {
+      return NextResponse.json(
+        { error: 'Invalid role. Must be NONPROFIT or SUPPLIER.' },
+        { status: 403 }
+      );
+    }
+
     // Handle nonprofit document uploads
     if (userData.nonprofit?.create) {
       const documentData = userData.nonprofit.create.nonprofitDocument?.create;
-      const fileBuffer = documentData?.fileData
-        ? Buffer.from(Object.values(documentData.fileData) as number[])
-        : null;
       const documentId = cuid();
 
       if (userData.nonprofit.create.nonprofitDocument?.create) {
+        let filePath: string | undefined;
+
+        if (documentData?.fileData) {
+          const fileBuffer = Buffer.from(
+            Object.values(documentData.fileData) as number[]
+          );
+          const diskFileName = generatePrefixedFileName(
+            documentId,
+            documentData.fileName || 'document'
+          );
+          filePath = await writeFileToDisk(
+            NONPROFIT_DOCUMENTS_DIR,
+            diskFileName,
+            fileBuffer
+          );
+        }
+
         userData.nonprofit.create.nonprofitDocument.create = {
-          ...userData.nonprofit.create.nonprofitDocument.create,
           id: documentId,
-          fileData: fileBuffer,
+          fileName: documentData?.fileName,
+          fileType: documentData?.fileType,
+          filePath,
         };
       }
       userData.nonprofit.create.nonprofitDocumentApproval = null;

@@ -80,9 +80,7 @@ export default function AdminPage() {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch(
-        '/api/nonprofit-documents?includeFileData=true'
-      );
+      const response = await fetch('/api/nonprofit-documents');
       const data = await response.json();
 
       if (!response.ok) {
@@ -130,22 +128,12 @@ export default function AdminPage() {
   };
 
   const downloadDocument = (doc: AdminNonprofitDocument) => {
-    if (!doc.fileData) return;
-
-    // Convert base64 to binary
-    const binaryString = window.atob(doc.fileData as unknown as string);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-
-    const blob = new Blob([bytes], { type: doc.fileType });
-    const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
+    a.href = `/api/nonprofit-documents/download?id=${doc.id}`;
     a.download = doc.fileName;
+    document.body.appendChild(a);
     a.click();
-    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   };
 
   const handleApproval = async (nonprofitId: string, approved: boolean) => {
@@ -448,11 +436,7 @@ export default function AdminPage() {
                                 <td className='border-b border-slate-200 px-6 py-4'>
                                   {document ? (
                                     <button
-                                      onClick={() =>
-                                        document.fileData
-                                          ? downloadDocument(document)
-                                          : fetchDocuments()
-                                      }
+                                      onClick={() => downloadDocument(document)}
                                       className='flex items-center text-blue-600 transition-colors hover:text-blue-800'
                                     >
                                       <svg
@@ -577,11 +561,7 @@ export default function AdminPage() {
                                 <td className='border-b border-slate-200 px-6 py-4'>
                                   {document ? (
                                     <button
-                                      onClick={() =>
-                                        document.fileData
-                                          ? downloadDocument(document)
-                                          : fetchDocuments()
-                                      }
+                                      onClick={() => downloadDocument(document)}
                                       className='flex items-center text-blue-600 transition-colors hover:text-blue-800'
                                     >
                                       <svg
