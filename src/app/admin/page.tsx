@@ -111,7 +111,6 @@ const AdminPage = () => {
             handleApproval={handleApproval}
             getDocumentForNonprofit={getDocumentForNonprofit}
             downloadDocument={downloadDocument}
-            fetchDocuments={fetchDocuments}
           />
         )}
 
