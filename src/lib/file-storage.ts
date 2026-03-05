@@ -18,7 +18,7 @@ export const VALID_DOCUMENT_TYPES = [
   'image/jpg',
 ];
 
-const MAX_DOCUMENT_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+const MAX_DOCUMENT_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB
 
 /** Returns an error message string, or null if the file is valid. */
 export function validateDocumentFile(file: File): string | null {
@@ -26,7 +26,7 @@ export function validateDocumentFile(file: File): string | null {
     return 'Invalid file type. Please upload a PDF or image file.';
   }
   if (file.size > MAX_DOCUMENT_SIZE_BYTES) {
-    return 'File size must be less than 5MB';
+    return 'File size must be less than 50MB';
   }
   return null;
 }

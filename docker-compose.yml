@@ -53,6 +53,7 @@ services:
       - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
       - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
       - AUTH_TRUST_HOST=${AUTH_TRUST_HOST:-true}
+      - FILE_UPLOADS=${FILE_UPLOADS}
     volumes:
       - atlanta-food-consortium-uploads:/app/uploads
     command: node server.js
