@@ -5,6 +5,9 @@ export default defineConfig({
   test: {
     environment: 'node',
     globals: true,
+    env: {
+      FILE_UPLOADS: '/tmp/test-uploads',
+    },
   },
   resolve: {
     alias: {

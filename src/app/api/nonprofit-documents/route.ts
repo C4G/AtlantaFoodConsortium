@@ -1,8 +1,15 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import {
+  NONPROFIT_DOCUMENTS_DIR,
+  validateDocumentFile,
+  generateTimestampedFileName,
+  writeFileToDisk,
+  deleteFileSafely,
+} from '@/lib/file-storage';
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const session = await auth();
 
@@ -10,16 +17,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { searchParams } = new URL(request.url);
-    const includeFileData = searchParams.get('includeFileData') === 'true';
-
     const documents = await prisma.nonprofitDocument.findMany({
       select: {
         id: true,
         fileName: true,
         fileType: true,
+        filePath: true,
         uploadedAt: true,
-        fileData: includeFileData,
         nonprofit: {
           select: {
             id: true,
@@ -37,14 +41,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const processedDocuments = documents.map((doc) => ({
-      ...doc,
-      fileData: doc.fileData
-        ? Buffer.from(doc.fileData).toString('base64')
-        : undefined,
-    }));
-
-    return NextResponse.json(processedDocuments);
+    return NextResponse.json(documents);
   } catch (error) {
     console.error('Error fetching documents:', error);
     return NextResponse.json(
@@ -75,30 +72,14 @@ export async function POST(req: Request) {
 
     const formData = await req.formData();
     const file = formData.get('file') as File;
-    const arrayBuffer = await file.arrayBuffer();
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    const validTypes = [
-      'application/pdf',
-      'image/png',
-      'image/jpeg',
-      'image/jpg',
-    ];
-    if (!validTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: 'Invalid file type. Please upload a PDF or image file.' },
-        { status: 400 }
-      );
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: 'File size must be less than 5MB' },
-        { status: 400 }
-      );
+    const validationError = validateDocumentFile(file);
+    if (validationError) {
+      return NextResponse.json({ error: validationError }, { status: 400 });
     }
 
     if (!user.nonprofitId) {
@@ -123,14 +104,28 @@ export async function POST(req: Request) {
       where: { id: nonprofitDocumentId },
     });
 
+    // Write new file to disk
+    const diskFileName = generateTimestampedFileName(file.name);
+    const filePath = await writeFileToDisk(
+      NONPROFIT_DOCUMENTS_DIR,
+      diskFileName,
+      Buffer.from(await file.arrayBuffer())
+    );
+
     let document;
     if (existingDocument) {
+      // Delete the old file from disk when replacing
+      if (existingDocument.filePath) {
+        await deleteFileSafely(existingDocument.filePath);
+      }
+
       document = await prisma.nonprofitDocument.update({
         where: { id: existingDocument.id },
         data: {
           fileName: file.name,
           fileType: file.type,
-          fileData: new Uint8Array(arrayBuffer),
+          filePath,
+          fileData: undefined,
         },
       });
     } else {
@@ -138,7 +133,7 @@ export async function POST(req: Request) {
         data: {
           fileName: file.name,
           fileType: file.type,
-          fileData: new Uint8Array(arrayBuffer),
+          filePath,
         },
       });
     }
@@ -179,29 +174,28 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Validate file type
-    const validTypes = [
-      'application/pdf',
-      'image/png',
-      'image/jpeg',
-      'image/jpg',
-    ];
-    if (!validTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: 'Invalid file type. Please upload a PDF or image file.' },
-        { status: 400 }
-      );
+    const validationError = validateDocumentFile(file);
+    if (validationError) {
+      return NextResponse.json({ error: validationError }, { status: 400 });
     }
 
-    // Validate file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: 'File size must be less than 5MB' },
-        { status: 400 }
-      );
-    }
+    // Fetch the current document so we can delete the old file from disk
+    const currentDoc = await prisma.nonprofitDocument.findUnique({
+      where: { id: user.nonprofit.nonprofitDocumentId },
+    });
 
-    const arrayBuffer = await file.arrayBuffer();
+    // Write new file to disk
+    const diskFileName = generateTimestampedFileName(file.name);
+    const filePath = await writeFileToDisk(
+      NONPROFIT_DOCUMENTS_DIR,
+      diskFileName,
+      Buffer.from(await file.arrayBuffer())
+    );
+
+    // Delete the old file from disk when replacing
+    if (currentDoc?.filePath) {
+      await deleteFileSafely(currentDoc.filePath);
+    }
 
     // Update document and reset approval status
     const updatedNonprofit = await prisma.nonprofit.update({
@@ -211,7 +205,8 @@ export async function PATCH(req: Request) {
           update: {
             fileName: file.name,
             fileType: file.type,
-            fileData: new Uint8Array(arrayBuffer),
+            filePath,
+            fileData: undefined,
             uploadedAt: new Date(),
           },
         },

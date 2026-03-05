@@ -26,7 +26,6 @@ interface NonprofitsTabProps {
     _nonprofitId: string
   ) => AdminNonprofitDocument | undefined;
   downloadDocument: (_doc: AdminNonprofitDocument) => void;
-  fetchDocuments: () => Promise<void>;
 }
 
 const NonprofitsTab = ({
@@ -36,7 +35,6 @@ const NonprofitsTab = ({
   handleApproval,
   getDocumentForNonprofit,
   downloadDocument,
-  fetchDocuments,
 }: NonprofitsTabProps) => {
   const pendingNonprofits = nonprofits.filter(
     (n) => n.nonprofitDocumentApproval === null && n.users.length > 0
@@ -53,9 +51,7 @@ const NonprofitsTab = ({
     if (!document) return <span className='text-slate-500'>No Document</span>;
     return (
       <button
-        onClick={() =>
-          document.fileData ? downloadDocument(document) : fetchDocuments()
-        }
+        onClick={() => downloadDocument(document)}
         className='flex items-center text-blue-600 transition-colors hover:text-blue-800'
       >
         <svg

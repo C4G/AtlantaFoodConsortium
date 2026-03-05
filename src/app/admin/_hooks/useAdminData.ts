@@ -47,9 +47,7 @@ const useAdminData = () => {
 
   const fetchDocuments = useCallback(async () => {
     try {
-      const response = await fetch(
-        '/api/nonprofit-documents?includeFileData=true'
-      );
+      const response = await fetch('/api/nonprofit-documents');
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.error || 'Failed to fetch documents');
@@ -74,19 +72,7 @@ const useAdminData = () => {
   };
 
   const downloadDocument = (doc: AdminNonprofitDocument) => {
-    if (!doc.fileData) return;
-    const binaryString = window.atob(doc.fileData as unknown as string);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    const blob = new Blob([bytes], { type: doc.fileType });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = doc.fileName;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    window.open(`/api/nonprofit-documents/download?id=${doc.id}`, '_blank');
   };
 
   const getSupplierName = (supplierId: string): string => {
