@@ -1,18 +1,23 @@
 'use client';
 
-interface DeletionConfirmationProps {
+interface ClaimConfirmationPopupProps {
   openPopup: boolean;
   closePopup: () => void;
-  foodId: string;
-  deleteProductRequest: (_prodId: string) => void;
+  productName: string;
+  onConfirm: () => void;
+  mode?: 'claim' | 'unclaim';
 }
-export const DeletionConfirmationPopup: React.FC<DeletionConfirmationProps> = ({
+
+export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
   openPopup,
   closePopup,
-  foodId,
-  deleteProductRequest,
+  productName,
+  onConfirm,
+  mode = 'claim',
 }) => {
   if (!openPopup) return null;
+
+  const isClaim = mode === 'claim';
   return (
     <div>
       <div
@@ -30,21 +35,37 @@ export const DeletionConfirmationPopup: React.FC<DeletionConfirmationProps> = ({
             <div className='relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg'>
               <div className='bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4'>
                 <div className='sm:flex sm:items-start'>
-                  <div className='mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left'>
+                  <div className='mt-3 w-full text-center sm:ml-4 sm:mt-0 sm:text-left'>
                     <h3
-                      className='text-center text-base font-bold text-red-400'
+                      className={`text-center text-base font-bold ${isClaim ? 'text-blue-600' : 'text-red-500'}`}
                       id='modal-title'
                     >
-                      Delete Pickup Request
+                      {isClaim ? 'Claim This Product' : 'Unclaim This Product'}
                     </h3>
                     <hr className='my-4 border-t border-gray-300' />
                     <div className='mt-2'>
                       <p className='text-center text-sm text-gray-500'>
-                        Are you sure you want to delete this pickup request?
-                        This action cannot be undone.
+                        {isClaim ? (
+                          <>
+                            Are you sure you want to claim{' '}
+                            <span className='font-semibold text-slate-700'>
+                              {productName}
+                            </span>
+                            ? You will be responsible for picking it up on the
+                            scheduled date.
+                          </>
+                        ) : (
+                          <>
+                            Are you sure you want to unclaim{' '}
+                            <span className='font-semibold text-slate-700'>
+                              {productName}
+                            </span>
+                            ? It will be released back to the available pool.
+                          </>
+                        )}
                       </p>
                     </div>
-                    <div className='flex justify-between'>
+                    <div className='mt-5 flex justify-between'>
                       <button
                         className='bg-gray-50 px-4 py-2'
                         onClick={closePopup}
@@ -52,13 +73,13 @@ export const DeletionConfirmationPopup: React.FC<DeletionConfirmationProps> = ({
                         Cancel
                       </button>
                       <button
-                        className='bg-red-400 px-4 py-2 text-white'
+                        className={`rounded-md px-4 py-2 text-white ${isClaim ? 'bg-blue-600 hover:bg-blue-700' : 'bg-red-500 hover:bg-red-600'}`}
                         onClick={() => {
-                          deleteProductRequest(foodId);
+                          onConfirm();
                           closePopup();
                         }}
                       >
-                        Delete
+                        {isClaim ? 'Confirm Claim' : 'Confirm Unclaim'}
                       </button>
                     </div>
                   </div>

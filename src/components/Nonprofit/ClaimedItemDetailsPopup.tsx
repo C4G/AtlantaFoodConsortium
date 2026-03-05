@@ -1,11 +1,12 @@
 'use client';
 
 import { PickupTimeframe } from '../../../types/types';
+import { ClaimedProduct } from '@/app/nonprofit/_types';
 
 interface ClaimedItemDetailsPopupProps {
   showDetailsPopup: boolean;
   closeDetailsPopup: () => void;
-  claimedItem: { [key: string]: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
+  claimedItem: ClaimedProduct | null;
 }
 
 const formatTimeframe = (timeframe: PickupTimeframe): string => {
@@ -24,7 +25,7 @@ const formatTimeframe = (timeframe: PickupTimeframe): string => {
 export const ClaimedItemDetailsPopup: React.FC<
   ClaimedItemDetailsPopupProps
 > = ({ showDetailsPopup, closeDetailsPopup, claimedItem }) => {
-  if (!showDetailsPopup) return null;
+  if (!showDetailsPopup || !claimedItem) return null;
   return (
     <div>
       <div
@@ -109,10 +110,10 @@ export const ClaimedItemDetailsPopup: React.FC<
                             {' '}
                             Pickup Timeframe(s):{' '}
                           </span>
-                          {claimedItem.pickupInfo.pickupTimeframe.map(
-                            (timeframe: PickupTimeframe) => (
+                          {claimedItem.pickupInfo.pickupTimeframe?.map(
+                            (timeframe) => (
                               <p key={timeframe}>
-                                {formatTimeframe(timeframe)}
+                                {formatTimeframe(timeframe as PickupTimeframe)}
                               </p>
                             )
                           )}
