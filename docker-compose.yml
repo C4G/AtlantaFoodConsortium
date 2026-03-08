@@ -53,6 +53,9 @@ services:
       - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
       - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
       - AUTH_TRUST_HOST=${AUTH_TRUST_HOST:-true}
+      - FILE_UPLOADS=${FILE_UPLOADS}
+    volumes:
+      - atlanta-food-consortium-uploads:/app/uploads
     command: node server.js
     depends_on:
       atlanta-food-consortium-db:
@@ -60,7 +63,7 @@ services:
       atlanta-food-consortium-migrations:
         condition: service_completed_successfully
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -70,3 +73,4 @@ services:
 
 volumes:
   atlanta-food-consortium-db-data:
+  atlanta-food-consortium-uploads:

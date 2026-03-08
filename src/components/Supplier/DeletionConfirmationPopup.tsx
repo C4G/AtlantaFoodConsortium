@@ -53,7 +53,10 @@ export const DeletionConfirmationPopup: React.FC<DeletionConfirmationProps> = ({
                       </button>
                       <button
                         className='bg-red-400 px-4 py-2 text-white'
-                        onClick={() => deleteProductRequest(foodId)}
+                        onClick={() => {
+                          deleteProductRequest(foodId);
+                          closePopup();
+                        }}
                       >
                         Delete
                       </button>

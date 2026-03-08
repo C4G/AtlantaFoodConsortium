@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Lighthouse Report',
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function LighthouseReportPage() {
   const lighthouseScores = {
-    performanceScore: 41,
+    performanceScore: 71,
     accessibilityScore: 100,
     bestPracticesScore: 100,
     seoScore: 100,
@@ -26,7 +27,7 @@ export default function LighthouseReportPage() {
       </h1>
       <p className='mb-8 text-gray-500'>
         Scores for <span className='font-medium'>localhost:3000</span> &mdash;
-        February 21, 2026
+        February 22, 2026
       </p>
       <div>
         <div className='mt-4 grid grid-cols-2 gap-4 rounded-lg p-4 sm:grid-cols-4'>
@@ -84,6 +85,16 @@ export default function LighthouseReportPage() {
           <span className='flex items-center gap-1'>
             <span className='font-bold text-red-600'>0–49</span> Poor
           </span>
+        </div>
+        <div className='mt-6'>
+          <Link
+            href='/team/2026/spring/lighthouse-report/report.html'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='inline-flex items-center gap-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700'
+          >
+            View Full Lighthouse Report
+          </Link>
         </div>
       </div>
     </div>
