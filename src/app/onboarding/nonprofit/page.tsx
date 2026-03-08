@@ -531,7 +531,7 @@ export default function NonprofitOnboardingPage() {
                     className={`w-full rounded-md border ${errors.document ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400`}
                   />
                   <p className='mt-1 text-sm text-slate-500'>
-                    Accepted formats: PDF, PNG, JPG, JPEG (Max 5MB)
+                    Accepted formats: PDF, PNG, JPG, JPEG (Max 50MB)
                   </p>
 
                   {errors.document && (
