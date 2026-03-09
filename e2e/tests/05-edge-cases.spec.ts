@@ -159,19 +159,17 @@ test.describe('A — Unapproved nonprofit sees disabled claim button', () => {
 
 // ─── B. Claiming an already-RESERVED product returns an error ────────────
 
-test.describe('B — Cannot double-claim a RESERVED product', () => {
+test.describe('B — Double-claim a RESERVED product is idempotent', () => {
   test.use({ storageState: 'e2e/.auth/nonprofit.json' });
 
-  test('PATCH /api/item-availability on already-RESERVED product returns error', async ({
+  test('PATCH /api/item-availability on already-RESERVED product returns 200 and status stays RESERVED', async ({
     request,
   }) => {
     const state = readState();
     const productId = state.postedProductId;
 
     // The product was claimed in test 03 — its status is now RESERVED.
-    // A second PATCH should still respond (the API doesn't explicitly guard
-    // double-claim with an error code but updates silently, or may return 200
-    // with the same status). We verify the API responds and the status stays RESERVED.
+    // A second PATCH should still respond. the API responds and the status stays RESERVED.
     if (!productId) {
       console.warn(
         'postedProductId not found in state — skipping double-claim check'
@@ -183,8 +181,11 @@ test.describe('B — Cannot double-claim a RESERVED product', () => {
       data: { productId },
     });
 
-    // Whether 200 or 4xx, the product must still be RESERVED in the DB
-    // (checked via the GET endpoint)
+    // The API has no guard against re-claiming
+    // RESERVED again and returns 200.
+    expect(res.status()).toBe(200);
+
+    // Confirm the product is still RESERVED in the DB
     const getRes = await request.get(`/api/item-availability?status=RESERVED`);
     const items = (await getRes.json()) as Array<{
       id: string;
@@ -194,9 +195,6 @@ test.describe('B — Cannot double-claim a RESERVED product', () => {
       (i) => i.id === productId && i.status === 'RESERVED'
     );
     expect(stillReserved).toBe(true);
-
-    // Suppress unused-variable warning — res is checked implicitly above
-    void res;
   });
 });
 
