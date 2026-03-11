@@ -18,9 +18,10 @@ import { expand } from 'dotenv-expand';
 import { config as dotenvConfig } from 'dotenv';
 import { E2E_PREFIX, EDGE_CASE_PRODUCT_NAME, readState } from '../shared-state';
 
-expand(
-  dotenvConfig({ path: path.resolve(process.cwd(), '.env'), override: false })
-);
+const envPath = path.resolve(process.cwd(), '.env');
+if (fs.existsSync(envPath)) {
+  expand(dotenvConfig({ path: envPath }));
+}
 
 test.describe('A — Unapproved nonprofit sees disabled claim button', () => {
   // We create a second nonprofit WITHOUT approval and use its session

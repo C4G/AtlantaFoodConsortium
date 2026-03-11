@@ -27,7 +27,10 @@ import {
   writeState,
 } from './shared-state';
 
-expand(dotenvConfig({ path: path.resolve(process.cwd(), '.env') }));
+const envPath = path.resolve(process.cwd(), '.env');
+if (fs.existsSync(envPath)) {
+  expand(dotenvConfig({ path: envPath }));
+}
 
 // ─── Cleanup helpers ────────────────────
 async function cleanupTestData(prisma: PrismaClient) {

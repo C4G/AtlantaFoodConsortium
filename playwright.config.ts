@@ -2,9 +2,12 @@ import { defineConfig, devices } from '@playwright/test';
 import { expand } from 'dotenv-expand';
 import { config as dotenvConfig } from 'dotenv';
 import * as path from 'path';
+import * as fs from 'fs';
 
-// loads env we can also switch to a .sh file but could expose envs
-expand(dotenvConfig({ path: path.resolve(process.cwd(), '.env') }));
+const envPath = path.resolve(process.cwd(), '.env');
+if (fs.existsSync(envPath)) {
+  expand(dotenvConfig({ path: envPath }));
+}
 
 /** Account injection for e2e test */
 export const AUTH_FILES = {
