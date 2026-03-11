@@ -7,6 +7,7 @@ export enum UserRole {
   STAFF = 'STAFF',
   SUPPLIER = 'SUPPLIER',
   NONPROFIT = 'NONPROFIT',
+  OTHER = 'OTHER',
 }
 
 export enum ItemType {
