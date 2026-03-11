@@ -5,17 +5,9 @@
  * and deletes the generated state/auth files so the workspace stays clean.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import './load-env';
 import { PrismaClient } from '@prisma/client';
-import { expand } from 'dotenv-expand';
-import { config as dotenvConfig } from 'dotenv';
 import { E2E_PREFIX, clearStateFile } from './shared-state';
-
-const envPath = path.resolve(process.cwd(), '.env');
-if (fs.existsSync(envPath)) {
-  expand(dotenvConfig({ path: envPath }));
-}
 
 async function globalTeardown() {
   const prisma = new PrismaClient();

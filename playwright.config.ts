@@ -1,13 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { expand } from 'dotenv-expand';
-import { config as dotenvConfig } from 'dotenv';
-import * as path from 'path';
-import * as fs from 'fs';
-
-const envPath = path.resolve(process.cwd(), '.env');
-if (fs.existsSync(envPath)) {
-  expand(dotenvConfig({ path: envPath }));
-}
+import './e2e/load-env';
 
 /** Account injection for e2e test */
 export const AUTH_FILES = {

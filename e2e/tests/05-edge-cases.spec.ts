@@ -10,18 +10,12 @@
  */
 
 import { test, expect } from '@playwright/test';
+import '../load-env';
 import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
-import { expand } from 'dotenv-expand';
-import { config as dotenvConfig } from 'dotenv';
 import { E2E_PREFIX, EDGE_CASE_PRODUCT_NAME, readState } from '../shared-state';
-
-const envPath = path.resolve(process.cwd(), '.env');
-if (fs.existsSync(envPath)) {
-  expand(dotenvConfig({ path: envPath }));
-}
 
 test.describe('A — Unapproved nonprofit sees disabled claim button', () => {
   // We create a second nonprofit WITHOUT approval and use its session

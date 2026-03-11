@@ -10,12 +10,11 @@
  *  6. Write the shared test-state.json with entity IDs for use in specs
  */
 
+import './load-env';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import { PrismaClient } from '@prisma/client';
-import { expand } from 'dotenv-expand';
-import { config as dotenvConfig } from 'dotenv';
 import {
   E2E_PREFIX,
   TEST_ADMIN_EMAIL,
@@ -26,11 +25,6 @@ import {
   EDGE_CASE_PRODUCT_NAME,
   writeState,
 } from './shared-state';
-
-const envPath = path.resolve(process.cwd(), '.env');
-if (fs.existsSync(envPath)) {
-  expand(dotenvConfig({ path: envPath }));
-}
 
 // ─── Cleanup helpers ────────────────────
 async function cleanupTestData(prisma: PrismaClient) {
