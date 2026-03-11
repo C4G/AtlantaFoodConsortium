@@ -11,7 +11,7 @@ COPY package.json package-lock.json* .npmrc* ./
 
 # Install dependencies
 RUN \
-  if [ -f package-lock.json ]; then npm ci; \
+  if [ -f package-lock.json ]; then npm ci --omit=dev; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
@@ -27,6 +27,8 @@ ARG NEXTAUTH_URL
 ENV NEXT_PUBLIC_VAPID_PUBLIC_KEY=$NEXT_PUBLIC_VAPID_PUBLIC_KEY
 ENV NEXTAUTH_URL=$NEXTAUTH_URL
 ENV NEXT_TELEMETRY_DISABLED=1
+
+ENV NODE_OPTIONS=--max-old-space-size=4096
 
 # Copy package files
 COPY package.json package-lock.json* .npmrc* ./
