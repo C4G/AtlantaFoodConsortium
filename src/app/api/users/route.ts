@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import cuid from 'cuid';
-import type { Prisma } from '@prisma/client';
+import { type Prisma, UserRole } from '@prisma/client';
 import {
   NONPROFIT_DOCUMENTS_DIR,
   generatePrefixedFileName,
@@ -136,7 +136,8 @@ export async function PATCH(req: Request) {
       userId === session.user.id &&
       userData.role !== undefined &&
       userData.role !== targetUser.role &&
-      targetUser.role !== null
+      targetUser.role !== null &&
+      targetUser.role !== UserRole.OTHER
     ) {
       return NextResponse.json(
         { error: 'You cannot change your own role' },
@@ -148,7 +149,7 @@ export async function PATCH(req: Request) {
     if (
       userId === session.user.id &&
       userData.role !== undefined &&
-      targetUser.role === null &&
+      (targetUser.role === null || targetUser.role === UserRole.OTHER) &&
       !ALLOWED_ONBOARDING_ROLES.includes(userData.role)
     ) {
       return NextResponse.json(
