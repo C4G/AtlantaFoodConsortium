@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { UserMenu } from './user-menu';
+import { ThemeSwitcher } from './theme-switcher';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { UserRole } from '../../../types/types';
@@ -101,7 +102,10 @@ export function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <UserMenu />
+      <div className='flex items-center gap-4'>
+        <ThemeSwitcher />
+        <UserMenu />
+      </div>
     </header>
   );
 }
