@@ -2,14 +2,8 @@ name: Build & Deploy Containers
 
 on:
   push:
-    branches: ['main']
+    branches: ['staging']
   workflow_dispatch:
-    inputs:
-      productionBuild:
-        description: 'Enable production build'
-        type: boolean
-        required: false
-        default: false
 
 jobs:
   production:
@@ -39,8 +33,7 @@ jobs:
           tags: |
             type=ref,event=branch
             type=sha,format=long,prefix=
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=raw,value=stable,enable=${{ inputs.productionBuild == true }}
+            type=raw,value=latest
 
       - name: Build server
         uses: docker/build-push-action@v6
@@ -65,8 +58,7 @@ jobs:
           tags: |
             type=ref,event=branch
             type=sha,format=long,prefix=
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=raw,value=stable,enable=${{ inputs.productionBuild == true }}
+            type=raw,value=latest
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -96,3 +88,6 @@ jobs:
           min-versions-to-keep: 10
           delete-only-untagged-versions: 'false'
 
+      - name: Deploy to Coolify
+        run: |
+          curl --request GET '${{ secrets.STAGING_DEPLOY_URL }}' --header 'Authorization: Bearer ${{ secrets.DEPLOY_KEY }}'
