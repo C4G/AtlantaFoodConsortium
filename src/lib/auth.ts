@@ -5,6 +5,7 @@ import { resend } from './resend';
 import EmailProvider from 'next-auth/providers/nodemailer';
 import Google from 'next-auth/providers/google';
 import type { User } from '@prisma/client';
+import { UserRole } from '../../types/types';
 
 export const authOptions: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
@@ -22,6 +23,14 @@ export const authOptions: NextAuthConfig = {
       session.user.role = (user as User).role;
       session.user.id = user.id;
       return session;
+    },
+  },
+  events: {
+    async createUser({ user }) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { role: UserRole.OTHER },
+      });
     },
   },
 };

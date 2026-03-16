@@ -13,8 +13,9 @@ import {
 import { EditProfileDialog } from './edit-profile-dialog';
 import { ThemeSwitcher } from './theme-switcher';
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
-import { LogOut, UserCog } from 'lucide-react';
+import { LogOut, UserCog, UserCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export function UserMenu() {
   const { data: session } = useSession();
@@ -64,6 +65,17 @@ export function UserMenu() {
             <UserCog className='h-4 w-4' />
             <span className='grow'>Edit Profile</span>
           </DropdownMenuItem>
+          {session.user?.role === 'OTHER' && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild className='cursor-pointer'>
+                <Link href='/onboarding'>
+                  <UserCheck className='h-4 w-4' />
+                  <span className='grow'>Complete Profile</span>
+                </Link>
+              </DropdownMenuItem>
+            </>
+          )}
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <ThemeSwitcher />
