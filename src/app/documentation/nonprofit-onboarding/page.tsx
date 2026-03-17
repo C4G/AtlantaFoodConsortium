@@ -1,16 +1,16 @@
 export default function NonprofitOnboardingPage() {
   return (
     <div className='mx-auto max-w-4xl px-4 py-8'>
-      <h1 className='mb-8 text-4xl font-bold text-gray-900'>
+      <h1 className='mb-8 text-4xl font-bold text-foreground'>
         Nonprofit Onboarding Guide
       </h1>
 
       <div className='space-y-8'>
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             Step 1: Sign In with Google
           </h2>
-          <ol className='list-inside list-decimal space-y-2 text-gray-700'>
+          <ol className='list-inside list-decimal space-y-2 text-foreground/80'>
             <li>Visit the MAFC website</li>
             <li>
               Click the &quot;Sign In&quot; button in the top right corner
@@ -24,14 +24,14 @@ export default function NonprofitOnboardingPage() {
         </section>
 
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             Step 2: Complete Onboarding
           </h2>
-          <p className='leading-relaxed text-gray-700'>
+          <p className='leading-relaxed text-foreground/80'>
             After signing in, you&#39;ll be guided through the registration
             process:
           </p>
-          <ol className='list-inside list-decimal space-y-2 text-gray-700'>
+          <ol className='list-inside list-decimal space-y-2 text-foreground/80'>
             <li>
               Select &quot;Nonprofit&quot; as your organization type when
               prompted
@@ -44,48 +44,48 @@ export default function NonprofitOnboardingPage() {
         </section>
 
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             Step 3: Fill in Organization Details
           </h2>
-          <p className='leading-relaxed text-gray-700'>
+          <p className='leading-relaxed text-foreground/80'>
             Provide complete and accurate information about your nonprofit:
           </p>
-          <ul className='list-inside list-disc space-y-2 text-gray-700'>
+          <ul className='list-inside list-disc space-y-2 text-foreground/80'>
             <li>
-              <strong className='text-gray-900'>Organization Name:</strong> Your
-              official nonprofit name
+              <strong className='text-foreground'>Organization Name:</strong>{' '}
+              Your official nonprofit name
             </li>
             <li>
-              <strong className='text-gray-900'>Address:</strong> Main address
+              <strong className='text-foreground'>Address:</strong> Main address
               and service locations
             </li>
             <li>
-              <strong className='text-gray-900'>Contact Information:</strong>{' '}
+              <strong className='text-foreground'>Contact Information:</strong>{' '}
               Phone, email, and primary contact person
             </li>
             <li>
-              <strong className='text-gray-900'>Organization Type:</strong> Food
-              bank, shelter, community center, etc.
+              <strong className='text-foreground'>Organization Type:</strong>{' '}
+              Food bank, shelter, community center, etc.
             </li>
             <li>
-              <strong className='text-gray-900'>Service Area:</strong>{' '}
+              <strong className='text-foreground'>Service Area:</strong>{' '}
               Communities and neighborhoods you serve
             </li>
             <li>
-              <strong className='text-gray-900'>Capacity:</strong> Approximate
+              <strong className='text-foreground'>Capacity:</strong> Approximate
               number of people served daily/weekly
             </li>
           </ul>
         </section>
 
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             Step 4: Upload Approval Document
           </h2>
-          <p className='leading-relaxed text-gray-700'>
+          <p className='leading-relaxed text-foreground/80'>
             The most important step is providing proof of your nonprofit status:
           </p>
-          <ol className='list-inside list-decimal space-y-2 text-gray-700'>
+          <ol className='list-inside list-decimal space-y-2 text-foreground/80'>
             <li>
               Locate your IRS 501(c)(3) determination letter or equivalent
               certification
@@ -98,14 +98,14 @@ export default function NonprofitOnboardingPage() {
         </section>
 
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             Step 5: Wait for Admin Approval
           </h2>
           <div className='space-y-3'>
-            <h3 className='text-lg font-medium text-gray-900'>
+            <h3 className='text-lg font-medium text-foreground'>
               What Happens Next
             </h3>
-            <ul className='list-inside list-disc space-y-2 text-gray-700'>
+            <ul className='list-inside list-disc space-y-2 text-foreground/80'>
               <li>Administrators review your submitted documents</li>
               <li>They verify your nonprofit status and legitimacy</li>
               <li>You&#39;ll receive an email notification of the decision</li>
@@ -119,18 +119,18 @@ export default function NonprofitOnboardingPage() {
         </section>
 
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             Step 6: Browse and Claim Available Products
           </h2>
-          <p className='leading-relaxed text-gray-700'>
+          <p className='leading-relaxed text-foreground/80'>
             Once approved, you can start accessing food donations:
           </p>
-          <ol className='list-inside list-decimal space-y-2 text-gray-700'>
+          <ol className='list-inside list-decimal space-y-2 text-foreground/80'>
             <li>Log in to your approved account</li>
             <li>Navigate to the &quot;Browse Products&quot; section</li>
             <li>
               Use filters to find products suitable for your organization:
-              <ul className='ml-6 mt-2 list-inside list-disc space-y-1 text-gray-700'>
+              <ul className='ml-6 mt-2 list-inside list-disc space-y-1 text-foreground/80'>
                 <li>Product type (protein, produce, shelf-stable)</li>
                 <li>Location (near your service areas)</li>
                 <li>Pickup timeframe (matches your schedule)</li>
@@ -143,16 +143,16 @@ export default function NonprofitOnboardingPage() {
         </section>
 
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             Step 7: Complete the Claim Process
           </h2>
 
           <div className='space-y-6'>
             <div className='space-y-3'>
-              <h3 className='text-lg font-medium text-gray-900'>
+              <h3 className='text-lg font-medium text-foreground'>
                 After Claiming
               </h3>
-              <ol className='list-inside list-decimal space-y-2 text-gray-700'>
+              <ol className='list-inside list-decimal space-y-2 text-foreground/80'>
                 <li>The supplier will review and confirm your claim</li>
                 <li>You&#39;ll receive a notification once confirmed</li>
                 <li>Contact the supplier to arrange pickup details</li>

@@ -1,14 +1,14 @@
 export default function SuppliersPage() {
   return (
     <div className='mx-auto max-w-4xl px-4 py-8'>
-      <h1 className='mb-8 text-4xl font-bold text-gray-900'>For Suppliers</h1>
+      <h1 className='mb-8 text-4xl font-bold text-foreground'>For Suppliers</h1>
 
       <div className='space-y-8'>
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             How to Register
           </h2>
-          <ol className='list-inside list-decimal space-y-2 text-gray-700'>
+          <ol className='list-inside list-decimal space-y-2 text-foreground/80'>
             <li>
               Visit the MAFC website and click &quot;Sign In&quot; in the top
               right corner
@@ -26,14 +26,14 @@ export default function SuppliersPage() {
         </section>
 
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             Posting a Product
           </h2>
-          <p className='leading-relaxed text-gray-700'>
+          <p className='leading-relaxed text-foreground/80'>
             Once registered, you can start posting food products available for
             donation.
           </p>
-          <ul className='list-inside list-disc space-y-2 text-gray-700'>
+          <ul className='list-inside list-disc space-y-2 text-foreground/80'>
             <li>
               Include detailed product information (type, quantity, measurement
               unit)
@@ -46,51 +46,51 @@ export default function SuppliersPage() {
         </section>
 
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             Understanding Pickup Timeframes
           </h2>
-          <p className='leading-relaxed text-gray-700'>
+          <p className='leading-relaxed text-foreground/80'>
             Pickup timeframes help nonprofits plan their operations and ensure
             food safety.
           </p>
-          <ul className='list-inside list-disc space-y-2 text-gray-700'>
+          <ul className='list-inside list-disc space-y-2 text-foreground/80'>
             <li>
-              <strong className='text-gray-900'>Same Day:</strong> Product must
-              be picked up on the day it&#39;s posted
+              <strong className='text-foreground'>Same Day:</strong> Product
+              must be picked up on the day it&#39;s posted
             </li>
             <li>
-              <strong className='text-gray-900'>Next Day:</strong> Available for
-              pickup the following business day
+              <strong className='text-foreground'>Next Day:</strong> Available
+              for pickup the following business day
             </li>
             <li>
-              <strong className='text-gray-900'>Within 3 Days:</strong> Flexible
-              pickup within 3 business days
+              <strong className='text-foreground'>Within 3 Days:</strong>{' '}
+              Flexible pickup within 3 business days
             </li>
             <li>
-              <strong className='text-gray-900'>Within 1 Week:</strong>{' '}
+              <strong className='text-foreground'>Within 1 Week:</strong>{' '}
               Available for pickup within 7 days
             </li>
           </ul>
         </section>
 
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             Viewing Claim Status
           </h2>
-          <p className='leading-relaxed text-gray-700'>
+          <p className='leading-relaxed text-foreground/80'>
             Track the status of your posted products and manage claims.
           </p>
-          <ul className='list-inside list-disc space-y-2 text-gray-700'>
+          <ul className='list-inside list-disc space-y-2 text-foreground/80'>
             <li>
-              <strong className='text-gray-900'>Available:</strong> Product is
+              <strong className='text-foreground'>Available:</strong> Product is
               posted and waiting for claims
             </li>
             <li>
-              <strong className='text-gray-900'>Reserved:</strong> A nonprofit
+              <strong className='text-foreground'>Reserved:</strong> A nonprofit
               has claimed the product
             </li>
             <li>
-              <strong className='text-gray-900'>Pending:</strong> Claim is
+              <strong className='text-foreground'>Pending:</strong> Claim is
               pending your confirmation
             </li>
             <li>Receive notifications when products are claimed</li>
@@ -99,10 +99,10 @@ export default function SuppliersPage() {
         </section>
 
         <section className='space-y-4'>
-          <h2 className='border-b border-gray-200 pb-2 text-2xl font-bold text-gray-800'>
+          <h2 className='border-b border-border pb-2 text-2xl font-bold text-foreground'>
             Managing Donations
           </h2>
-          <ol className='list-inside list-decimal space-y-2 text-gray-700'>
+          <ol className='list-inside list-decimal space-y-2 text-foreground/80'>
             <li>Review claim requests and verify nonprofit legitimacy</li>
             <li>Confirm pickup arrangements with the claiming organization</li>
             <li>Prepare products for pickup at the agreed time</li>
