@@ -12,6 +12,7 @@ const tabs = [
   { name: 'Project Description', href: `${basePath}/project-description` },
   { name: 'Project Goal', href: `${basePath}/project-goal` },
   { name: 'Lighthouse Report', href: `${basePath}/lighthouse-report` },
+  { name: 'Project Peer Review', href: `${basePath}/project-peer-review` },
   // { name: 'Presentation Slides', href: `${basePath}/presentation-slides` },
   // { name: 'Weekly Updates', href: `${basePath}/weekly-updates` },
   // { name: 'Project Peer Evaluations', href: `${basePath}/peer-evaluations` },
