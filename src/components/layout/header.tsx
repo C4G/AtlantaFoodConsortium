@@ -93,6 +93,10 @@ export function Header() {
               <Link href='/discussion'>Discussion</Link>
             </DropdownMenuItem>
 
+            <DropdownMenuItem asChild>
+              <Link href='/documentation'>Documentation</Link>
+            </DropdownMenuItem>
+
             {/* Prompt OTHER users to complete their profile */}
             {isOther && (
               <DropdownMenuItem asChild>
