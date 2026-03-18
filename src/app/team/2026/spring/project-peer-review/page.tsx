@@ -93,6 +93,24 @@ export default function ProjectPeerReviewPage() {
         the <b>Overview</b> tab and confirm the charts and metrics have updated
         to reflect your new claim.
       </p>
+
+      <div className='mt-12 rounded-lg border border-indigo-200 bg-indigo-50 p-6 dark:border-indigo-800 dark:bg-indigo-950'>
+        <h3 className='text-xl font-semibold text-indigo-900 dark:text-indigo-100'>
+          Submit Your Feedback
+        </h3>
+        <p className='mt-2 text-lg text-indigo-800 dark:text-indigo-200'>
+          Once you have completed all tasks, please fill out the peer review
+          survey to share your feedback.
+        </p>
+        <a
+          href='https://docs.google.com/forms/d/e/1FAIpQLSdnaGFdjLVoEN0a_Uk0fWQhe-kKHBM-zd7L3gQDRRCyKvgBTA/viewform?usp=send_form'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='mt-4 inline-block rounded-md bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700'
+        >
+          Take the Survey →
+        </a>
+      </div>
     </div>
   );
 }
