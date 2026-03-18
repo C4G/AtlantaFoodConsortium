@@ -18,6 +18,24 @@ export default function ProjectPeerReviewPage() {
         site&apos;s login page so no credentials are needed.
       </p>
 
+      <div className='mt-6 rounded-lg border border-indigo-200 bg-indigo-50 p-6 dark:border-indigo-800 dark:bg-indigo-950'>
+        <h3 className='text-xl font-semibold text-indigo-900 dark:text-indigo-100'>
+          Open the Survey First
+        </h3>
+        <p className='mt-2 text-lg text-indigo-800 dark:text-indigo-200'>
+          Use the peer review survey before starting so you can fill it out as
+          you complete each task.
+        </p>
+        <a
+          href='https://docs.google.com/forms/d/e/1FAIpQLSdnaGFdjLVoEN0a_Uk0fWQhe-kKHBM-zd7L3gQDRRCyKvgBTA/viewform?usp=send_form'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='mt-4 inline-block rounded-md bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700'
+        >
+          Open Survey →
+        </a>
+      </div>
+
       <h3 className='mt-10 text-2xl font-semibold'>
         Task 1: Discussions/Announcements with Other Type
       </h3>
