@@ -1,4 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import * as crypto from 'crypto';
 
@@ -33,13 +35,14 @@ export async function GET(request: NextRequest) {
     data: { sessionToken, userId: user.id, expires },
   });
 
-  const response = NextResponse.redirect(new URL('/', request.url));
-  response.cookies.set('authjs.session-token', sessionToken, {
+  const cookieStore = await cookies();
+  cookieStore.set('__Secure-authjs.session-token', sessionToken, {
     httpOnly: true,
     sameSite: 'lax',
     path: '/',
     expires,
+    secure: true,
   });
 
-  return response;
+  redirect('/');
 }
