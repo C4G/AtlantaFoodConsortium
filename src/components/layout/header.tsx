@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { UserMenu } from './user-menu';
+import { ThemeSwitcher } from './theme-switcher';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { UserRole } from '../../../types/types';
@@ -92,6 +93,10 @@ export function Header() {
               <Link href='/discussion'>Discussion</Link>
             </DropdownMenuItem>
 
+            <DropdownMenuItem asChild>
+              <Link href='/documentation'>Documentation</Link>
+            </DropdownMenuItem>
+
             {/* Prompt OTHER users to complete their profile */}
             {isOther && (
               <DropdownMenuItem asChild>
@@ -101,7 +106,10 @@ export function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <UserMenu />
+      <div className='flex items-center gap-4'>
+        <ThemeSwitcher />
+        <UserMenu />
+      </div>
     </header>
   );
 }
