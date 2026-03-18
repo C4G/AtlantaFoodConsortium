@@ -36,13 +36,18 @@ export async function GET(request: NextRequest) {
   });
 
   const cookieStore = await cookies();
-  cookieStore.set('__Secure-authjs.session-token', sessionToken, {
-    httpOnly: true,
-    sameSite: 'lax',
-    path: '/',
-    expires,
-    secure: true,
-  });
+  const isSecure = process.env.NODE_ENV === 'production';
+  cookieStore.set(
+    isSecure ? '__Secure-authjs.session-token' : 'authjs.session-token',
+    sessionToken,
+    {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      expires,
+      secure: isSecure,
+    }
+  );
 
   redirect('/');
 }
