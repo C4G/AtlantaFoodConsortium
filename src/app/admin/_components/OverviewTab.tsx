@@ -13,6 +13,22 @@ interface OverviewTabProps {
 const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
   if (loading || !analyticsData) return null;
 
+  const hasProductDistribution = Object.values(
+    analyticsData.distribution.distribution
+  ).some((v) => v > 0);
+  const hasTrends = analyticsData.trends.trends.length > 0;
+  const hasSupplierActivity =
+    analyticsData.supplierActivity.activity.length > 0;
+  const hasNonprofitEngagement =
+    analyticsData.nonprofitEngagement.engagement.length > 0;
+  const hasOrgTypes = Object.values(
+    analyticsData.nonprofitEngagement.orgTypeBreakdown
+  ).some((v) => v > 0);
+  const hasCadenceData = Object.values(
+    analyticsData.supplierActivity.cadenceBreakdown
+  ).some((v) => v > 0);
+  const hasClaimsOverTime = analyticsData.claimsOverTime.timeline.length > 0;
+
   return (
     <div className='my-8 space-y-6'>
       {/* System Health KPIs */}
@@ -110,175 +126,193 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
       {/* Charts Grid */}
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         {/* Product Distribution Donut Chart */}
-        <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
-          <DonutChart
-            title='Product Type Distribution'
-            info={ADMIN_CHART_INFO.productTypeDistribution}
-            data={[
-              {
-                name: 'Protein',
-                value: analyticsData.distribution.distribution.protein,
-              },
-              {
-                name: 'Produce',
-                value: analyticsData.distribution.distribution.produce,
-              },
-              {
-                name: 'Shelf Stable',
-                value: analyticsData.distribution.distribution.shelfStable,
-              },
-              {
-                name: 'Individual Serving',
-                value:
-                  analyticsData.distribution.distribution
-                    .shelfStableIndividualServing,
-              },
-              {
-                name: 'Prepared Food',
-                value:
-                  analyticsData.distribution.distribution.alreadyPreparedFood,
-              },
-              {
-                name: 'Other',
-                value: analyticsData.distribution.distribution.other,
-              },
-            ].filter((item) => item.value > 0)}
-          />
-        </div>
+        {hasProductDistribution && (
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+            <DonutChart
+              title='Product Type Distribution'
+              info={ADMIN_CHART_INFO.productTypeDistribution}
+              data={[
+                {
+                  name: 'Protein',
+                  value: analyticsData.distribution.distribution.protein,
+                },
+                {
+                  name: 'Produce',
+                  value: analyticsData.distribution.distribution.produce,
+                },
+                {
+                  name: 'Shelf Stable',
+                  value: analyticsData.distribution.distribution.shelfStable,
+                },
+                {
+                  name: 'Individual Serving',
+                  value:
+                    analyticsData.distribution.distribution
+                      .shelfStableIndividualServing,
+                },
+                {
+                  name: 'Prepared Food',
+                  value:
+                    analyticsData.distribution.distribution.alreadyPreparedFood,
+                },
+                {
+                  name: 'Other',
+                  value: analyticsData.distribution.distribution.other,
+                },
+              ].filter((item) => item.value > 0)}
+            />
+          </div>
+        )}
 
         {/* Product Status Trends Line Chart */}
-        <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
-          <LineChartComponent
-            title='Product Status Trends'
-            info={ADMIN_CHART_INFO.productStatusTrends}
-            data={analyticsData.trends.trends}
-            xAxisKey='date'
-            lines={[
-              { dataKey: 'AVAILABLE', stroke: '#10b981', name: 'Available' },
-              { dataKey: 'RESERVED', stroke: '#3b82f6', name: 'Reserved' },
-              { dataKey: 'PENDING', stroke: '#f59e0b', name: 'Pending' },
-            ]}
-          />
-        </div>
+        {hasTrends && (
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+            <LineChartComponent
+              title='Product Status Trends'
+              info={ADMIN_CHART_INFO.productStatusTrends}
+              data={analyticsData.trends.trends}
+              xAxisKey='date'
+              lines={[
+                { dataKey: 'AVAILABLE', stroke: '#10b981', name: 'Available' },
+                { dataKey: 'RESERVED', stroke: '#3b82f6', name: 'Reserved' },
+                { dataKey: 'PENDING', stroke: '#f59e0b', name: 'Pending' },
+              ]}
+            />
+          </div>
+        )}
 
         {/* Supplier Activity Bar Chart */}
-        <div className='flex h-[400px] flex-col rounded-lg border border-border bg-card p-3 shadow-md sm:h-[550px] sm:p-6'>
-          <BarChartComponent
-            title='Top Suppliers by Products'
-            info={ADMIN_CHART_INFO.topSuppliers}
-            data={analyticsData.supplierActivity.activity}
-            xAxisKey='name'
-            layout='vertical'
-            bars={[
-              {
-                dataKey: 'productCount',
-                fill: '#8b5cf6',
-                name: 'Products Posted',
-              },
-            ]}
-          />
-        </div>
+        {hasSupplierActivity && (
+          <div className='flex h-[400px] flex-col rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:h-[550px] sm:p-6'>
+            <BarChartComponent
+              title='Top Suppliers by Products'
+              info={ADMIN_CHART_INFO.topSuppliers}
+              data={analyticsData.supplierActivity.activity}
+              xAxisKey='name'
+              layout='vertical'
+              bars={[
+                {
+                  dataKey: 'productCount',
+                  fill: '#8b5cf6',
+                  name: 'Products Posted',
+                },
+              ]}
+            />
+          </div>
+        )}
 
         {/* Nonprofit Engagement Bar Chart */}
-        <div className='flex h-[400px] flex-col rounded-lg border border-border bg-card p-3 shadow-md sm:h-[550px] sm:p-6'>
-          <BarChartComponent
-            title='Top Nonprofits by Claims'
-            info={ADMIN_CHART_INFO.topNonprofits}
-            data={analyticsData.nonprofitEngagement.engagement}
-            xAxisKey='name'
-            layout='vertical'
-            bars={[
-              {
-                dataKey: 'claimedCount',
-                fill: '#ec4899',
-                name: 'Products Claimed',
-              },
-            ]}
-          />
-        </div>
+        {hasNonprofitEngagement && (
+          <div className='flex h-[400px] flex-col rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:h-[550px] sm:p-6'>
+            <BarChartComponent
+              title='Top Nonprofits by Claims'
+              info={ADMIN_CHART_INFO.topNonprofits}
+              data={analyticsData.nonprofitEngagement.engagement}
+              xAxisKey='name'
+              layout='vertical'
+              bars={[
+                {
+                  dataKey: 'claimedCount',
+                  fill: '#ec4899',
+                  name: 'Products Claimed',
+                },
+              ]}
+            />
+          </div>
+        )}
 
         {/* Organization Type Breakdown */}
-        <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
-          <DonutChart
-            title='Nonprofit Organization Types'
-            info={ADMIN_CHART_INFO.nonprofitOrgTypes}
-            data={[
-              {
-                name: 'Food Bank',
-                value:
-                  analyticsData.nonprofitEngagement.orgTypeBreakdown.FOOD_BANK,
-              },
-              {
-                name: 'Pantry',
-                value:
-                  analyticsData.nonprofitEngagement.orgTypeBreakdown.PANTRY,
-              },
-              {
-                name: 'Student Pantry',
-                value:
-                  analyticsData.nonprofitEngagement.orgTypeBreakdown
-                    .STUDENT_PANTRY,
-              },
-              {
-                name: 'Food Rescue',
-                value:
-                  analyticsData.nonprofitEngagement.orgTypeBreakdown
-                    .FOOD_RESCUE,
-              },
-              {
-                name: 'Agriculture',
-                value:
-                  analyticsData.nonprofitEngagement.orgTypeBreakdown
-                    .AGRICULTURE,
-              },
-              {
-                name: 'Other',
-                value: analyticsData.nonprofitEngagement.orgTypeBreakdown.OTHER,
-              },
-            ].filter((item) => item.value > 0)}
-          />
-        </div>
+        {hasOrgTypes && (
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+            <DonutChart
+              title='Nonprofit Organization Types'
+              info={ADMIN_CHART_INFO.nonprofitOrgTypes}
+              data={[
+                {
+                  name: 'Food Bank',
+                  value:
+                    analyticsData.nonprofitEngagement.orgTypeBreakdown
+                      .FOOD_BANK,
+                },
+                {
+                  name: 'Pantry',
+                  value:
+                    analyticsData.nonprofitEngagement.orgTypeBreakdown.PANTRY,
+                },
+                {
+                  name: 'Student Pantry',
+                  value:
+                    analyticsData.nonprofitEngagement.orgTypeBreakdown
+                      .STUDENT_PANTRY,
+                },
+                {
+                  name: 'Food Rescue',
+                  value:
+                    analyticsData.nonprofitEngagement.orgTypeBreakdown
+                      .FOOD_RESCUE,
+                },
+                {
+                  name: 'Agriculture',
+                  value:
+                    analyticsData.nonprofitEngagement.orgTypeBreakdown
+                      .AGRICULTURE,
+                },
+                {
+                  name: 'Other',
+                  value:
+                    analyticsData.nonprofitEngagement.orgTypeBreakdown.OTHER,
+                },
+              ].filter((item) => item.value > 0)}
+            />
+          </div>
+        )}
 
         {/* Supplier Cadence Breakdown */}
-        <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
-          <DonutChart
-            title='Supplier Posting Cadence'
-            info={ADMIN_CHART_INFO.supplierCadence}
-            data={[
-              {
-                name: 'Daily',
-                value: analyticsData.supplierActivity.cadenceBreakdown.DAILY,
-              },
-              {
-                name: 'Weekly',
-                value: analyticsData.supplierActivity.cadenceBreakdown.WEEKLY,
-              },
-              {
-                name: 'Biweekly',
-                value: analyticsData.supplierActivity.cadenceBreakdown.BIWEEKLY,
-              },
-              {
-                name: 'Monthly',
-                value: analyticsData.supplierActivity.cadenceBreakdown.MONTHLY,
-              },
-              {
-                name: 'TBD',
-                value: analyticsData.supplierActivity.cadenceBreakdown.TBD,
-              },
-            ].filter((item) => item.value > 0)}
-          />
-        </div>
+        {hasCadenceData && (
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+            <DonutChart
+              title='Supplier Posting Cadence'
+              info={ADMIN_CHART_INFO.supplierCadence}
+              data={[
+                {
+                  name: 'Daily',
+                  value: analyticsData.supplierActivity.cadenceBreakdown.DAILY,
+                },
+                {
+                  name: 'Weekly',
+                  value: analyticsData.supplierActivity.cadenceBreakdown.WEEKLY,
+                },
+                {
+                  name: 'Biweekly',
+                  value:
+                    analyticsData.supplierActivity.cadenceBreakdown.BIWEEKLY,
+                },
+                {
+                  name: 'Monthly',
+                  value:
+                    analyticsData.supplierActivity.cadenceBreakdown.MONTHLY,
+                },
+                {
+                  name: 'TBD',
+                  value: analyticsData.supplierActivity.cadenceBreakdown.TBD,
+                },
+              ].filter((item) => item.value > 0)}
+            />
+          </div>
+        )}
 
         {/* Claims Over Time Line Chart */}
-        <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6 lg:col-span-2'>
-          <LineChartComponent
-            title='Claims Over Time'
-            info={ADMIN_CHART_INFO.claimsOverTime}
-            data={analyticsData.claimsOverTime.timeline}
-            xAxisKey='month'
-            lines={[{ dataKey: 'count', stroke: '#ec4899', name: 'Claims' }]}
-          />
-        </div>
+        {hasClaimsOverTime && (
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6 lg:col-span-2'>
+            <LineChartComponent
+              title='Claims Over Time'
+              info={ADMIN_CHART_INFO.claimsOverTime}
+              data={analyticsData.claimsOverTime.timeline}
+              xAxisKey='month'
+              lines={[{ dataKey: 'count', stroke: '#ec4899', name: 'Claims' }]}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
