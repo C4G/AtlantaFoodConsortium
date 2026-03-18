@@ -95,4 +95,4 @@ jobs:
           host: ${{ secrets.STAGING_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_KEY }}
-          script: /atlanta-food-consortium-staging/update.sh
+          script: sudo /atlanta-food-consortium-staging/update.sh
