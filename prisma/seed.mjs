@@ -5,6 +5,7 @@ import { seedProductRequests, seedProductInterests } from './seed/products.mjs';
 import { seedSupplierUsers, seedNonprofitUsers } from './seed/mockUsers.mjs';
 import { seedAnnouncements } from './seed/announcements.mjs';
 import { seedDiscussions } from './seed/discussions.mjs';
+import { seedTestAccounts } from './seed/testAccounts.mjs';
 
 const prisma = new PrismaClient();
 
@@ -31,6 +32,9 @@ const main = async () => {
   const allUsers = await prisma.user.findMany({ where: { role: { in: ['SUPPLIER', 'NONPROFIT'] } } });
   await seedAnnouncements(prisma, adminUser);
   await seedDiscussions(prisma, allUsers);
+
+  console.log('----- Seeding hardcoded test accounts -----');
+  await seedTestAccounts(prisma);
 
   console.log('----- Seed process completed successfully! -----');
 }
