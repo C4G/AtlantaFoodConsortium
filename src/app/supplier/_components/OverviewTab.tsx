@@ -20,6 +20,17 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
     );
   }
 
+  const hasStatusData = Object.values(metricsData.statusBreakdown).some(
+    (v) => v > 0
+  );
+  const hasClaimSpeedData = Object.values(metricsData.claimSpeeds).some(
+    (v) => v > 0
+  );
+  const hasTypeData = Object.values(metricsData.typeBreakdown).some(
+    (v) => v > 0
+  );
+  const hasTimeline = metricsData.monthlyTimeline.length > 0;
+
   return (
     <div className='space-y-6'>
       {/* KPI Cards */}
@@ -120,86 +131,103 @@ const OverviewTab = ({ metricsData, loadingMetrics }: OverviewTabProps) => {
       {/* Charts Grid */}
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         {/* Product Status Breakdown */}
-        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
-          <DonutChart
-            title='Product Status Breakdown'
-            info={SUPPLIER_CHART_INFO.productStatusBreakdown}
-            data={[
-              {
-                name: 'Available',
-                value: metricsData.statusBreakdown.AVAILABLE,
-              },
-              { name: 'Reserved', value: metricsData.statusBreakdown.RESERVED },
-              { name: 'Pending', value: metricsData.statusBreakdown.PENDING },
-            ].filter((item) => item.value > 0)}
-            colors={['#10b981', '#3b82f6', '#f59e0b']}
-          />
-        </div>
+        {hasStatusData && (
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+            <DonutChart
+              title='Product Status Breakdown'
+              info={SUPPLIER_CHART_INFO.productStatusBreakdown}
+              data={[
+                {
+                  name: 'Available',
+                  value: metricsData.statusBreakdown.AVAILABLE,
+                },
+                {
+                  name: 'Reserved',
+                  value: metricsData.statusBreakdown.RESERVED,
+                },
+                { name: 'Pending', value: metricsData.statusBreakdown.PENDING },
+              ].filter((item) => item.value > 0)}
+              colors={['#10b981', '#3b82f6', '#f59e0b']}
+            />
+          </div>
+        )}
 
         {/* Claim Speed Analysis */}
-        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
-          <BarChartComponent
-            title='Product Claim Speed'
-            info={SUPPLIER_CHART_INFO.claimSpeed}
-            data={[
-              { timeframe: '< 24h', count: metricsData.claimSpeeds.within24h },
-              { timeframe: '24-48h', count: metricsData.claimSpeeds.within48h },
-              {
-                timeframe: '< 1 week',
-                count: metricsData.claimSpeeds.within1week,
-              },
-              {
-                timeframe: '> 1 week',
-                count: metricsData.claimSpeeds.moreThan1week,
-              },
-            ]}
-            xAxisKey='timeframe'
-            bars={[{ dataKey: 'count', fill: '#8b5cf6', name: 'Products' }]}
-          />
-        </div>
+        {hasClaimSpeedData && (
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+            <BarChartComponent
+              title='Product Claim Speed'
+              info={SUPPLIER_CHART_INFO.claimSpeed}
+              data={[
+                {
+                  timeframe: '< 24h',
+                  count: metricsData.claimSpeeds.within24h,
+                },
+                {
+                  timeframe: '24-48h',
+                  count: metricsData.claimSpeeds.within48h,
+                },
+                {
+                  timeframe: '< 1 week',
+                  count: metricsData.claimSpeeds.within1week,
+                },
+                {
+                  timeframe: '> 1 week',
+                  count: metricsData.claimSpeeds.moreThan1week,
+                },
+              ]}
+              xAxisKey='timeframe'
+              bars={[{ dataKey: 'count', fill: '#8b5cf6', name: 'Products' }]}
+            />
+          </div>
+        )}
 
         {/* Product Type Breakdown */}
-        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
-          <DonutChart
-            title='Product Type Distribution'
-            info={SUPPLIER_CHART_INFO.productTypeDistribution}
-            data={[
-              { name: 'Protein', value: metricsData.typeBreakdown.protein },
-              { name: 'Produce', value: metricsData.typeBreakdown.produce },
-              {
-                name: 'Shelf Stable',
-                value: metricsData.typeBreakdown.shelfStable,
-              },
-              {
-                name: 'Individual Serving',
-                value: metricsData.typeBreakdown.shelfStableIndividualServing,
-              },
-              {
-                name: 'Prepared Food',
-                value: metricsData.typeBreakdown.alreadyPreparedFood,
-              },
-              { name: 'Other', value: metricsData.typeBreakdown.other },
-            ].filter((item) => item.value > 0)}
-          />
-        </div>
+        {hasTypeData && (
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+            <DonutChart
+              title='Product Type Distribution'
+              info={SUPPLIER_CHART_INFO.productTypeDistribution}
+              data={[
+                { name: 'Protein', value: metricsData.typeBreakdown.protein },
+                { name: 'Produce', value: metricsData.typeBreakdown.produce },
+                {
+                  name: 'Shelf Stable',
+                  value: metricsData.typeBreakdown.shelfStable,
+                },
+                {
+                  name: 'Individual Serving',
+                  value: metricsData.typeBreakdown.shelfStableIndividualServing,
+                },
+                {
+                  name: 'Prepared Food',
+                  value: metricsData.typeBreakdown.alreadyPreparedFood,
+                },
+                { name: 'Other', value: metricsData.typeBreakdown.other },
+              ].filter((item) => item.value > 0)}
+            />
+          </div>
+        )}
 
         {/* Monthly Timeline */}
-        <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
-          <AreaChartComponent
-            title='Monthly Impact Timeline'
-            info={SUPPLIER_CHART_INFO.monthlyTimeline}
-            data={metricsData.monthlyTimeline}
-            xAxisKey='month'
-            areas={[
-              {
-                dataKey: 'count',
-                stroke: '#3b82f6',
-                fill: '#93c5fd',
-                name: 'Products Posted',
-              },
-            ]}
-          />
-        </div>
+        {hasTimeline && (
+          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+            <AreaChartComponent
+              title='Monthly Impact Timeline'
+              info={SUPPLIER_CHART_INFO.monthlyTimeline}
+              data={metricsData.monthlyTimeline}
+              xAxisKey='month'
+              areas={[
+                {
+                  dataKey: 'count',
+                  stroke: '#3b82f6',
+                  fill: '#93c5fd',
+                  name: 'Products Posted',
+                },
+              ]}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
