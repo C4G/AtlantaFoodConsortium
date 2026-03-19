@@ -60,18 +60,17 @@ jobs:
             type=sha,format=long,prefix=
             type=raw,value=latest
 
-      # TODO: Uncomment me!
-      # - name: Build and push
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     context: .
-      #     file: Dockerfile.migrations
-      #     platforms: linux/amd64
-      #     push: true
-      #     cache-from: type=gha
-      #     cache-to: type=gha,mode=max
-      #     tags: ${{ steps.meta-migrations.outputs.tags }}
-      #     labels: ${{ steps.meta-migrations.outputs.labels }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.migrations
+          platforms: linux/amd64
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: ${{ steps.meta-migrations.outputs.tags }}
+          labels: ${{ steps.meta-migrations.outputs.labels }}
 
       - name: Prune Package Versions
         uses: actions/delete-package-versions@v5.0.0
