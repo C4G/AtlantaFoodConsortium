@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from './generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { seedUsers } from './seed/users.mjs';
 import { seedSuppliers, seedNonprofits } from './seed/suppliers.mjs';
 import { seedProductRequests, seedProductInterests } from './seed/products.mjs';
@@ -6,7 +7,11 @@ import { seedSupplierUsers, seedNonprofitUsers } from './seed/mockUsers.mjs';
 import { seedAnnouncements } from './seed/announcements.mjs';
 import { seedDiscussions } from './seed/discussions.mjs';
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
+
+const prisma = new PrismaClient({ adapter });
 
 const main = async () => {
   console.log('----- Starting to seed initial data -----');
