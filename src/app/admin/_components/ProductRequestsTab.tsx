@@ -14,7 +14,9 @@ const ProductRequestsTab = ({
   return (
     <div className='mt-6 space-y-4'>
       <div className='flex items-center'>
-        <h2 className='text-2xl font-bold text-slate-800'>Product Requests</h2>
+        <h2 className='text-2xl font-bold text-slate-800 dark:text-white'>
+          Product Requests
+        </h2>
         <div className='ml-4 h-px flex-grow bg-slate-200'></div>
       </div>
 
