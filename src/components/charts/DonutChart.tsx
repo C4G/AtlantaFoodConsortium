@@ -78,7 +78,17 @@ export const DonutChart = memo(function DonutChart({
               />
             ))}
           </Pie>
-          <Tooltip />
+          <Tooltip
+            cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 1 }}
+            contentStyle={{
+              backgroundColor: 'hsl(var(--background))',
+              border: '1px solid hsl(var(--border))',
+              borderRadius: 12,
+              color: 'hsl(var(--foreground))',
+            }}
+            labelStyle={{ color: 'hsl(var(--foreground))' }}
+            itemStyle={{ color: 'hsl(var(--foreground))' }}
+          />
           <Legend />
         </PieChart>
       </ResponsiveContainer>

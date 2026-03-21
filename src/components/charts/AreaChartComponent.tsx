@@ -54,7 +54,17 @@ export function AreaChartComponent({
             interval='preserveStartEnd'
           />
           <YAxis />
-          <Tooltip />
+          <Tooltip
+            cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 1 }}
+            contentStyle={{
+              backgroundColor: 'hsl(var(--background))',
+              border: '1px solid hsl(var(--border))',
+              borderRadius: 12,
+              color: 'hsl(var(--foreground))',
+            }}
+            labelStyle={{ color: 'hsl(var(--foreground))' }}
+            itemStyle={{ color: 'hsl(var(--foreground))' }}
+          />
           {areas.map((area) => (
             <Area
               key={area.dataKey}
