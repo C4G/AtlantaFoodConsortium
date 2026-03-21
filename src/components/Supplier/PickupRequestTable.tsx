@@ -119,8 +119,8 @@ export function PickupRequestTable({
 
   return (
     <div className='h-full w-full'>
-      <div className='mb-8 rounded-lg bg-white p-6 shadow-sm'>
-        <h2 className='mb-6 text-2xl font-semibold text-black'>
+      <div className='mb-8 rounded-lg bg-card p-6 shadow-sm'>
+        <h2 className='mb-6 text-2xl font-semibold text-foreground'>
           Pickup Request History
         </h2>
 
