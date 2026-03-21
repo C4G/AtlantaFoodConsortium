@@ -60,7 +60,7 @@ export function BarChartComponent({
         </div>
         {isPaginated && (
           <div className='flex items-center gap-3'>
-            <span className='hidden text-sm text-slate-600 sm:inline'>
+            <span className='hidden text-sm text-foreground sm:inline'>
               Showing {startIndex + 1}-{Math.min(endIndex, data.length)} of{' '}
               {data.length}
             </span>
@@ -68,12 +68,12 @@ export function BarChartComponent({
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className='rounded border border-slate-300 p-1 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50'
+                className='rounded border p-1 text-foreground hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50'
                 aria-label='Previous page'
               >
-                <ChevronLeft className='h-4 w-4 text-slate-700' />
+                <ChevronLeft className='h-4 w-4 text-foreground' />
               </button>
-              <span className='px-3 text-sm font-medium text-slate-700'>
+              <span className='px-3 text-sm font-medium text-foreground'>
                 {currentPage} / {totalPages}
               </span>
               <button
@@ -81,10 +81,10 @@ export function BarChartComponent({
                   setCurrentPage((p) => Math.min(totalPages, p + 1))
                 }
                 disabled={currentPage === totalPages}
-                className='rounded border border-slate-300 p-1 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50'
+                className='rounded border p-1 text-foreground hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50'
                 aria-label='Next page'
               >
-                <ChevronRight className='h-4 w-4 text-slate-700' />
+                <ChevronRight className='h-4 w-4 text-foreground' />
               </button>
             </div>
           </div>
@@ -127,7 +127,17 @@ export function BarChartComponent({
                 />
               </>
             )}
-            <Tooltip />
+            <Tooltip
+              cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 1 }}
+              contentStyle={{
+                backgroundColor: 'hsl(var(--background))',
+                border: '1px solid hsl(var(--border))',
+                borderRadius: 12,
+                color: 'hsl(var(--foreground))',
+              }}
+              labelStyle={{ color: 'hsl(var(--foreground))' }}
+              itemStyle={{ color: 'hsl(var(--foreground))' }}
+            />
             <Legend />
             {bars.map((bar) => (
               <Bar
