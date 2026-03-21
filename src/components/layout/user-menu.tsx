@@ -14,12 +14,10 @@ import { EditProfileDialog } from './edit-profile-dialog';
 import { ThemeSwitcher } from './theme-switcher';
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 import { LogOut, UserCog, UserCheck } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export function UserMenu() {
   const { data: session } = useSession();
-  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
@@ -36,7 +34,7 @@ export function UserMenu() {
     : '?';
 
   const handleSignOut = () => {
-    signOut().then(() => router.replace('/'));
+    signOut({ callbackUrl: '/' });
   };
 
   return (

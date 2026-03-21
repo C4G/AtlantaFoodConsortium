@@ -54,7 +54,7 @@ export function BarChartComponent({
       >
         <div className='flex items-center gap-2'>
           {title && (
-            <h3 className='text-lg font-semibold text-slate-800'>{title}</h3>
+            <h3 className='text-lg font-semibold text-foreground'>{title}</h3>
           )}
           {info && <ChartInfoTooltip info={info} position='top' />}
         </div>
