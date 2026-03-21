@@ -45,12 +45,20 @@ export function LineChartComponent({
           <CartesianGrid strokeDasharray='3 3' />
           <XAxis
             dataKey={xAxisKey}
-            tick={{ fontSize: 12 }}
-            angle={-45}
-            textAnchor='end'
-            height={80}
+            angle={0}
+            textAnchor='middle'
+            interval='preserveStartEnd'
+            minTickGap={50}
+            height={40}
+            tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
+            axisLine={{ stroke: 'hsl(var(--foreground))' }}
+            tickLine={{ stroke: 'hsl(var(--foreground))' }}
           />
-          <YAxis />
+          <YAxis
+            tick={{ fill: 'hsl(var(--foreground))' }}
+            axisLine={{ stroke: 'hsl(var(--foreground))' }}
+            tickLine={{ stroke: 'hsl(var(--foreground))' }}
+          />
           <Tooltip
             cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 1 }}
             contentStyle={{
@@ -71,6 +79,7 @@ export function LineChartComponent({
               stroke={line.stroke}
               name={line.name}
               strokeWidth={2}
+              wrapperStyle={{ marginTop: 20 }}
             />
           ))}
         </LineChart>

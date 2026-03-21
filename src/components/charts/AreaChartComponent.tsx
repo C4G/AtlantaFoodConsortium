@@ -47,11 +47,13 @@ export function AreaChartComponent({
           <CartesianGrid strokeDasharray='3 3' />
           <XAxis
             dataKey={xAxisKey}
-            tick={{ fontSize: 10 }}
             angle={-45}
             textAnchor='end'
             height={100}
             interval='preserveStartEnd'
+            tick={{ fontSize: 10, fill: 'hsl(var(--foreground))' }}
+            axisLine={{ stroke: 'hsl(var(--foreground))' }}
+            tickLine={{ stroke: 'hsl(var(--foreground))' }}
           />
           <YAxis />
           <Tooltip
