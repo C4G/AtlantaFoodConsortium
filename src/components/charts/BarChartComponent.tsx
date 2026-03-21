@@ -117,12 +117,22 @@ export function BarChartComponent({
               </>
             ) : (
               <>
-                <XAxis type='number' />
+                <XAxis
+                  type='number'
+                  tick={{ fill: 'hsl(var(--foreground))' }}
+                  axisLine={{ stroke: 'hsl(var(--foreground))' }}
+                  tickLine={{ stroke: 'hsl(var(--foreground))' }}
+                />
                 <YAxis
                   dataKey={xAxisKey}
                   type='category'
                   width={isMobile ? 90 : 150}
-                  tick={{ fontSize: isMobile ? 9 : 11 }}
+                  tick={{
+                    fontSize: isMobile ? 9 : 11,
+                    fill: 'hsl(var(--foreground))',
+                  }}
+                  axisLine={{ stroke: 'hsl(var(--foreground))' }}
+                  tickLine={{ stroke: 'hsl(var(--foreground))' }}
                   interval={0}
                 />
               </>
