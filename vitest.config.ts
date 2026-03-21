@@ -5,7 +5,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     globals: true,
-    exclude: ['e2e/**', 'node_modules/**', '.next/**', 'dist/**'],
+    exclude: ['**/node_modules/**', 'e2e/**'],
     env: {
       FILE_UPLOADS: '/tmp/test-uploads',
     },
