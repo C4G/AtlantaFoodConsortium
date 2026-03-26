@@ -113,6 +113,21 @@ export default async function DocsPage() {
         )}
 
         <div className='rounded-lg border p-6 md:col-span-2'>
+          <h2 className='mb-2 text-xl font-semibold'>Application Flow</h2>
+          <p className='mb-4 text-muted-foreground'>
+            End-to-end visual flow diagram covering every role — sign-in,
+            onboarding, admin approvals, supplier product lifecycle, and
+            nonprofit claiming.
+          </p>
+          <Link
+            href='/documentation/features/application-flow'
+            className='text-blue-600 hover:underline'
+          >
+            View diagram →
+          </Link>
+        </div>
+
+        <div className='rounded-lg border p-6 md:col-span-2'>
           <h2 className='mb-2 text-xl font-semibold'>Feature Docs</h2>
           <p className='mb-4 text-muted-foreground'>
             Developer docs for all platform features. Add a{' '}
