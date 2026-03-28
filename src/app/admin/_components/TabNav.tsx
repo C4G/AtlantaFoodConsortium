@@ -101,22 +101,22 @@ const TabNav = ({
   ];
 
   return (
-    <div className='sticky top-0 z-10 bg-slate-50 p-2'>
+    <div className='sticky top-0 z-10 bg-background p-2'>
       <div className='grid grid-cols-2 gap-4 sm:grid-cols-4'>
         {tabs.map(({ label, count, tab, icon }) => (
           <div
             key={tab}
-            className={`flex cursor-pointer flex-col items-center justify-center rounded-lg p-6 shadow-md transition duration-200 ${
+            className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border p-6 shadow-md transition duration-200 ${
               activeTab === tab
-                ? 'border border-blue-200 bg-blue-50'
-                : 'border border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50'
+                ? 'border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/40'
+                : 'border-slate-200 bg-card hover:border-blue-200 hover:bg-blue-50 dark:border-border dark:hover:border-blue-900 dark:hover:bg-blue-950/30'
             }`}
             onClick={() => setActiveTab(tab)}
           >
             {icon}
-            <p className='text-lg font-semibold text-slate-700'>{label}</p>
+            <p className='text-lg font-semibold text-foreground'>{label}</p>
             {count !== null ? (
-              <p className='text-3xl font-bold text-slate-900'>{count}</p>
+              <p className='text-3xl font-bold text-foreground'>{count}</p>
             ) : (
               <p className='select-none text-3xl font-bold text-transparent'>
                 0

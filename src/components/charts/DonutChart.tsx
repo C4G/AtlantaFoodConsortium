@@ -42,7 +42,7 @@ export const DonutChart = memo(function DonutChart({
     <div className='w-full'>
       {title && (
         <div className='mb-4 flex items-center justify-center gap-2'>
-          <h3 className='text-center text-lg font-semibold text-slate-800'>
+          <h3 className='text-center text-lg font-semibold text-foreground'>
             {title}
           </h3>
           {info && <ChartInfoTooltip info={info} position='top' />}
@@ -78,7 +78,17 @@ export const DonutChart = memo(function DonutChart({
               />
             ))}
           </Pie>
-          <Tooltip />
+          <Tooltip
+            cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 1 }}
+            contentStyle={{
+              backgroundColor: 'hsl(var(--background))',
+              border: '1px solid hsl(var(--border))',
+              borderRadius: 12,
+              color: 'hsl(var(--foreground))',
+            }}
+            labelStyle={{ color: 'hsl(var(--foreground))' }}
+            itemStyle={{ color: 'hsl(var(--foreground))' }}
+          />
           <Legend />
         </PieChart>
       </ResponsiveContainer>

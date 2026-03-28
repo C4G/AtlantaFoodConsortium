@@ -33,7 +33,7 @@ export function AreaChartComponent({
     <div className='w-full'>
       {title && (
         <div className='mb-4 flex items-center justify-center gap-2'>
-          <h3 className='text-center text-lg font-semibold text-slate-800'>
+          <h3 className='text-center text-lg font-semibold text-foreground'>
             {title}
           </h3>
           {info && <ChartInfoTooltip info={info} position='top' />}
@@ -47,14 +47,26 @@ export function AreaChartComponent({
           <CartesianGrid strokeDasharray='3 3' />
           <XAxis
             dataKey={xAxisKey}
-            tick={{ fontSize: 10 }}
             angle={-45}
             textAnchor='end'
             height={100}
             interval='preserveStartEnd'
+            tick={{ fontSize: 10, fill: 'hsl(var(--foreground))' }}
+            axisLine={{ stroke: 'hsl(var(--foreground))' }}
+            tickLine={{ stroke: 'hsl(var(--foreground))' }}
           />
           <YAxis />
-          <Tooltip />
+          <Tooltip
+            cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 1 }}
+            contentStyle={{
+              backgroundColor: 'hsl(var(--background))',
+              border: '1px solid hsl(var(--border))',
+              borderRadius: 12,
+              color: 'hsl(var(--foreground))',
+            }}
+            labelStyle={{ color: 'hsl(var(--foreground))' }}
+            itemStyle={{ color: 'hsl(var(--foreground))' }}
+          />
           {areas.map((area) => (
             <Area
               key={area.dataKey}
