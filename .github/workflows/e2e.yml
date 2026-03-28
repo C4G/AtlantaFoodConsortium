@@ -90,10 +90,16 @@ jobs:
       - name: Build Next.js application
         run: npm run build
 
+      - name: Copy static assets into standalone output
+        run: |
+          cp -r .next/static .next/standalone/.next/static
+          cp -r public .next/standalone/public
+
       - name: Start Next.js server
-        run: npm start &
+        run: node .next/standalone/server.js &
         env:
           PORT: 3000
+          HOSTNAME: 0.0.0.0
 
       - name: Wait for server to be ready
         run: npx wait-on http://localhost:3000 --timeout 60000
