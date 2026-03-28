@@ -95,14 +95,15 @@ jobs:
           cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public
 
-      - name: Start Next.js server
-        run: node .next/standalone/server.js &
+      - name: Start Next.js server and wait for ready
+        run: |
+          node .next/standalone/server.js > /tmp/server.log 2>&1 &
+          echo "Server PID: $!"
+          npx wait-on tcp:localhost:3000 --timeout 60000
+          echo "Server is ready"
         env:
           PORT: 3000
           HOSTNAME: 0.0.0.0
-
-      - name: Wait for server to be ready
-        run: npx wait-on http://localhost:3000 --timeout 60000
 
       - name: Run Playwright E2E tests
         run: npm run test:e2e
