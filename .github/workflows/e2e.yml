@@ -41,7 +41,7 @@ jobs:
       DATABASE_NAME: atlanta_food_consortium
       DATABASE_HOST: localhost
       DATABASE_PORT: "5432"
-      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET || 'ci-only-auth-secret-not-used-in-production' }}
       NEXTAUTH_URL: http://localhost:3000
       AUTH_TRUST_HOST: "true"
       AUTH_GOOGLE_ID: ci-dummy-google-client-id
@@ -107,6 +107,10 @@ jobs:
 
       - name: Run Playwright E2E tests
         run: npm run test:e2e
+
+      - name: Print server logs on failure
+        if: failure()
+        run: cat /tmp/server.log || echo "No server log found"
 
       - name: Upload Playwright HTML report
         uses: actions/upload-artifact@v4
