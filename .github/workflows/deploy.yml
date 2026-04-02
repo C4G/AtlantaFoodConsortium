@@ -24,7 +24,7 @@ jobs:
           
       - name: Meta
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           # list of Docker images to use as base name for tags
           images: |
@@ -49,7 +49,7 @@ jobs:
 
       - name: Meta (Migrations)
         id: meta-migrations
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           # list of Docker images to use as base name for tags
           images: |
