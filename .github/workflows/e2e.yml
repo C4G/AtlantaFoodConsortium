@@ -113,7 +113,7 @@ jobs:
         run: cat /tmp/server.log || echo "No server log found"
 
       - name: Upload Playwright HTML report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: playwright-report-${{ github.run_id }}
@@ -121,7 +121,7 @@ jobs:
           retention-days: 7
 
       - name: Upload test results on failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-results-${{ github.run_id }}
