@@ -17,7 +17,7 @@ COPY --chown=nextjs:nodejs prisma ./prisma
 # Then install prisma CLI from devDependencies and generate client
 RUN npm install --omit=dev --ignore-scripts && \
     npm install --save-dev prisma && \
-    npx prisma generate
+    DATABASE_URL="postgres://user:pass@localhost/test" npx prisma generate
 
 # Switch to non-root user
 USER nextjs

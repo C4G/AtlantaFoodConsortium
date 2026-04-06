@@ -43,7 +43,7 @@ RUN \
 COPY . .
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN DATABASE_URL="postgres://user:pass@localhost/test" npx prisma generate
 
 # Not used during build, but needs to be set
 ENV FILE_UPLOADS="/app/uploads"
