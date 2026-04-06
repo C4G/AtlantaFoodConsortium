@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { UserMenu } from './user-menu';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import { UserRole } from '../../../types/types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +18,7 @@ type NavItem = { href: string; label: string };
 
 function buildNavItems(
   role: false | UserRole | undefined | null,
+  role: false | string | null | undefined,
   isAdminOrStaff: boolean,
   isOther: boolean
 ): NavItem[] {
@@ -29,11 +29,11 @@ function buildNavItems(
     items.push({ href: '/users', label: 'Users' });
   }
 
-  if (role === UserRole.SUPPLIER) {
+  if (role === 'SUPPLIER') {
     items.push({ href: '/supplier', label: 'Supplier' });
   }
 
-  if (role === UserRole.NONPROFIT) {
+  if (role === 'NONPROFIT') {
     items.push({ href: '/nonprofit', label: 'Nonprofit' });
   }
 
@@ -60,8 +60,8 @@ export function Header() {
   const pathname = usePathname();
 
   const role = status === 'authenticated' && data?.user.role;
-  const isAdminOrStaff = role === UserRole.ADMIN || role === UserRole.STAFF;
-  const isOther = role === UserRole.OTHER;
+  const isAdminOrStaff = role === 'ADMIN' || role === 'STAFF';
+  const isOther = role === 'OTHER';
 
   const navItems = buildNavItems(role, isAdminOrStaff, isOther);
 
