@@ -6,11 +6,16 @@
  */
 
 import './load-env';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../src/generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { E2E_PREFIX, clearStateFile } from './shared-state';
 
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
+
 async function globalTeardown() {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({ adapter });
 
   try {
     console.log('\n E2E global teardown starting…');

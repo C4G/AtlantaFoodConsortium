@@ -1,15 +1,6 @@
 import Link from 'next/link';
-import { auth } from '@/lib/auth';
 
-export default async function DocsPage() {
-  let session = null;
-  try {
-    session = await auth();
-  } catch (error) {
-    // Handle auth errors gracefully - session will remain null
-    console.error('Auth error in documentation page:', error);
-  }
-
+export default function DocsPage() {
   return (
     <div className='mx-auto max-w-4xl px-4 py-8'>
       <h1 className='mb-8 text-3xl font-bold'>Documentation</h1>
@@ -95,22 +86,19 @@ export default async function DocsPage() {
           </Link>
         </div>
 
-        {(session?.user?.role === 'ADMIN' ||
-          session?.user?.role === 'STAFF') && (
-          <div className='rounded-lg border p-6 md:col-span-2'>
-            <h2 className='mb-2 text-xl font-semibold'>Admin Guide</h2>
-            <p className='mb-4 text-muted-foreground'>
-              Administrative functions for managing users, approvals, and
-              platform operations.
-            </p>
-            <Link
-              href='/documentation/admin'
-              className='text-blue-600 hover:underline'
-            >
-              Read more →
-            </Link>
-          </div>
-        )}
+        <div className='rounded-lg border p-6 md:col-span-2'>
+          <h2 className='mb-2 text-xl font-semibold'>Admin Guide</h2>
+          <p className='mb-4 text-muted-foreground'>
+            Administrative functions for managing users, approvals, and platform
+            operations.
+          </p>
+          <Link
+            href='/documentation/admin'
+            className='text-blue-600 hover:underline'
+          >
+            Read more →
+          </Link>
+        </div>
 
         <div className='rounded-lg border p-6 md:col-span-2'>
           <h2 className='mb-2 text-xl font-semibold'>Feature Docs</h2>
