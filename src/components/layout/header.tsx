@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils';
 type NavItem = { href: string; label: string };
 
 function buildNavItems(
-  role: false | UserRole | undefined,
+  role: false | UserRole | undefined | null,
   isAdminOrStaff: boolean,
   isOther: boolean
 ): NavItem[] {

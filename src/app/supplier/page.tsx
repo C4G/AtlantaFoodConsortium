@@ -52,7 +52,7 @@ const SupplierDashboard = () => {
       return;
     }
     loadSupplierData();
-  }, [status]);
+  }, [status, session?.user?.role, router, loadSupplierData]);
 
   return (
     <div className='light min-h-screen bg-gray-50'>
