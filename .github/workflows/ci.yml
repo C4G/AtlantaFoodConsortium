@@ -39,6 +39,7 @@ jobs:
       - name: Build
         run: |
           npm ci --ignore-scripts
+          DATABASE_URL="postgres://user:pass@localhost:5432/test" npx prisma generate
 
       - name: Run tests
         run: npm test
