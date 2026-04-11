@@ -12,6 +12,8 @@ interface KPICardProps {
     value: number;
     label: string;
   };
+  active?: boolean;
+  onClick?: () => void;
 }
 
 export function KPICard({
@@ -21,9 +23,20 @@ export function KPICard({
   icon,
   info,
   trend,
+  active,
+  onClick,
 }: KPICardProps) {
   return (
-    <div className='rounded-lg border border-slate-200 bg-white p-4 shadow-md transition-all hover:shadow-lg sm:p-6'>
+    <div
+      onClick={onClick}
+      className={`rounded-lg border p-4 shadow-md transition-all sm:p-6 ${
+        onClick ? 'cursor-pointer' : ''
+      } ${
+        active
+          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+          : 'border-slate-200 bg-white hover:shadow-lg'
+      }`}
+    >
       <div className='flex items-start justify-between'>
         <div className='flex-1'>
           <div className='flex items-center gap-1.5'>

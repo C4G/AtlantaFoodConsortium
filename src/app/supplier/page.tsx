@@ -73,6 +73,7 @@ const SupplierDashboard = () => {
           <OverviewTab
             metricsData={metricsData}
             loadingMetrics={loadingMetrics}
+            productRequests={productRequests}
           />
         )}
 
