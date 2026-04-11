@@ -53,10 +53,6 @@ function SortableHeader({
   );
 }
 
-function formatStatus(status: string): string {
-  return status.charAt(0) + status.slice(1).toLowerCase();
-}
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function PickupRequestTable({
   rowData,
@@ -201,7 +197,7 @@ export function PickupRequestTable({
                               : 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:ring-amber-800'
                         }`}
                       >
-                        {formatStatus(row.foodStatus)}
+                        {row.foodStatus}
                       </span>
                     </td>
                     <td className='px-4 py-3'>
