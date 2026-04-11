@@ -55,10 +55,12 @@ const SupplierDashboard = () => {
   }, [status]);
 
   return (
-    <div className='light min-h-screen bg-gray-50'>
-      <header className='bg-white shadow-sm'>
+    <div className='min-h-screen bg-slate-50 dark:bg-background'>
+      <header className='border-b border-slate-200 bg-white dark:border-border dark:bg-card'>
         <div className='mx-auto flex max-w-7xl items-center justify-between px-4 py-4'>
-          <div className='text-xl font-semibold text-black'>MAFC</div>
+          <div className='text-xl font-semibold text-slate-900 dark:text-foreground'>
+            MAFC
+          </div>
         </div>
       </header>
 

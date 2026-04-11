@@ -33,23 +33,27 @@ export function KPICard({
         onClick ? 'cursor-pointer' : ''
       } ${
         active
-          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-          : 'border-slate-200 bg-white hover:shadow-lg'
+          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200 dark:border-blue-400 dark:bg-blue-950 dark:ring-blue-800'
+          : 'border-slate-200 bg-white hover:shadow-lg dark:border-border dark:bg-card'
       }`}
     >
       <div className='flex items-start justify-between'>
         <div className='flex-1'>
           <div className='flex items-center gap-1.5'>
-            <p className='text-sm font-medium text-slate-600'>{title}</p>
+            <p className='text-sm font-medium text-slate-600 dark:text-muted-foreground'>
+              {title}
+            </p>
             {info && (
               <ChartInfoTooltip info={info} position='bottom' size='sm' />
             )}
           </div>
-          <p className='mt-2 text-2xl font-bold text-slate-900 sm:text-3xl'>
+          <p className='mt-2 text-2xl font-bold text-slate-900 dark:text-foreground sm:text-3xl'>
             {value}
           </p>
           {subtitle && (
-            <p className='mt-1 text-sm text-slate-500'>{subtitle}</p>
+            <p className='mt-1 text-sm text-slate-500 dark:text-muted-foreground'>
+              {subtitle}
+            </p>
           )}
           {trend && (
             <div className='mt-2 flex items-center'>

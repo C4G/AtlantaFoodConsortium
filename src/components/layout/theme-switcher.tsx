@@ -23,8 +23,8 @@ export function ThemeSwitcher() {
       <Moon className='absolute mr-2 h-[1rem] w-[1rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
       <span className='grow'>
         {theme === 'dark' || (theme === 'system' && systemTheme === 'dark')
-          ? 'Dark'
-          : 'Light'}{' '}
+          ? 'Light'
+          : 'Dark'}{' '}
         Mode
       </span>
     </div>
