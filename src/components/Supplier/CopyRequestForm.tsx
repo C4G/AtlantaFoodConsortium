@@ -14,6 +14,12 @@ interface FormData {
   availabilityTimeframe: string;
 }
 
+const inputClass =
+  'w-full rounded-md border border-slate-200 dark:border-border bg-slate-50 dark:bg-secondary px-3 py-2 text-sm text-slate-700 dark:text-muted-foreground shadow-sm focus:border-blue-300 focus:bg-white dark:focus:bg-secondary focus:outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-800';
+
+const readonlyClass =
+  'w-full rounded-md border border-slate-200 dark:border-border bg-slate-100 dark:bg-secondary/50 px-3 py-2 text-sm text-slate-500 dark:text-muted-foreground shadow-sm';
+
 export const CopyRequestForm: React.FC<CopyRequestFormProps> = ({
   productInfo,
   showCopyRequestForm,
@@ -121,84 +127,90 @@ export const CopyRequestForm: React.FC<CopyRequestFormProps> = ({
   return (
     <div>
       <div
-        className='relative z-10'
+        className='relative z-50'
         aria-labelledby='modal-title'
         role='dialog'
         aria-modal='true'
       >
         <div
-          className='fixed inset-0 bg-gray-500/75 transition-opacity'
+          className='fixed inset-0 z-50 bg-black/50 transition-opacity'
           aria-hidden='true'
         ></div>
-        <div className='fixed inset-0 z-10 w-screen overflow-y-auto'>
+        <div className='fixed inset-0 z-50 w-screen overflow-y-auto'>
           <div className='flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0'>
-            <div className='relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg'>
-              <div className='bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4'>
+            <div className='relative transform overflow-hidden rounded-lg border border-slate-200 bg-white text-left shadow-xl transition-all dark:border-border dark:bg-card sm:my-8 sm:w-full sm:max-w-lg'>
+              <div className='px-4 pb-4 pt-5 sm:p-6 sm:pb-4'>
                 <div>
-                  <div className='mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left'>
-                    <h2 className='mb-6 text-2xl font-semibold text-black'></h2>
-                    <p className='mb-6 text-black'>
+                  <div className='mt-3 sm:ml-4 sm:mt-0'>
+                    <h2 className='mb-2 text-lg font-semibold text-slate-900 dark:text-foreground'>
+                      Copy Pickup Request
+                    </h2>
+                    <p className='mb-6 text-sm text-slate-500 dark:text-muted-foreground'>
                       Please provide new pickup details for the food pick up
                       request you want to copy.
                     </p>
-                    <form onSubmit={handleSubmit} className='space-y-8'>
-                      <div className='mt-2'>
-                        <fieldset className='mt-4 rounded-md border p-4'>
-                          <legend className='px-2 text-lg font-semibold text-black'>
-                            Product Information
-                          </legend>
-                          <div className='space-y-4'>
-                            <div className='space-y-2'>
-                              <label className='block text-sm font-medium text-black'>
-                                Product Category
-                              </label>
-                              <input
-                                type='text'
-                                name='productCategory'
-                                className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-black'
-                                readOnly
-                                value={productCategory}
-                              />
-                              <label className='block text-sm font-medium text-black'>
-                                Item Name
-                              </label>
-                              <input
-                                type='text'
-                                name='name'
-                                className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-black'
-                                readOnly
-                                value={productInfo.name}
-                              />
-                              <label className='block text-sm font-medium text-black'>
-                                Item Description
-                              </label>
-                              <input
-                                type='text'
-                                name='description'
-                                className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-black'
-                                readOnly
-                                value={productInfo.description}
-                              />
-                              <label className='block text-sm font-medium text-black'>
-                                Quantity
-                              </label>
-                              <input
-                                type='text'
-                                name='mainContactName'
-                                className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-black'
-                                readOnly
-                                value={`${productInfo.quantity} ${productInfo.unit}`}
-                              />
-                            </div>
-                          </div>
-                        </fieldset>
-
-                        <fieldset className='mt-4 rounded-md border p-4'>
-                          <legend className='px-2 text-lg font-semibold text-black'>
-                            Pickup Details
-                          </legend>
+                    <form onSubmit={handleSubmit} className='space-y-6'>
+                      {/* Product info (read-only) */}
+                      <fieldset className='rounded-lg border border-slate-200 p-4 dark:border-border'>
+                        <legend className='px-2 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-muted-foreground'>
+                          Product Information
+                        </legend>
+                        <div className='space-y-3'>
                           <div>
-                            <label className='mb-2 block text-sm font-medium text-black'>
+                            <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                              Product Category
+                            </label>
+                            <input
+                              type='text'
+                              readOnly
+                              value={productCategory}
+                              className={readonlyClass}
+                            />
+                          </div>
+                          <div>
+                            <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                              Item Name
+                            </label>
+                            <input
+                              type='text'
+                              readOnly
+                              value={productInfo.name}
+                              className={readonlyClass}
+                            />
+                          </div>
+                          <div>
+                            <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                              Description
+                            </label>
+                            <input
+                              type='text'
+                              readOnly
+                              value={productInfo.description}
+                              className={readonlyClass}
+                            />
+                          </div>
+                          <div>
+                            <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                              Quantity
+                            </label>
+                            <input
+                              type='text'
+                              readOnly
+                              value={`${productInfo.quantity} ${productInfo.unit}`}
+                              className={readonlyClass}
+                            />
+                          </div>
+                        </div>
+                      </fieldset>
+
+                      {/* Pickup details (editable) */}
+                      <fieldset className='rounded-lg border border-slate-200 p-4 dark:border-border'>
+                        <legend className='px-2 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-muted-foreground'>
+                          Pickup Details
+                        </legend>
+                        <div className='space-y-4'>
+                          <div>
+                            <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                               Pick Up By
                             </label>
                             <input
@@ -207,138 +219,108 @@ export const CopyRequestForm: React.FC<CopyRequestFormProps> = ({
                               value={formData.pickupDate}
                               onChange={handleInputChange}
                               min={new Date().toISOString().split('T')[0]}
-                              className='max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-black'
+                              className={inputClass}
                             />
                           </div>
 
-                          <div className='mt-6 space-y-4'>
-                            <div>
-                              <label className='mb-2 block text-sm font-medium text-slate-700'>
-                                What is the timeframe the product is available?
-                              </label>
-                              <div className='space-y-2'>
-                                <div className='flex items-center'>
-                                  <input
-                                    type='radio'
-                                    id='MORNING'
-                                    name='availabilityTimeframe'
-                                    value='MORNING'
-                                    checked={
-                                      formData.availabilityTimeframe ===
-                                      'MORNING'
-                                    }
-                                    onChange={handleInputChange}
-                                    className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
-                                  />
+                          <div>
+                            <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
+                              Timeframe
+                            </label>
+                            <div className='flex flex-wrap gap-2'>
+                              {[
+                                { value: 'MORNING', label: '7 AM - 10 AM' },
+                                { value: 'MID_DAY', label: '10 AM - 2 PM' },
+                                { value: 'AFTERNOON', label: '2 PM - 5 PM' },
+                              ].map(({ value, label }) => {
+                                const isSelected =
+                                  formData.availabilityTimeframe === value;
+                                return (
                                   <label
-                                    htmlFor='MORNING'
-                                    className='ml-2 text-sm text-slate-700'
+                                    key={value}
+                                    htmlFor={`copy-${value}`}
+                                    className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                                      isSelected
+                                        ? 'border-blue-300 bg-blue-50 text-blue-700 ring-1 ring-blue-200 dark:border-blue-600 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'
+                                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-border dark:bg-card dark:text-muted-foreground dark:hover:border-slate-600 dark:hover:bg-secondary'
+                                    }`}
                                   >
-                                    7 AM - 10 AM
+                                    <input
+                                      type='radio'
+                                      id={`copy-${value}`}
+                                      name='availabilityTimeframe'
+                                      value={value}
+                                      checked={isSelected}
+                                      onChange={handleInputChange}
+                                      className='h-4 w-4 border-slate-300 bg-white text-blue-600 focus:ring-blue-200 dark:border-slate-500 dark:bg-secondary'
+                                    />
+                                    {label}
                                   </label>
-                                </div>
-                                <div className='flex items-center'>
-                                  <input
-                                    type='radio'
-                                    id='MID_DAY'
-                                    name='availabilityTimeframe'
-                                    value='MID_DAY'
-                                    checked={
-                                      formData.availabilityTimeframe ===
-                                      'MID_DAY'
-                                    }
-                                    onChange={handleInputChange}
-                                    className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
-                                  />
-                                  <label
-                                    htmlFor='MID_DAY'
-                                    className='ml-2 text-sm text-slate-700'
-                                  >
-                                    10 AM - 2 PM
-                                  </label>
-                                </div>
-                                <div className='flex items-center'>
-                                  <input
-                                    type='radio'
-                                    id='AFTERNOON'
-                                    name='availabilityTimeframe'
-                                    value='AFTERNOON'
-                                    checked={
-                                      formData.availabilityTimeframe ===
-                                      'AFTERNOON'
-                                    }
-                                    onChange={handleInputChange}
-                                    className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
-                                  />
-                                  <label
-                                    htmlFor='AFTERNOON'
-                                    className='ml-2 text-sm text-slate-700'
-                                  >
-                                    2 PM - 5 PM
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div>
-                              <label className='mb-2 block text-sm font-medium text-slate-700'>
-                                Where does the product need to be picked up?
-                              </label>
-                              <input
-                                type='text'
-                                name='pickupLocation'
-                                value={formData.pickupLocation}
-                                onChange={handleInputChange}
-                                className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-black'
-                                placeholder='Enter pickup address'
-                              />
+                                );
+                              })}
                             </div>
                           </div>
-                        </fieldset>
 
-                        <fieldset className='mt-4 rounded-md border p-4'>
-                          <legend className='px-2 text-lg font-semibold text-black'>
-                            Contact Information
-                          </legend>
+                          <div>
+                            <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
+                              Pickup Location
+                            </label>
+                            <input
+                              type='text'
+                              name='pickupLocation'
+                              value={formData.pickupLocation}
+                              onChange={handleInputChange}
+                              className={inputClass}
+                              placeholder='Enter pickup address'
+                            />
+                          </div>
+                        </div>
+                      </fieldset>
 
-                          <label className='mb-2 block text-sm font-medium text-slate-700'>
-                            Main Contact Person&apos;s Name
-                          </label>
-                          <input
-                            type='text'
-                            name='mainContactName'
-                            readOnly
-                            value={productInfo.pickupInfo.contactName}
-                            className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-black'
-                          />
+                      {/* Contact info (read-only) */}
+                      <fieldset className='rounded-lg border border-slate-200 p-4 dark:border-border'>
+                        <legend className='px-2 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-muted-foreground'>
+                          Contact Information
+                        </legend>
+                        <div className='space-y-3'>
+                          <div>
+                            <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                              Contact Name
+                            </label>
+                            <input
+                              type='text'
+                              readOnly
+                              value={productInfo.pickupInfo?.contactName}
+                              className={readonlyClass}
+                            />
+                          </div>
+                          <div>
+                            <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                              Contact Phone
+                            </label>
+                            <input
+                              type='tel'
+                              readOnly
+                              value={productInfo.pickupInfo?.contactPhone}
+                              className={readonlyClass}
+                            />
+                          </div>
+                        </div>
+                      </fieldset>
 
-                          <label className='mb-2 block text-sm font-medium text-slate-700'>
-                            Main Contact Person&apos;s Phone Number
-                          </label>
-                          <input
-                            type='tel'
-                            name='mainContactNumber'
-                            readOnly
-                            value={productInfo.pickupInfo.contactPhone}
-                            maxLength={10}
-                            pattern='\d{10}'
-                            inputMode='numeric'
-                            className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-black shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400'
-                          />
-                        </fieldset>
-                      </div>
-                      <div className='mt-4 flex justify-between'>
+                      <div className='flex justify-between'>
                         <button
-                          className='bg-gray-50 px-4 py-2'
+                          type='button'
+                          className='rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:border-border dark:bg-secondary dark:text-muted-foreground dark:hover:bg-secondary'
                           onClick={closeRequestForm}
                         >
                           Cancel
                         </button>
                         <button
-                          className='bg-green-800 px-4 py-2 text-white'
+                          className='rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
                           type='submit'
                         >
-                          Save
+                          Save Copy
                         </button>
                         <FormSuccessPopup
                           openPopup={showSuccessMessage}
