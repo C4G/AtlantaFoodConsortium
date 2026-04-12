@@ -10,15 +10,18 @@ vi.mock('@/lib/prisma', () => ({
     productRequest: {
       findMany: vi.fn(),
       findUnique: vi.fn(),
+      findFirst: vi.fn(),
       update: vi.fn(),
       create: vi.fn(),
       delete: vi.fn(),
     },
     productType: {
       create: vi.fn(),
+      delete: vi.fn(),
     },
     pickupInfo: {
       create: vi.fn(),
+      delete: vi.fn(),
     },
     $transaction: vi.fn(),
   },
@@ -391,6 +394,8 @@ describe('/api/item-availability - PATCH', () => {
     vi.mocked(prisma.$transaction).mockImplementation(async (fn: any) =>
       fn(prisma)
     );
+    // No prior partial claim by this nonprofit
+    vi.mocked(prisma.productRequest.findFirst).mockResolvedValue(null as any);
     vi.mocked(prisma.productType.create).mockResolvedValue({
       id: 'pt-new',
     } as any);
@@ -415,6 +420,164 @@ describe('/api/item-availability - PATCH', () => {
     // Original product quantity should be reduced
     expect(prisma.productRequest.update).toHaveBeenCalledWith(
       expect.objectContaining({ data: { quantity: 6 } })
+    );
+  });
+
+  it('should merge into existing partial claim when same nonprofit claims same product again', async () => {
+    vi.mocked(auth).mockResolvedValue({
+      user: { id: 'np-1', role: 'NONPROFIT', nonprofitId: 'nonprofit-1' },
+    } as any);
+    vi.mocked(prisma.productRequest.findUnique).mockResolvedValue({
+      id: 'pr-1',
+      quantity: 6,
+      status: 'AVAILABLE',
+      name: 'Apples',
+      unit: 'lbs',
+      description: 'Fresh apples',
+      supplierId: 'sup-1',
+      productType: { protein: false, produce: true, proteinTypes: [] },
+      pickupInfo: {
+        pickupDate: new Date('2026-05-01'),
+        pickupTimeframe: ['MORNING'],
+        pickupLocation: '123 Main St',
+        pickupInstructions: 'Ring bell',
+        contactName: 'John',
+        contactPhone: '555-0100',
+      },
+    } as any);
+
+    vi.mocked(prisma.$transaction).mockImplementation(async (fn: any) =>
+      fn(prisma)
+    );
+    // An existing partial claim already exists for this nonprofit
+    const existingClaim = {
+      id: 'pr-existing',
+      quantity: 4,
+      status: 'RESERVED',
+      claimedById: 'nonprofit-1',
+      originalProductId: 'pr-1',
+      productType: {},
+      supplier: {},
+      pickupInfo: {},
+    };
+    vi.mocked(prisma.productRequest.findFirst).mockResolvedValue(
+      existingClaim as any
+    );
+    const merged = { ...existingClaim, quantity: 7 };
+    vi.mocked(prisma.productRequest.update).mockResolvedValue(merged as any);
+
+    const req = new NextRequest('http://localhost/api/item-availability', {
+      method: 'PATCH',
+      body: JSON.stringify({ productId: 'pr-1', quantityClaimed: 3 }),
+    });
+    const response = await PATCH(req);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.originalProductId).toBe('pr-1');
+    expect(data.remainingQuantity).toBe(3);
+    // Should update the existing claim with { increment: 3 }, not create a new one
+    expect(prisma.productRequest.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'pr-existing' },
+        data: { quantity: { increment: 3 } },
+      })
+    );
+    expect(prisma.productRequest.create).not.toHaveBeenCalled();
+  });
+
+  it('should merge into existing partial claim when nonprofit claims all remaining quantity', async () => {
+    // Scenario: nonprofit already has a partial claim (60 units), then claims
+    // all 25 remaining — should produce one card with 85 units total.
+    vi.mocked(auth).mockResolvedValue({
+      user: { id: 'np-1', role: 'NONPROFIT', nonprofitId: 'nonprofit-1' },
+    } as any);
+    vi.mocked(prisma.productRequest.findUnique).mockResolvedValue({
+      id: 'pr-1',
+      quantity: 25,
+      status: 'AVAILABLE',
+      name: 'Chicken',
+      unit: 'lbs',
+      description: 'Fresh chicken',
+      supplierId: 'sup-1',
+      productTypeId: 'pt-original',
+      pickupInfoId: 'pi-original',
+      productType: { protein: true, proteinTypes: ['CHICKEN'], produce: false },
+      pickupInfo: {
+        pickupDate: new Date('2026-04-15'),
+        pickupTimeframe: ['MORNING'],
+        pickupLocation: '4698 Piedmont Ave',
+        pickupInstructions: null,
+        contactName: 'Jane',
+        contactPhone: '555-0200',
+      },
+    } as any);
+
+    // Existing partial claim (60 units already claimed)
+    const existingPartial = {
+      id: 'pr-partial',
+      quantity: 60,
+      status: 'RESERVED',
+      claimedById: 'nonprofit-1',
+      originalProductId: 'pr-1',
+      productType: {},
+      supplier: {},
+      pickupInfo: {},
+    };
+    // findFirst is called OUTSIDE the transaction (isFullClaim branch)
+    vi.mocked(prisma.productRequest.findFirst).mockResolvedValue(
+      existingPartial as any
+    );
+    vi.mocked(prisma.$transaction).mockImplementation(async (fn: any) =>
+      fn(prisma)
+    );
+    const mergedClaim = {
+      ...existingPartial,
+      quantity: 85,
+      originalProductId: null,
+    };
+    vi.mocked(prisma.productRequest.update).mockResolvedValue(
+      mergedClaim as any
+    );
+    vi.mocked(prisma.productRequest.delete).mockResolvedValue({} as any);
+    vi.mocked(prisma.productType.delete).mockResolvedValue({} as any);
+    vi.mocked(prisma.pickupInfo.delete).mockResolvedValue({} as any);
+
+    const req = new NextRequest('http://localhost/api/item-availability', {
+      method: 'PATCH',
+      body: JSON.stringify({ productId: 'pr-1', quantityClaimed: 25 }),
+    });
+    const response = await PATCH(req);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    // Returns as a partial-style response so the hook removes from available list
+    expect(data.originalProductId).toBe('pr-1');
+    expect(data.remainingQuantity).toBe(0);
+    expect(data.claimed.quantity).toBe(85);
+    // Existing partial claim should be incremented and detached
+    expect(prisma.productRequest.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: 'pr-partial' },
+        data: { quantity: { increment: 25 }, originalProductId: null },
+      })
+    );
+    // Original product should be deleted
+    expect(prisma.productRequest.delete).toHaveBeenCalledWith({
+      where: { id: 'pr-1' },
+    });
+    // Original's ProductType and PickupInfo should be cleaned up
+    expect(prisma.productType.delete).toHaveBeenCalledWith({
+      where: { id: 'pt-original' },
+    });
+    expect(prisma.pickupInfo.delete).toHaveBeenCalledWith({
+      where: { id: 'pi-original' },
+    });
+    // Should NOT have gone through the standard full-claim update path
+    expect(prisma.productRequest.update).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: { status: 'RESERVED', claimedById: 'nonprofit-1' },
+      })
     );
   });
 

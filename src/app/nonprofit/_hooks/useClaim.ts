@@ -69,8 +69,8 @@ const useClaim = ({
         console.error('Error sending product claimed email:', error);
       }
 
-      if (isPartial) {
-        // Partial claim: update the original product's displayed quantity
+      if (isPartial && responseData.remainingQuantity > 0) {
+        // Partial claim with quantity still available: update the displayed quantity
         setAvailableProducts((prev) =>
           prev.map((product) =>
             product.id === productId
@@ -79,16 +79,33 @@ const useClaim = ({
           )
         );
       } else {
-        // Full claim: remove from the available list entirely
+        // Full claim, or a partial claim that consumed all remaining quantity:
+        // remove the product from the available list entirely.
         setAvailableProducts((prev) =>
           prev.filter((product) => product.id !== productId)
         );
       }
 
-      // Both full and partial claims add the RESERVED record to My Claims
+      // Both full and partial claims update My Claims.
+      // For partial claims, merge quantity into the existing entry if this claim ID is already known.
       if (nonprofit) {
         setNonprofit((prev) => {
           if (!prev) return prev;
+          if (isPartial) {
+            const alreadyExists = prev.productsClaimed.some(
+              (p) => p.id === claimedProduct.id
+            );
+            if (alreadyExists) {
+              return {
+                ...prev,
+                productsClaimed: prev.productsClaimed.map((p) =>
+                  p.id === claimedProduct.id
+                    ? { ...p, quantity: claimedProduct.quantity }
+                    : p
+                ),
+              };
+            }
+          }
           return {
             ...prev,
             productsClaimed: [
