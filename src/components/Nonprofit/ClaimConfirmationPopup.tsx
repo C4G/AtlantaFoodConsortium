@@ -1,11 +1,16 @@
 'use client';
+import { useState, useEffect } from 'react';
 
 interface ClaimConfirmationPopupProps {
   openPopup: boolean;
   closePopup: () => void;
   productName: string;
-  onConfirm: () => void;
+  onConfirm: (_quantity: number) => void;
   mode?: 'claim' | 'unclaim';
+  /** Total available quantity — required in claim mode */
+  maxQuantity?: number;
+  /** Unit label (e.g. "lbs", "boxes") */
+  unit?: string;
 }
 
 export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
@@ -14,7 +19,16 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
   productName,
   onConfirm,
   mode = 'claim',
+  maxQuantity = 1,
+  unit = '',
 }) => {
+  const [quantity, setQuantity] = useState<number>(maxQuantity);
+
+  // Reset to full quantity whenever the popup opens or the product changes
+  useEffect(() => {
+    setQuantity(maxQuantity);
+  }, [openPopup, maxQuantity]);
+
   if (!openPopup) return null;
 
   const isClaim = mode === 'claim';
@@ -47,12 +61,12 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
                       <p className='text-center text-sm text-gray-500'>
                         {isClaim ? (
                           <>
-                            Are you sure you want to claim{' '}
+                            How much of{' '}
                             <span className='font-semibold text-slate-700'>
                               {productName}
-                            </span>
-                            ? You will be responsible for picking it up on the
-                            scheduled date.
+                            </span>{' '}
+                            would you like to claim? You will be responsible for
+                            picking it up on the scheduled date.
                           </>
                         ) : (
                           <>
@@ -64,10 +78,52 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
                           </>
                         )}
                       </p>
+
+                      {isClaim && (
+                        <div className='mt-4'>
+                          <label
+                            htmlFor='claim-quantity'
+                            className='block text-sm font-medium text-slate-700'
+                          >
+                            Quantity to claim
+                            {unit ? ` (${unit})` : ''}
+                          </label>
+                          <div className='mt-1 flex items-center gap-2'>
+                            <input
+                              id='claim-quantity'
+                              type='number'
+                              min={1}
+                              max={maxQuantity}
+                              value={quantity}
+                              onChange={(e) => {
+                                const val = Math.max(
+                                  1,
+                                  Math.min(
+                                    maxQuantity,
+                                    Math.floor(Number(e.target.value))
+                                  )
+                                );
+                                setQuantity(val);
+                              }}
+                              className='w-28 rounded-md border border-slate-300 px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+                            />
+                            <span className='text-sm text-slate-500'>
+                              of {maxQuantity} {unit} available
+                            </span>
+                          </div>
+                          {quantity < maxQuantity && (
+                            <p className='mt-1 text-xs text-amber-600'>
+                              Partial claim — the remaining{' '}
+                              {maxQuantity - quantity} {unit} will stay
+                              available for other nonprofits.
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <div className='mt-5 flex justify-between'>
                       <button
-                        className='bg-gray-50 px-4 py-2'
+                        className='rounded-md border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200'
                         onClick={closePopup}
                       >
                         Cancel
@@ -75,7 +131,7 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
                       <button
                         className={`rounded-md px-4 py-2 text-white ${isClaim ? 'bg-blue-600 hover:bg-blue-700' : 'bg-red-500 hover:bg-red-600'}`}
                         onClick={() => {
-                          onConfirm();
+                          onConfirm(quantity);
                           closePopup();
                         }}
                       >

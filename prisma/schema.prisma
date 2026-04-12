@@ -122,10 +122,11 @@ model ProductRequest {
   status            ProductStatus   @default(AVAILABLE)
   supplierId        String
   supplier          Supplier        @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-  claimedById       String?
-  claimingNonprofit Nonprofit?      @relation(fields: [claimedById], references: [id], onDelete: Cascade)
-  pickupInfoId      String?         @unique
-  pickupInfo        PickupInfo?     @relation(fields: [pickupInfoId], references: [id], onDelete: Cascade)
+  claimedById        String?
+  claimingNonprofit  Nonprofit?      @relation(fields: [claimedById], references: [id], onDelete: Cascade)
+  pickupInfoId       String?         @unique
+  pickupInfo         PickupInfo?     @relation(fields: [pickupInfoId], references: [id], onDelete: Cascade)
+  originalProductId  String?         // set for records created via partial claim; points to the source product
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
