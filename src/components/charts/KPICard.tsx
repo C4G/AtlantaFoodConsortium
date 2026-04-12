@@ -63,13 +63,15 @@ export function KPICard({
                     ? 'text-green-600'
                     : trend.value < 0
                       ? 'text-red-600'
-                      : 'text-slate-600'
+                      : 'text-muted-foreground'
                 }`}
               >
                 {trend.value > 0 ? '↑' : trend.value < 0 ? '↓' : '→'}{' '}
                 {Math.abs(trend.value)}%
               </span>
-              <span className='ml-2 text-sm text-slate-500'>{trend.label}</span>
+              <span className='ml-2 text-sm text-muted-foreground'>
+                {trend.label}
+              </span>
             </div>
           )}
         </div>

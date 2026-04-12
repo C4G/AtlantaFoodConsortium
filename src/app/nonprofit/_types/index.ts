@@ -5,6 +5,8 @@ export interface ClaimedProduct {
   quantity: number;
   unit?: string;
   status: string;
+  /** ISO timestamp; used for “most recently claimed” sort (Prisma `updatedAt`). */
+  updatedAt?: string;
   productType: {
     id: string;
     protein: boolean;
