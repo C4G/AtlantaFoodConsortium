@@ -12,8 +12,6 @@ interface KPICardProps {
     value: number;
     label: string;
   };
-  active?: boolean;
-  onClick?: () => void;
 }
 
 export function KPICard({
@@ -23,8 +21,6 @@ export function KPICard({
   icon,
   info,
   trend,
-  active,
-  onClick,
 }: KPICardProps) {
   return (
     <div className='rounded-lg border border-border bg-card p-4 shadow-md transition-all hover:shadow-lg sm:p-6'>
