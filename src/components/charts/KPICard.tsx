@@ -27,33 +27,20 @@ export function KPICard({
   onClick,
 }: KPICardProps) {
   return (
-    <div
-      onClick={onClick}
-      className={`rounded-lg border p-4 shadow-md transition-all sm:p-6 ${
-        onClick ? 'cursor-pointer' : ''
-      } ${
-        active
-          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200 dark:border-blue-400 dark:bg-blue-950 dark:ring-blue-800'
-          : 'border-slate-200 bg-white hover:shadow-lg dark:border-border dark:bg-card'
-      }`}
-    >
+    <div className='rounded-lg border border-border bg-card p-4 shadow-md transition-all hover:shadow-lg sm:p-6'>
       <div className='flex items-start justify-between'>
         <div className='flex-1'>
           <div className='flex items-center gap-1.5'>
-            <p className='text-sm font-medium text-slate-600 dark:text-muted-foreground'>
-              {title}
-            </p>
+            <p className='text-sm font-medium text-muted-foreground'>{title}</p>
             {info && (
               <ChartInfoTooltip info={info} position='bottom' size='sm' />
             )}
           </div>
-          <p className='mt-2 text-2xl font-bold text-slate-900 dark:text-foreground sm:text-3xl'>
+          <p className='mt-2 text-2xl font-bold text-foreground sm:text-3xl'>
             {value}
           </p>
           {subtitle && (
-            <p className='mt-1 text-sm text-slate-500 dark:text-muted-foreground'>
-              {subtitle}
-            </p>
+            <p className='mt-1 text-sm text-muted-foreground'>{subtitle}</p>
           )}
           {trend && (
             <div className='mt-2 flex items-center'>
@@ -63,13 +50,15 @@ export function KPICard({
                     ? 'text-green-600'
                     : trend.value < 0
                       ? 'text-red-600'
-                      : 'text-slate-600'
+                      : 'text-muted-foreground'
                 }`}
               >
                 {trend.value > 0 ? '↑' : trend.value < 0 ? '↓' : '→'}{' '}
                 {Math.abs(trend.value)}%
               </span>
-              <span className='ml-2 text-sm text-slate-500'>{trend.label}</span>
+              <span className='ml-2 text-sm text-muted-foreground'>
+                {trend.label}
+              </span>
             </div>
           )}
         </div>
