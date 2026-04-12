@@ -33,20 +33,25 @@ export async function GET(request: NextRequest) {
   }
 
   const sessionToken = crypto.randomUUID();
-  const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  const expires = new Date(Date.now() + 8 * 60 * 60 * 1000); // 8 hours
 
   await prisma.session.create({
     data: { sessionToken, userId: user.id, expires },
   });
 
   const cookieStore = await cookies();
-  cookieStore.set('authjs.session-token', sessionToken, {
-    httpOnly: true,
-    sameSite: 'lax',
-    path: '/',
-    expires,
-    secure: false,
-  });
+  const isProduction = process.env.NODE_ENV === 'production';
+  cookieStore.set(
+    isProduction ? '__Secure-authjs.session-token' : 'authjs.session-token',
+    sessionToken,
+    {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      expires,
+      secure: isProduction,
+    }
+  );
 
   redirect('/');
 }
