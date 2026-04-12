@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import type { User } from '@prisma/client';
+import type { User } from '../../generated/prisma/client';
 
 interface UserDeleteDialogProps {
   user: User | null;

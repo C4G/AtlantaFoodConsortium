@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { ProductStatus, UserRole } from '@prisma/client';
+import { ProductStatus, UserRole } from '../../../generated/prisma/client';
 
 // Add interface for extended user type
 interface ExtendedUser {

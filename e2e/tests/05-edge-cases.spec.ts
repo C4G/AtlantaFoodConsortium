@@ -11,11 +11,16 @@
 
 import { test, expect } from '@playwright/test';
 import '../load-env';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../src/generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import { E2E_PREFIX, EDGE_CASE_PRODUCT_NAME, readState } from '../shared-state';
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
 
 test.describe('A — Unapproved nonprofit sees disabled claim button', () => {
   // We create a second nonprofit WITHOUT approval and use its session
@@ -24,7 +29,7 @@ test.describe('A — Unapproved nonprofit sees disabled claim button', () => {
   const UNAPPROVED_AUTH = 'e2e/.auth/unapproved.json';
 
   test.beforeAll(async () => {
-    const prisma = new PrismaClient();
+    const prisma = new PrismaClient({ adapter });
     try {
       // Clean up any previous run
       await prisma.session.deleteMany({
@@ -104,7 +109,7 @@ test.describe('A — Unapproved nonprofit sees disabled claim button', () => {
   });
 
   test.afterAll(async () => {
-    const prisma = new PrismaClient();
+    const prisma = new PrismaClient({ adapter });
     try {
       await prisma.session.deleteMany({
         where: { user: { email: UNAPPROVED_EMAIL } },

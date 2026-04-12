@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { resend } from './resend';
 import EmailProvider from 'next-auth/providers/nodemailer';
 import Google from 'next-auth/providers/google';
-import type { User } from '@prisma/client';
+import type { User } from '../generated/prisma/client';
 import { UserRole } from '../../types/types';
 
 export const authOptions: NextAuthConfig = {
