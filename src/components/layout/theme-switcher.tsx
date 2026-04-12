@@ -40,14 +40,17 @@ export function ThemeSwitcher() {
       className='inline-flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm text-foreground transition-colors hover:bg-accent hover:text-accent-foreground'
       aria-label='Toggle theme'
     >
-      <Sun className='mr-2 h-[1rem] w-[1rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
-      <Moon className='absolute mr-2 h-[1rem] w-[1rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
-      <span className='grow'>
-        {theme === 'dark' || (theme === 'system' && systemTheme === 'dark')
-          ? 'Light'
-          : 'Dark'}{' '}
-        Mode
-      </span>
-    </div>
+      {isDark ? (
+        <>
+          <Sun className='h-4 w-4' />
+          <span>Light mode</span>
+        </>
+      ) : (
+        <>
+          <Moon className='h-4 w-4' />
+          <span>Dark mode</span>
+        </>
+      )}
+    </button>
   );
 }
