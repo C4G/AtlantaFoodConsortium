@@ -9,6 +9,7 @@ const TEST_EMAILS: Record<string, string> = {
   supplier: 'test-supplier@afc.dev',
   nonprofit: 'test-nonprofit@afc.dev',
   other: 'test-other@afc.dev',
+  ricky: 'rickygyoungjr@gmail.com',
 };
 
 export async function GET(request: NextRequest) {

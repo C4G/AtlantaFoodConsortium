@@ -118,6 +118,12 @@ export default async function HomePage() {
                 color:
                   'bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200',
               },
+              {
+                role: 'ricky',
+                label: 'Ricky (Admin)',
+                color:
+                  'bg-purple-50 text-purple-700 hover:bg-purple-100 border-purple-200',
+              },
             ].map(({ role, label, color }) => (
               <a
                 key={role}
