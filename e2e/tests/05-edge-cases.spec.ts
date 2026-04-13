@@ -11,11 +11,16 @@
 
 import { test, expect } from '@playwright/test';
 import '../load-env';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../src/generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import { E2E_PREFIX, EDGE_CASE_PRODUCT_NAME, readState } from '../shared-state';
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
 
 test.describe('A — Unapproved nonprofit sees disabled claim button', () => {
   // We create a second nonprofit WITHOUT approval and use its session
@@ -24,7 +29,7 @@ test.describe('A — Unapproved nonprofit sees disabled claim button', () => {
   const UNAPPROVED_AUTH = 'e2e/.auth/unapproved.json';
 
   test.beforeAll(async () => {
-    const prisma = new PrismaClient();
+    const prisma = new PrismaClient({ adapter });
     try {
       // Clean up any previous run
       await prisma.session.deleteMany({
@@ -104,7 +109,7 @@ test.describe('A — Unapproved nonprofit sees disabled claim button', () => {
   });
 
   test.afterAll(async () => {
-    const prisma = new PrismaClient();
+    const prisma = new PrismaClient({ adapter });
     try {
       await prisma.session.deleteMany({
         where: { user: { email: UNAPPROVED_EMAIL } },
@@ -152,19 +157,19 @@ test.describe('A — Unapproved nonprofit sees disabled claim button', () => {
   });
 });
 
-// ─── B. Claiming an already-RESERVED product returns an error ────────────
+// ─── B. Claiming an already-RESERVED product returns a conflict error ───
 
-test.describe('B — Double-claim a RESERVED product is idempotent', () => {
+test.describe('B — Double-claim a RESERVED product returns 409', () => {
   test.use({ storageState: 'e2e/.auth/nonprofit.json' });
 
-  test('PATCH /api/item-availability on already-RESERVED product returns 200 and status stays RESERVED', async ({
+  test('PATCH /api/item-availability on already-RESERVED product returns 409', async ({
     request,
   }) => {
     const state = readState();
     const productId = state.postedProductId;
 
     // The product was claimed in test 03 — its status is now RESERVED.
-    // A second PATCH should still respond. the API responds and the status stays RESERVED.
+    // The API guards against re-claiming and returns 409 Conflict.
     if (!productId) {
       console.warn(
         'postedProductId not found in state — skipping double-claim check'
@@ -176,9 +181,10 @@ test.describe('B — Double-claim a RESERVED product is idempotent', () => {
       data: { productId },
     });
 
-    // The API has no guard against re-claiming
-    // RESERVED again and returns 200.
-    expect(res.status()).toBe(200);
+    // API correctly rejects claiming an already-RESERVED product.
+    expect(res.status()).toBe(409);
+    const body = await res.json();
+    expect(body.error).toMatch(/no longer available/i);
 
     // Confirm the product is still RESERVED in the DB
     const getRes = await request.get(`/api/item-availability?status=RESERVED`);

@@ -87,7 +87,11 @@ jobs:
           package-type: 'container'
           min-versions-to-keep: 10
           delete-only-untagged-versions: 'false'
-
-      - name: Deploy to Coolify
-        run: |
-          curl --request GET '${{ secrets.STAGING_DEPLOY_URL }}' --header 'Authorization: Bearer ${{ secrets.DEPLOY_KEY }}'
+          
+      - name: Deploy to staging
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_KEY }}
+          script: sudo /atlanta-food-consortium-staging/update.sh
