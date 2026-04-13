@@ -4,7 +4,7 @@ import AnnouncementNotification from '@/emails/AnnouncementNotification';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { resend } from '@/lib/resend';
-import { GroupType } from '@prisma/client';
+import { GroupType } from '@/generated/prisma/client';
 
 export async function POST(req: Request) {
   try {

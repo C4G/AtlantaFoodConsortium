@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { UserMenu } from '@/components/layout/user-menu';
+import { QuickLoginForm } from '@/components/dev/quick-login-form';
 import Link from 'next/link';
 import { UserRole } from '../../types/types';
 
@@ -118,12 +119,6 @@ export default async function HomePage() {
                 color:
                   'bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200',
               },
-              {
-                role: 'ricky',
-                label: 'Ricky (Admin)',
-                color:
-                  'bg-purple-50 text-purple-700 hover:bg-purple-100 border-purple-200',
-              },
             ].map(({ role, label, color }) => (
               <a
                 key={role}
@@ -133,6 +128,7 @@ export default async function HomePage() {
                 {label}
               </a>
             ))}
+            <QuickLoginForm />
           </div>
         </div>
       </div>
