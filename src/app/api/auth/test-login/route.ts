@@ -27,14 +27,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const user = await prisma.user.findUnique({ where: { email } });
-
-  if (!user) {
-    return NextResponse.json(
-      { error: 'Test user not found. Run db:seed first.' },
-      { status: 404 }
-    );
-  }
+  const user = await prisma.user.upsert({
+    where: { email },
+    update: {},
+    create: {
+      email,
+      name: email.split('@')[0],
+      emailVerified: new Date(),
+      role: 'ADMIN',
+    },
+  });
 
   const sessionToken = crypto.randomUUID();
   const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
