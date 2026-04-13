@@ -4,7 +4,6 @@ import AnnouncementNotification from '@/emails/AnnouncementNotification';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { resend } from '@/lib/resend';
-import { GroupType } from '@/generated/prisma/client';
 
 export async function POST(req: Request) {
   try {
@@ -38,11 +37,9 @@ export async function POST(req: Request) {
 
     // Build role filter based on groupType
     const roleFilter =
-      announcement.groupType === GroupType.ALL
+      announcement.groupType === 'ALL'
         ? {}
-        : {
-            role: announcement.groupType as unknown as typeof announcement.groupType,
-          };
+        : { role: announcement.groupType as string };
 
     const users = await prisma.user.findMany({
       where: roleFilter,
