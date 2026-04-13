@@ -101,6 +101,11 @@ describe('/api/nonprofits - GET', () => {
       where: { id: nonprofitId },
       include: {
         productsClaimed: {
+          orderBy: {
+            pickupInfo: {
+              pickupDate: 'asc',
+            },
+          },
           include: {
             productType: true,
             pickupInfo: true,
