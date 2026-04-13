@@ -153,7 +153,7 @@ export function DiscussionThreadsGrid() {
     }
 
     try {
-      await createThread({
+      const newThread = await createThread({
         title: form.title,
         content: form.content ?? '',
         groupType: form.groupType ?? Group.ADMIN,
@@ -161,6 +161,15 @@ export function DiscussionThreadsGrid() {
       setOpenDialog(false);
       setForm({});
       loadThreads();
+      try {
+        await fetch('/api/discussion-emails', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ threadId: newThread.id }),
+        });
+      } catch (emailErr) {
+        console.error('Failed to send discussion emails:', emailErr);
+      }
     } catch (err) {
       console.error('Failed to create thread:', err);
     }

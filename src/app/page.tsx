@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { UserMenu } from '@/components/layout/user-menu';
+import { QuickLoginForm } from '@/components/dev/quick-login-form';
 import Link from 'next/link';
 import { UserRole } from '../../types/types';
 
@@ -127,6 +128,7 @@ export default async function HomePage() {
                 {label}
               </a>
             ))}
+            <QuickLoginForm />
           </div>
         </div>
       </div>

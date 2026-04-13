@@ -13,10 +13,18 @@ const TEST_EMAILS: Record<string, string> = {
 
 export async function GET(request: NextRequest) {
   const role = request.nextUrl.searchParams.get('role')?.toLowerCase();
-  const email = role ? TEST_EMAILS[role] : null;
+  const directEmail = request.nextUrl.searchParams
+    .get('email')
+    ?.toLowerCase()
+    .trim();
+
+  const email = directEmail ?? (role ? TEST_EMAILS[role] : null);
 
   if (!email) {
-    return NextResponse.json({ error: 'Invalid role.' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Provide a role or email param.' },
+      { status: 400 }
+    );
   }
 
   const user = await prisma.user.findUnique({ where: { email } });
