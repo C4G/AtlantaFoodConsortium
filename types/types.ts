@@ -10,6 +10,13 @@ export enum UserRole {
   OTHER = 'OTHER',
 }
 
+export enum GroupType {
+  ALL = 'ALL',
+  ADMIN = 'ADMIN',
+  SUPPLIER = 'SUPPLIER',
+  NONPROFIT = 'NONPROFIT',
+}
+
 export enum ItemType {
   PROTEIN = 'PROTEIN',
   PRODUCE = 'PRODUCE',

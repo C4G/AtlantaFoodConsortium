@@ -4,6 +4,7 @@ import NewThreadNotification from '@/emails/NewThreadNotification';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { resend } from '@/lib/resend';
+import { GroupType } from '../../../../types/types';
 
 export async function POST(req: Request) {
   try {
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
 
     // Build role filter based on groupType
     const roleFilter =
-      thread.groupType === 'ALL' ? {} : { role: thread.groupType as string };
+      thread.groupType === GroupType.ALL ? {} : { role: thread.groupType };
 
     const users = await prisma.user.findMany({
       where: roleFilter,
