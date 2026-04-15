@@ -82,65 +82,65 @@ const ClaimsTab = ({
   return (
     <div className='space-y-6'>
       {/* Product Interests Section */}
-      <div className='rounded-xl border border-slate-200 bg-white p-6 shadow-lg'>
-        <h2 className='mb-4 text-xl font-semibold text-slate-800'>
+      <div className='rounded-xl border border-border bg-card p-6 shadow-lg'>
+        <h2 className='mb-4 text-xl font-semibold text-foreground'>
           Your Product Interests
         </h2>
         {productInterests ? (
           <div className='grid gap-4 md:grid-cols-2'>
             {productInterests.protein && (
-              <div className='rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-sm'>
-                <h3 className='font-semibold text-slate-800'>Protein</h3>
-                <p className='text-slate-700'>
+              <div className='rounded-lg border border-border bg-muted/40 p-4 shadow-sm'>
+                <h3 className='font-semibold text-foreground'>Protein</h3>
+                <p className='text-muted-foreground'>
                   Types: {productInterests.proteinTypes.join(', ')}
                 </p>
               </div>
             )}
             {productInterests.produce && (
-              <div className='rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-sm'>
-                <h3 className='font-semibold text-slate-800'>Produce</h3>
-                <p className='text-slate-700'>
+              <div className='rounded-lg border border-border bg-muted/40 p-4 shadow-sm'>
+                <h3 className='font-semibold text-foreground'>Produce</h3>
+                <p className='text-muted-foreground'>
                   Type: {productInterests.produceType}
                 </p>
               </div>
             )}
             {productInterests.shelfStable && (
-              <div className='rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-sm'>
-                <h3 className='font-semibold text-slate-800'>Shelf Stable</h3>
-                <p className='text-slate-700'>
+              <div className='rounded-lg border border-border bg-muted/40 p-4 shadow-sm'>
+                <h3 className='font-semibold text-foreground'>Shelf Stable</h3>
+                <p className='text-muted-foreground'>
                   Type: {productInterests.shelfStableType}
                 </p>
               </div>
             )}
             {productInterests.shelfStableIndividualServing && (
-              <div className='rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-sm'>
-                <h3 className='font-semibold text-slate-800'>
+              <div className='rounded-lg border border-border bg-muted/40 p-4 shadow-sm'>
+                <h3 className='font-semibold text-foreground'>
                   Individual Shelf Stable
                 </h3>
-                <p className='text-slate-700'>
+                <p className='text-muted-foreground'>
                   Type: {productInterests.shelfStableIndividualServingType}
                 </p>
               </div>
             )}
             {productInterests.alreadyPreparedFood && (
-              <div className='rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-sm'>
-                <h3 className='font-semibold text-slate-800'>Prepared Food</h3>
-                <p className='text-slate-700'>
+              <div className='rounded-lg border border-border bg-muted/40 p-4 shadow-sm'>
+                <h3 className='font-semibold text-foreground'>Prepared Food</h3>
+                <p className='text-muted-foreground'>
                   Type: {productInterests.alreadyPreparedFoodType}
                 </p>
               </div>
             )}
             {productInterests.other && (
-              <div className='rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-sm'>
-                <h3 className='font-semibold text-slate-800'>Other</h3>
-                <p className='text-slate-700'>
+              <div className='rounded-lg border border-border bg-muted/40 p-4 shadow-sm'>
+                <h3 className='font-semibold text-foreground'>Other</h3>
+                <p className='text-muted-foreground'>
                   Type: {productInterests.otherType}
                 </p>
               </div>
             )}
           </div>
         ) : (
-          <p className='text-center text-slate-500'>
+          <p className='text-center text-muted-foreground'>
             No product interests found
           </p>
         )}
@@ -245,7 +245,9 @@ const ClaimsTab = ({
             />
           </div>
         ) : (
-          <p className='text-center text-slate-500'>No products claimed yet</p>
+          <p className='text-center text-muted-foreground'>
+            No products claimed yet
+          </p>
         )}
       </div>
     </div>

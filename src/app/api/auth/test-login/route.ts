@@ -12,50 +12,44 @@ const TEST_EMAILS: Record<string, string> = {
 };
 
 export async function GET(request: NextRequest) {
-  const role = request.nextUrl.searchParams.get('role')?.toLowerCase();
-  const directEmail = request.nextUrl.searchParams
-    .get('email')
-    ?.toLowerCase()
-    .trim();
+  if (process.env.ENABLE_TEST_LOGIN !== 'true') {
+    return NextResponse.json({ error: 'Not found.' }, { status: 404 });
+  }
 
-  const email = directEmail ?? (role ? TEST_EMAILS[role] : null);
+  const role = request.nextUrl.searchParams.get('role')?.toLowerCase();
+  const email = role ? TEST_EMAILS[role] : null;
 
   if (!email) {
+    return NextResponse.json({ error: 'Invalid role.' }, { status: 400 });
+  }
+
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) {
     return NextResponse.json(
-      { error: 'Provide a role or email param.' },
-      { status: 400 }
+      { error: 'Test user not found. Run db:seed first.' },
+      { status: 404 }
     );
   }
 
-  const user = await prisma.user.upsert({
-    where: { email },
-    update: {},
-    create: {
-      email,
-      name: email.split('@')[0],
-      emailVerified: new Date(),
-      role: 'ADMIN',
-    },
-  });
-
   const sessionToken = crypto.randomUUID();
-  const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  const expires = new Date(Date.now() + 8 * 60 * 60 * 1000); // 8 hours
 
   await prisma.session.create({
     data: { sessionToken, userId: user.id, expires },
   });
 
   const cookieStore = await cookies();
-  const isSecure = process.env.NODE_ENV === 'production';
+  const isProduction = process.env.NODE_ENV === 'production';
   cookieStore.set(
-    isSecure ? '__Secure-authjs.session-token' : 'authjs.session-token',
+    isProduction ? '__Secure-authjs.session-token' : 'authjs.session-token',
     sessionToken,
     {
       httpOnly: true,
       sameSite: 'lax',
       path: '/',
       expires,
-      secure: isSecure,
+      secure: isProduction,
     }
   );
 

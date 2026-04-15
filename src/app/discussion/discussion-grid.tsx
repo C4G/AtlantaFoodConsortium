@@ -6,12 +6,11 @@ import {
   AllCommunityModule,
   ModuleRegistry,
   type ColDef,
-  themeAlpine,
-  colorSchemeDark,
 } from 'ag-grid-community';
 import { type Thread, type Comment } from '../../generated/prisma/client';
 import { Group, GroupType } from '../../lib/group-type';
 import { useIsDarkTheme } from '@/hooks/use-is-dark-theme';
+import { agGridLightTheme, agGridDarkTheme } from '@/lib/ag-grid-theme';
 import {
   Dialog,
   DialogContent,
@@ -71,7 +70,7 @@ type ThreadWithAuthor = Thread & {
 export function DiscussionThreadsGrid() {
   const isDarkTheme = useIsDarkTheme();
   const agGridTheme = useMemo(
-    () => (isDarkTheme ? themeAlpine.withPart(colorSchemeDark) : themeAlpine),
+    () => (isDarkTheme ? agGridDarkTheme : agGridLightTheme),
     [isDarkTheme]
   );
 

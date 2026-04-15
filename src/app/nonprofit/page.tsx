@@ -71,9 +71,11 @@ const NonprofitDashboard = () => {
 
   if (loading) {
     return (
-      <div className='flex min-h-screen items-center justify-center bg-slate-50 p-4'>
-        <div className='w-full max-w-2xl rounded-xl bg-white p-6 shadow-lg'>
-          <p className='text-center text-lg text-slate-700'>Loading...</p>
+      <div className='flex min-h-screen items-center justify-center bg-background p-4'>
+        <div className='w-full max-w-2xl rounded-xl bg-card p-6 shadow-lg'>
+          <p className='text-center text-lg text-muted-foreground'>
+            Loading...
+          </p>
         </div>
       </div>
     );
@@ -81,9 +83,9 @@ const NonprofitDashboard = () => {
 
   if (!nonprofit) {
     return (
-      <div className='flex min-h-screen items-center justify-center bg-slate-50 p-4'>
-        <div className='w-full max-w-2xl rounded-xl bg-white p-6 shadow-lg'>
-          <p className='text-center text-lg text-red-600'>
+      <div className='flex min-h-screen items-center justify-center bg-background p-4'>
+        <div className='w-full max-w-2xl rounded-xl bg-card p-6 shadow-lg'>
+          <p className='text-center text-lg text-red-600 dark:text-red-400'>
             Error loading nonprofit data
           </p>
         </div>
@@ -92,16 +94,16 @@ const NonprofitDashboard = () => {
   }
 
   return (
-    <div className='min-h-screen bg-slate-50 p-8'>
+    <div className='min-h-screen bg-background p-8'>
       <div className='mx-auto max-w-7xl space-y-6'>
         {/* Organization Header */}
-        <div className='rounded-xl bg-white p-6 shadow-lg'>
+        <div className='rounded-xl bg-card p-6 shadow-lg'>
           <div className='flex items-start justify-between'>
             <div>
-              <h1 className='mb-2 text-3xl font-bold text-blue-600'>
+              <h1 className='mb-2 text-3xl font-bold text-blue-600 dark:text-blue-400'>
                 {nonprofit.name}
               </h1>
-              <p className='text-lg text-slate-700'>
+              <p className='text-lg text-muted-foreground'>
                 {nonprofit.organizationType
                   .replace(/_/g, ' ')
                   .replace(/\b\w/g, (char) => char.toUpperCase())}
@@ -110,7 +112,7 @@ const NonprofitDashboard = () => {
 
             <div className='text-right'>
               {nonprofit.nonprofitDocumentApproval === true ? (
-                <span className='inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800'>
+                <span className='inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900/40 dark:text-green-400'>
                   Approved
                 </span>
               ) : (
@@ -132,8 +134,8 @@ const NonprofitDashboard = () => {
                     <span
                       className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
                         nonprofit.nonprofitDocumentApproval === null
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-red-100 text-red-800'
+                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-400'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400'
                       }`}
                     >
                       Status:{' '}
