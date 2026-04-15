@@ -8,7 +8,8 @@ import {
   type ColDef,
   ICellRendererParams,
 } from 'ag-grid-community';
-import { GroupType, type Announcement } from '@prisma/client';
+import { type Announcement } from '../../generated/prisma/client';
+import { Group, GroupType } from '../../lib/group-type';
 import { useIsDarkTheme } from '@/hooks/use-is-dark-theme';
 import { agGridLightTheme, agGridDarkTheme } from '@/lib/ag-grid-theme';
 import {
@@ -110,7 +111,7 @@ export function AnnouncementsGrid() {
       title: '',
       content: '',
       createdBy: '',
-      groupType: GroupType.ADMIN,
+      groupType: Group.ADMIN,
     });
     setEditMode('create');
   };
@@ -130,6 +131,15 @@ export function AnnouncementsGrid() {
       if (editMode === 'create') {
         const newItem = await createAnnouncement(form);
         setAnnouncements((prev) => [newItem, ...prev]);
+        try {
+          await fetch('/api/announcement-emails', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ announcementId: newItem.id }),
+          });
+        } catch (emailErr) {
+          console.error('Failed to send announcement emails:', emailErr);
+        }
       } else if (editMode === 'edit' && form.id) {
         const updated = await updateAnnouncement(form.id, form);
         setAnnouncements((prev) =>
@@ -292,7 +302,7 @@ export function AnnouncementsGrid() {
             <div className='grid gap-1.5'>
               <Label>Target User Group</Label>
               <Select
-                value={form.groupType || GroupType.ADMIN}
+                value={form.groupType || Group.ADMIN}
                 onValueChange={(v) =>
                   setForm({ ...form, groupType: v as GroupType })
                 }
@@ -301,12 +311,9 @@ export function AnnouncementsGrid() {
                   <SelectValue placeholder='Select user group' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={GroupType.ADMIN}>Admin</SelectItem>
-                  <SelectItem value={GroupType.SUPPLIER}>Supplier</SelectItem>
-                  <SelectItem value={GroupType.NONPROFIT}>
-                    {' '}
-                    Non-Profit
-                  </SelectItem>
+                  <SelectItem value={Group.ADMIN}>Admin</SelectItem>
+                  <SelectItem value={Group.SUPPLIER}>Supplier</SelectItem>
+                  <SelectItem value={Group.NONPROFIT}> Non-Profit</SelectItem>
                 </SelectContent>
               </Select>
             </div>

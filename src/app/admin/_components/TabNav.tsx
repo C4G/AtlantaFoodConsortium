@@ -109,7 +109,7 @@ const TabNav = ({
             className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border p-6 shadow-md transition duration-200 ${
               activeTab === tab
                 ? 'border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950/40'
-                : 'border-border bg-card hover:border-blue-200 hover:bg-blue-50 dark:hover:border-blue-900 dark:hover:bg-blue-950/30'
+                : 'border-slate-200 bg-card hover:border-blue-200 hover:bg-blue-50 dark:border-border dark:hover:border-blue-900 dark:hover:bg-blue-950/30'
             }`}
             onClick={() => setActiveTab(tab)}
           >

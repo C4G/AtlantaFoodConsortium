@@ -5,15 +5,23 @@ import { Nonprofit, ProductRequest } from '../_types';
 interface AvailableProductsTabProps {
   availableProducts: ProductRequest[];
   nonprofit: Nonprofit;
-  claimConfirm: { open: boolean; productId: string; productName: string };
+  claimConfirm: {
+    open: boolean;
+    productId: string;
+    productName: string;
+    maxQuantity: number;
+    unit: string;
+  };
   setClaimConfirm: React.Dispatch<
     React.SetStateAction<{
       open: boolean;
       productId: string;
       productName: string;
+      maxQuantity: number;
+      unit: string;
     }>
   >;
-  handleClaimProduct: (_productId: string) => Promise<void>;
+  handleClaimProduct: (_productId: string, _quantity: number) => Promise<void>;
 }
 
 const AvailableProductsTab = ({
@@ -117,6 +125,8 @@ const AvailableProductsTab = ({
                       open: true,
                       productId: product.id,
                       productName: product.name,
+                      maxQuantity: product.quantity,
+                      unit: product.unit,
                     })
                   }
                   className='mt-4 rounded-md bg-blue-600 px-4 py-2 font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
@@ -149,10 +159,20 @@ const AvailableProductsTab = ({
       <ClaimConfirmationPopup
         openPopup={claimConfirm.open}
         closePopup={() =>
-          setClaimConfirm({ open: false, productId: '', productName: '' })
+          setClaimConfirm({
+            open: false,
+            productId: '',
+            productName: '',
+            maxQuantity: 0,
+            unit: '',
+          })
         }
         productName={claimConfirm.productName}
-        onConfirm={() => handleClaimProduct(claimConfirm.productId)}
+        maxQuantity={claimConfirm.maxQuantity}
+        unit={claimConfirm.unit}
+        onConfirm={(quantity) =>
+          handleClaimProduct(claimConfirm.productId, quantity)
+        }
       />
     </div>
   );

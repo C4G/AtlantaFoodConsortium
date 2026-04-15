@@ -1,0 +1,129 @@
+name: E2E Tests (Playwright)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      headless:
+        description: 'Run in headless mode'
+        required: false
+        default: 'true'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  playwright-e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: atlanta_food_user
+          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: atlanta_food_consortium
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U atlanta_food_user -d atlanta_food_consortium"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://atlanta_food_user:ci_password@localhost:5432/atlanta_food_consortium?schema=public
+      DATABASE_USER: atlanta_food_user
+      DATABASE_PW: ci_password
+      DATABASE_NAME: atlanta_food_consortium
+      DATABASE_HOST: localhost
+      DATABASE_PORT: "5432"
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET || 'ci-only-auth-secret-not-used-in-production' }}
+      NEXTAUTH_URL: http://localhost:3000
+      AUTH_TRUST_HOST: "true"
+      AUTH_GOOGLE_ID: ci-dummy-google-client-id
+      AUTH_GOOGLE_SECRET: ci-dummy-google-client-secret
+      RESEND_API_KEY: ci-dummy-resend-api-key
+      NEXT_PUBLIC_VAPID_PUBLIC_KEY: ci-dummy-vapid-public-key
+      VAPID_PRIVATE_KEY: ci-dummy-vapid-private-key
+      FILE_UPLOADS: /tmp/e2e-uploads
+      PLAYWRIGHT_HEADLESS: ${{ inputs.headless != 'false' && 'true' || 'false' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Create file upload directory
+        run: mkdir -p /tmp/e2e-uploads
+
+      - name: Run database migrations
+        run: npx prisma migrate deploy
+
+      - name: Seed database
+        run: npx prisma db seed
+
+      - name: Build Next.js application
+        run: npm run build
+
+      - name: Copy static assets into standalone output
+        run: |
+          cp -r .next/static .next/standalone/.next/static
+          cp -r public .next/standalone/public
+
+      - name: Start Next.js server and wait for ready
+        run: |
+          node .next/standalone/server.js > /tmp/server.log 2>&1 &
+          echo "Server PID: $!"
+          npx wait-on tcp:localhost:3000 --timeout 60000
+          echo "Server is ready"
+        env:
+          PORT: 3000
+          HOSTNAME: 0.0.0.0
+
+      - name: Run Playwright E2E tests
+        run: npm run test:e2e
+
+      - name: Print server logs on failure
+        if: failure()
+        run: cat /tmp/server.log || echo "No server log found"
+
+      - name: Upload Playwright HTML report
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: e2e/report/
+          retention-days: 7
+
+      - name: Upload test results on failure
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-results-${{ github.run_id }}
+          path: e2e/results/
+          retention-days: 7

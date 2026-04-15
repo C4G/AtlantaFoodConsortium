@@ -67,7 +67,7 @@ const NonprofitDashboard = () => {
     }
     const user = session.user as ExtendedUser;
     loadData(user.nonprofitId, user.productSurveyId);
-  }, [status]);
+  }, [status, session?.user, router, loadData]);
 
   if (loading) {
     return (

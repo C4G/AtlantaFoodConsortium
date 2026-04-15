@@ -1,0 +1,153 @@
+flowchart TD
+    %% ─────────────────────────────────────────────────────────
+    %%  STYLES
+    %% ─────────────────────────────────────────────────────────
+    classDef user      fill:#1e3a5f,stroke:#1e3a5f,color:#fff
+    classDef action    fill:#f8fafc,stroke:#94a3b8,color:#1e293b
+    classDef decision  fill:#fef3c7,stroke:#d97706,color:#1e293b
+    classDef email     fill:#d1fae5,stroke:#059669,color:#065f46
+    classDef status    fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e
+    classDef gate      fill:#fee2e2,stroke:#dc2626,color:#991b1b
+    classDef db        fill:#ede9fe,stroke:#7c3aed,color:#4c1d95
+
+    %% ═══════════════════════════════════════════════════════
+    %%  SECTION 1 — ENTRY & ROUTING
+    %% ═══════════════════════════════════════════════════════
+    subgraph ENTRY [" 🔐  Sign In & Role Routing "]
+        SIGNIN(["User Signs In"]):::user
+        ROLE_CHECK{"Has a role?"}:::decision
+        OTHER_HOME["🏠  Home\nDiscussions & Announcements only"]:::action
+        ONBOARD["📋  /onboarding\nChoose your role"]:::action
+    end
+
+    SIGNIN --> ROLE_CHECK
+    ROLE_CHECK -- "ADMIN"      --> ADMIN_DASH
+    ROLE_CHECK -- "SUPPLIER"   --> SUP_DASH
+    ROLE_CHECK -- "NONPROFIT"  --> NP_CHECK
+    ROLE_CHECK -- "OTHER"      --> OTHER_HOME
+    ROLE_CHECK -- "No role"    --> ONBOARD
+
+    %% ═══════════════════════════════════════════════════════
+    %%  SECTION 2 — ONBOARDING
+    %% ═══════════════════════════════════════════════════════
+    subgraph ONBOARDING [" 📋  Onboarding "]
+        ONB_NP_FORM["📝  Nonprofit Form\nOrg details · Storage · Product interests\nUpload 501c3 document"]:::action
+        ONB_SUP_FORM["📝  Supplier Form\nCompany name · Donation cadence"]:::action
+        NP_CREATED[("Nonprofit created\nApproval = null ⏳")]:::db
+        SUP_CREATED[("Supplier created")]:::db
+        EMAIL_ADMINS["📧  Email → All Admins\nNew nonprofit registration"]:::email
+    end
+
+    ONBOARD -- "Nonprofit" --> ONB_NP_FORM
+    ONBOARD -- "Supplier"  --> ONB_SUP_FORM
+
+    ONB_NP_FORM -->|"POST /api/users"| NP_CREATED
+    NP_CREATED  -->|"POST /api/nonprofit-registration-emails"| EMAIL_ADMINS
+    NP_CREATED  --> NP_CHECK
+
+    ONB_SUP_FORM -->|"POST /api/users"| SUP_CREATED
+    SUP_CREATED  --> SUP_DASH
+
+    %% ═══════════════════════════════════════════════════════
+    %%  SECTION 3 — ADMIN
+    %% ═══════════════════════════════════════════════════════
+    subgraph ADMIN_SECTION [" 🛠️  Admin Dashboard — /admin "]
+        ADMIN_DASH(["🛠️  Admin"]):::user
+        A_NP_TAB["Nonprofits Tab\nPending · Approved · Rejected"]:::action
+        A_SUP_TAB["Suppliers Tab\nCreate · Edit · Delete"]:::action
+        A_PR_TAB["Product Requests Tab\nView all · Edit · Delete"]:::action
+        A_ANN["Announcements\nPost to All / Supplier / Nonprofit"]:::action
+        A_REVIEW["Download & review\nnon­profit document"]:::action
+        A_DECISION{"Approve\nor Reject?"}:::decision
+        A_APPROVE[("npDocumentApproval = true ✅")]:::db
+        A_REJECT[("npDocumentApproval = false ❌")]:::db
+        EMAIL_NP_OK["📧  Email → Nonprofit Users\nRegistration APPROVED"]:::email
+        EMAIL_NP_NO["📧  Email → Nonprofit Users\nRegistration REJECTED"]:::email
+        A_PR_VIEW["View AVAILABLE / RESERVED\nSee claiming nonprofit"]:::action
+    end
+
+    ADMIN_DASH --> A_NP_TAB
+    ADMIN_DASH --> A_SUP_TAB
+    ADMIN_DASH --> A_PR_TAB
+    ADMIN_DASH --> A_ANN
+    A_NP_TAB   --> A_REVIEW
+    A_REVIEW   --> A_DECISION
+    A_DECISION -- "Approve" --> A_APPROVE
+    A_DECISION -- "Reject"  --> A_REJECT
+    A_APPROVE  -->|"POST /api/nonprofit-approval-status-emails"| EMAIL_NP_OK
+    A_REJECT   -->|"POST /api/nonprofit-approval-status-emails"| EMAIL_NP_NO
+    EMAIL_NP_OK --> NP_CHECK
+    EMAIL_NP_NO --> NP_CHECK
+    A_PR_TAB    --> A_PR_VIEW
+
+    %% ═══════════════════════════════════════════════════════
+    %%  SECTION 4 — SUPPLIER
+    %% ═══════════════════════════════════════════════════════
+    subgraph SUP_SECTION [" 🚚  Supplier Dashboard — /supplier "]
+        SUP_DASH(["🚚  Supplier"]):::user
+        S_OV["Overview Tab\nOrg profile"]:::action
+        S_PROD["My Products Tab\nPickup request table"]:::action
+        S_FORM["New Pickup Request Form\nCategory · Name · Qty · Unit\nPickup date, location & instructions"]:::action
+        S_DELETE["Delete product"]:::action
+        PR_CREATED[("ProductRequest(s) created\nstatus = AVAILABLE 🟢")]:::db
+        EMAIL_NP_AVAIL["📧  Batch Email → Approved Nonprofits\nwhose interests match the product type\nNew product available"]:::email
+        S_TABLE["Pickup Request Table\nMonitor status changes"]:::action
+    end
+
+    SUP_DASH --> S_OV
+    SUP_DASH --> S_PROD
+    S_PROD   --> S_FORM
+    S_PROD   --> S_DELETE
+    S_FORM   -->|"POST /api/product-requests/multiple"| PR_CREATED
+    PR_CREATED -->|"POST /api/product-availability-emails"| EMAIL_NP_AVAIL
+    PR_CREATED --> S_TABLE
+
+    %% ═══════════════════════════════════════════════════════
+    %%  SECTION 5 — NONPROFIT
+    %% ═══════════════════════════════════════════════════════
+    subgraph NP_SECTION [" 🏢  Nonprofit Dashboard — /nonprofit "]
+        NP_CHECK{"Approval\nStatus?"}:::decision
+        NP_PENDING_MSG["⚠️  Claim button DISABLED\nApproval pending"]:::gate
+        NP_REJECT_MSG["🚫  Claim button DISABLED\nDocument rejected — re-upload"]:::gate
+        NP_REUPLOAD[("Document re-uploaded\nApproval resets to null")]:::db
+        NP_DASH(["🏢  Nonprofit"]):::user
+        NP_OV["Overview Tab\nOrg profile & preferences"]:::action
+        NP_AVAIL["Available Products Tab"]:::action
+        NP_CLAIMS["My Claims Tab"]:::action
+        NP_BROWSE["Browse available products\nSupplier · Qty · Pickup details"]:::action
+        NP_CLAIM_BTN["Click 'Claim This Product'\nConfirmation modal"]:::action
+        PR_RESERVED[("status = RESERVED 🔵\nclaimedById = nonprofit")]:::db
+        EMAIL_SUP["📧  Email → Supplier Contact\nProduct claimed by [Nonprofit]\nIncludes pickup & contact info"]:::email
+    end
+
+    NP_CHECK -- "null — pending"   --> NP_PENDING_MSG
+    NP_CHECK -- "false — rejected" --> NP_REJECT_MSG
+    NP_CHECK -- "true — approved"  --> NP_DASH
+
+    NP_REJECT_MSG -->|"PATCH /api/nonprofit-documents"| NP_REUPLOAD
+    NP_REUPLOAD   -->|"POST /api/nonprofit-registration-emails"| EMAIL_ADMINS
+    NP_REUPLOAD   --> NP_CHECK
+
+    NP_DASH --> NP_OV
+    NP_DASH --> NP_AVAIL
+    NP_DASH --> NP_CLAIMS
+    NP_AVAIL   --> NP_BROWSE
+    NP_BROWSE  --> NP_CLAIM_BTN
+    NP_CLAIM_BTN -->|"PATCH /api/item-availability"| PR_RESERVED
+    PR_RESERVED  -->|"POST /api/product-request-claimed-emails"| EMAIL_SUP
+    PR_RESERVED  --> NP_CLAIMS
+
+    %% ═══════════════════════════════════════════════════════
+    %%  SECTION 6 — SHARED
+    %% ═══════════════════════════════════════════════════════
+    subgraph SHARED_SECTION [" 💬  Shared Features — All Authenticated Users "]
+        SHARED["💬  Discussions\n/discussion"]:::status
+        SHARED2["📢  Announcements\n/announcements"]:::status
+    end
+
+    NP_DASH    -.-> SHARED
+    SUP_DASH   -.-> SHARED
+    ADMIN_DASH -.-> SHARED
+    NP_DASH    -.-> SHARED2
+    SUP_DASH   -.-> SHARED2
+    ADMIN_DASH -.-> SHARED2

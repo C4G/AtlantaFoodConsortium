@@ -9,7 +9,7 @@ import {
   type RowValueChangedEvent,
   type ICellRendererParams,
 } from 'ag-grid-community';
-import type { User } from '@prisma/client';
+import type { User } from '../../generated/prisma/client';
 import { useIsDarkTheme } from '@/hooks/use-is-dark-theme';
 import { agGridLightTheme, agGridDarkTheme } from '@/lib/ag-grid-theme';
 import { toast } from '@/hooks/use-toast';
