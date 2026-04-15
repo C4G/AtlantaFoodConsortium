@@ -13,6 +13,7 @@
 import { test, expect } from '@playwright/test';
 import '../load-env';
 import { PrismaClient } from '../../src/generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { E2E_PREFIX } from '../shared-state';
 
 test.use({ storageState: 'e2e/.auth/admin.json' });
@@ -23,7 +24,8 @@ const TEST_ANNOUNCEMENT_CONTENT =
   'This is an automated E2E test announcement. Please ignore.';
 
 test.afterAll(async () => {
-  const prisma = new PrismaClient();
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+  const prisma = new PrismaClient({ adapter });
   try {
     await prisma.announcement.deleteMany({
       where: { title: { startsWith: E2E_PREFIX } },
