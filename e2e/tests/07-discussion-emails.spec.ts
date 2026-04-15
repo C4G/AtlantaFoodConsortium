@@ -12,7 +12,7 @@
 
 import { test, expect } from '@playwright/test';
 import '../load-env';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../src/generated/prisma/client';
 import { E2E_PREFIX } from '../shared-state';
 
 test.use({ storageState: 'e2e/.auth/admin.json' });
