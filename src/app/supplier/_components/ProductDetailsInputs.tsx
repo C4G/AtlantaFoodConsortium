@@ -16,6 +16,12 @@ interface ProductDetailsInputsProps {
   formatSnakeCase: (_text: string) => string;
 }
 
+const inputClass = (hasError: boolean) =>
+  `w-full rounded-md border ${hasError ? 'border-red-500' : 'border-slate-200 dark:border-border'} bg-slate-50 dark:bg-secondary px-3 py-2 text-sm text-slate-700 dark:text-muted-foreground shadow-sm focus:border-blue-300 focus:bg-white dark:focus:bg-secondary focus:outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-800`;
+
+const selectClass =
+  'w-full rounded-md border border-slate-200 dark:border-border bg-slate-50 dark:bg-secondary px-3 py-2 text-sm text-slate-700 dark:text-muted-foreground shadow-sm focus:border-blue-300 focus:bg-white dark:focus:bg-secondary focus:outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-800';
+
 const ProductDetailsInputs = ({
   formData,
   register,
@@ -27,15 +33,20 @@ const ProductDetailsInputs = ({
 
   return (
     <div className='space-y-6'>
-      <h2 className='mb-4 text-xl font-semibold text-black'>Product Details</h2>
+      <h2 className='mb-4 text-lg font-semibold text-slate-800 dark:text-foreground'>
+        Product Details
+      </h2>
       {formData.productTypes.map((type) => (
-        <div key={type} className='space-y-4 rounded-md border p-4'>
-          <h3 className='text-lg font-medium text-black'>
+        <div
+          key={type}
+          className='space-y-4 rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-border dark:bg-card/50'
+        >
+          <h3 className='text-sm font-semibold text-slate-700 dark:text-muted-foreground'>
             {formatSnakeCase(type)} Details
           </h3>
 
           <div>
-            <label className='mb-2 block text-sm font-medium text-black'>
+            <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
               Item Name
             </label>
             <input
@@ -47,18 +58,18 @@ const ProductDetailsInputs = ({
               name={`productDetails.${type}.name`}
               value={formData.productDetails[type]?.name || ''}
               onChange={(e) => handleProductDetailsChange(e, type)}
-              className={`w-full rounded-md border ${errors?.productDetails?.[type]?.name ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className={inputClass(!!errors?.productDetails?.[type]?.name)}
               placeholder='Enter item name'
             />
             {errors?.productDetails?.[type]?.name && (
-              <span className='text-red-500'>
+              <span className='text-sm text-red-500'>
                 {errors?.productDetails?.[type]?.name.message}
               </span>
             )}
           </div>
 
           <div>
-            <label className='mb-2 block text-sm font-medium text-black'>
+            <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
               Item Description
             </label>
             <textarea
@@ -70,11 +81,13 @@ const ProductDetailsInputs = ({
               value={formData.productDetails[type]?.description || ''}
               onChange={(e) => handleProductDetailsChange(e, type)}
               rows={3}
-              className={`w-full rounded-md border ${errors?.productDetails?.[type]?.description ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className={inputClass(
+                !!errors?.productDetails?.[type]?.description
+              )}
               placeholder='Enter item description'
             />
             {errors?.productDetails?.[type]?.description && (
-              <span className='text-red-500'>
+              <span className='text-sm text-red-500'>
                 {errors?.productDetails?.[type]?.description.message}
               </span>
             )}
@@ -83,14 +96,14 @@ const ProductDetailsInputs = ({
           {type === ItemType.PROTEIN ? (
             <>
               <div>
-                <label className='mb-2 block text-sm font-medium text-black'>
+                <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                   Protein Type
                 </label>
                 <select
                   name={`productDetails.${type}.specifics`}
                   value={formData.productDetails[type]?.specifics || ''}
                   onChange={(e) => handleProductDetailsChange(e, type)}
-                  className='w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                  className={selectClass}
                 >
                   <option value=''>Select type</option>
                   <option value='beef'>Beef</option>
@@ -99,38 +112,36 @@ const ProductDetailsInputs = ({
                   <option value='other'>Other</option>
                 </select>
               </div>
-              <div className='flex gap-4'>
-                <label className='flex items-center text-black'>
-                  <input
-                    type='radio'
-                    name={`productDetails.${type}.condition`}
-                    value='fresh'
-                    checked={
-                      formData.productDetails[type]?.condition === 'fresh'
-                    }
-                    onChange={(e) => handleProductDetailsChange(e, type)}
-                    className='mr-2'
-                  />
-                  Fresh
-                </label>
-                <label className='flex items-center text-black'>
-                  <input
-                    type='radio'
-                    name={`productDetails.${type}.condition`}
-                    value='frozen'
-                    checked={
-                      formData.productDetails[type]?.condition === 'frozen'
-                    }
-                    onChange={(e) => handleProductDetailsChange(e, type)}
-                    className='mr-2'
-                  />
-                  Frozen
-                </label>
+              <div className='flex gap-2'>
+                {(['fresh', 'frozen'] as const).map((condition) => {
+                  const isSelected =
+                    formData.productDetails[type]?.condition === condition;
+                  return (
+                    <label
+                      key={condition}
+                      className={`flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2.5 text-sm transition-colors ${
+                        isSelected
+                          ? 'border-blue-300 bg-blue-50 text-blue-700 ring-1 ring-blue-200 dark:border-blue-600 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'
+                          : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-border dark:bg-card dark:text-muted-foreground dark:hover:border-slate-600 dark:hover:bg-secondary'
+                      }`}
+                    >
+                      <input
+                        type='radio'
+                        name={`productDetails.${type}.condition`}
+                        value={condition}
+                        checked={isSelected}
+                        onChange={(e) => handleProductDetailsChange(e, type)}
+                        className='h-4 w-4 border-slate-300 bg-white text-blue-600 focus:ring-blue-200 dark:border-slate-500 dark:bg-secondary'
+                      />
+                      {condition.charAt(0).toUpperCase() + condition.slice(1)}
+                    </label>
+                  );
+                })}
               </div>
             </>
           ) : (
             <div>
-              <label className='mb-2 block text-sm font-medium text-black'>
+              <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                 Specify {formatSnakeCase(type)} Type
               </label>
               <input
@@ -138,7 +149,7 @@ const ProductDetailsInputs = ({
                 name={`productDetails.${type}.specifics`}
                 value={formData.productDetails[type]?.specifics || ''}
                 onChange={(e) => handleProductDetailsChange(e, type)}
-                className='w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                className={inputClass(false)}
                 placeholder='Enter details...'
               />
             </div>
@@ -146,14 +157,14 @@ const ProductDetailsInputs = ({
 
           <div className='mt-4 grid grid-cols-2 gap-4'>
             <div>
-              <label className='mb-2 block text-sm font-medium text-black'>
+              <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                 Measurement Units
               </label>
               <select
                 name={`productDetails.${type}.units`}
                 value={formData.productDetails[type]?.units || ''}
                 onChange={(e) => handleProductDetailsChange(e, type)}
-                className='w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                className={selectClass}
               >
                 {Object.values(MeasurementUnit).map((unit) => (
                   <option key={unit} value={unit}>
@@ -163,7 +174,7 @@ const ProductDetailsInputs = ({
               </select>
             </div>
             <div>
-              <label className='mb-2 block text-sm font-medium text-black'>
+              <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                 Quantity
               </label>
               <input
@@ -178,11 +189,13 @@ const ProductDetailsInputs = ({
                 min='0'
                 step='1.00'
                 inputMode='decimal'
-                className={`w-full rounded-md border ${errors?.productDetails?.[type]?.quantity ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                className={inputClass(
+                  !!errors?.productDetails?.[type]?.quantity
+                )}
                 placeholder='Enter quantity'
               />
               {errors?.productDetails?.[type]?.quantity && (
-                <span className='text-red-500'>
+                <span className='text-sm text-red-500'>
                   {errors?.productDetails?.[type]?.quantity.message}
                 </span>
               )}
