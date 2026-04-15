@@ -6,13 +6,12 @@ import {
   AllCommunityModule,
   ModuleRegistry,
   type ColDef,
-  themeAlpine,
-  colorSchemeDark,
   type RowValueChangedEvent,
   type ICellRendererParams,
 } from 'ag-grid-community';
 import type { User } from '@prisma/client';
 import { useIsDarkTheme } from '@/hooks/use-is-dark-theme';
+import { agGridLightTheme, agGridDarkTheme } from '@/lib/ag-grid-theme';
 import { toast } from '@/hooks/use-toast';
 import { useSession } from 'next-auth/react';
 import { UserDeleteDialog } from './user-delete-dialog';
@@ -85,7 +84,7 @@ const UsersGrid = () => {
   );
 
   const agGridTheme = useMemo(
-    () => (isDarkTheme ? themeAlpine.withPart(colorSchemeDark) : themeAlpine),
+    () => (isDarkTheme ? agGridDarkTheme : agGridLightTheme),
     [isDarkTheme]
   );
 

@@ -427,10 +427,10 @@ export default function NonprofitOnboardingPage() {
   };
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-slate-50 p-4'>
-      <div className='w-full max-w-2xl space-y-6 rounded-xl bg-white p-6 shadow-lg'>
+    <div className='flex min-h-screen items-center justify-center bg-muted p-4'>
+      <div className='w-full max-w-2xl space-y-6 rounded-xl bg-card p-6 shadow-lg'>
         <div className='flex items-center justify-between'>
-          <h1 className='text-2xl font-bold text-slate-900'>
+          <h1 className='text-2xl font-bold text-foreground'>
             Nonprofit Registration
           </h1>
         </div>
@@ -438,14 +438,14 @@ export default function NonprofitOnboardingPage() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className='space-y-6'>
             {/* Organization Information Section */}
-            <div className='rounded-lg border border-slate-200 bg-slate-50 p-4'>
-              <h2 className='mb-4 text-xl font-semibold text-slate-800'>
+            <div className='rounded-lg border border-border bg-muted p-4'>
+              <h2 className='mb-4 text-xl font-semibold text-foreground'>
                 Organization Information
               </h2>
 
               <div className='grid gap-4 md:grid-cols-2'>
                 <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Organization Name *
                   </label>
                   <input
@@ -456,7 +456,7 @@ export default function NonprofitOnboardingPage() {
                     })}
                     value={formData.companyName}
                     onChange={handleInputChange}
-                    className={`w-full rounded-md border ${errors.companyName ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400`}
+                    className={`w-full rounded-md border ${errors.companyName ? 'border-red-500' : 'border-border'} bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring`}
                     placeholder='Enter organization name'
                   />
                   {errors.companyName && (
@@ -467,7 +467,7 @@ export default function NonprofitOnboardingPage() {
                 </div>
 
                 <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Website *
                   </label>
                   <input
@@ -478,7 +478,7 @@ export default function NonprofitOnboardingPage() {
                     })}
                     value={formData.website}
                     onChange={handleInputChange}
-                    className={`w-full rounded-md border ${errors.website ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400`}
+                    className={`w-full rounded-md border ${errors.website ? 'border-red-500' : 'border-border'} bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring`}
                     placeholder='Enter website URL'
                   />
                   {errors.website && (
@@ -489,7 +489,7 @@ export default function NonprofitOnboardingPage() {
                 </div>
 
                 <div className='md:col-span-2'>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Organization Type *
                   </label>
                   <select
@@ -499,7 +499,7 @@ export default function NonprofitOnboardingPage() {
                     })}
                     value={formData.orgType}
                     onChange={handleOrgType}
-                    className={`w-full rounded-md border ${errors.orgType ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400`}
+                    className={`w-full rounded-md border ${errors.orgType ? 'border-red-500' : 'border-border'} bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring`}
                   >
                     <option value=''>Select Organization Type</option>
                     <option value='FOOD_BANK'>Food Bank</option>
@@ -517,7 +517,7 @@ export default function NonprofitOnboardingPage() {
                 </div>
 
                 <div className='md:col-span-2'>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Upload 501c3 Document *
                   </label>
                   <input
@@ -528,9 +528,9 @@ export default function NonprofitOnboardingPage() {
                     name='document'
                     accept='.pdf,.png,.jpg,.jpeg'
                     onChange={handleInputChange}
-                    className={`w-full rounded-md border ${errors.document ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400`}
+                    className={`w-full rounded-md border ${errors.document ? 'border-red-500' : 'border-border'} bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring`}
                   />
-                  <p className='mt-1 text-sm text-slate-500'>
+                  <p className='mt-1 text-sm text-muted-foreground'>
                     Accepted formats: PDF, PNG, JPG, JPEG (Max 50MB)
                   </p>
 
@@ -544,14 +544,14 @@ export default function NonprofitOnboardingPage() {
             </div>
 
             {/* Contact Information Section */}
-            <div className='rounded-lg border border-slate-200 bg-slate-50 p-4'>
-              <h2 className='mb-4 text-xl font-semibold text-slate-800'>
+            <div className='rounded-lg border border-border bg-muted p-4'>
+              <h2 className='mb-4 text-xl font-semibold text-foreground'>
                 Contact Information
               </h2>
 
               <div className='grid gap-4 md:grid-cols-2'>
                 <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Contact Name *
                   </label>
                   <input
@@ -562,7 +562,7 @@ export default function NonprofitOnboardingPage() {
                     })}
                     value={formData.contactName}
                     onChange={handleInputChange}
-                    className={`w-full rounded-md border ${errors.contactName ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400`}
+                    className={`w-full rounded-md border ${errors.contactName ? 'border-red-500' : 'border-border'} bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring`}
                     placeholder='Enter contact name'
                   />
                   {errors.contactName && (
@@ -573,7 +573,7 @@ export default function NonprofitOnboardingPage() {
                 </div>
 
                 <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Title *
                   </label>
                   <input
@@ -584,7 +584,7 @@ export default function NonprofitOnboardingPage() {
                     })}
                     value={formData.title}
                     onChange={handleInputChange}
-                    className={`w-full rounded-md border ${errors.title ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400`}
+                    className={`w-full rounded-md border ${errors.title ? 'border-red-500' : 'border-border'} bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring`}
                     placeholder='Enter title'
                   />
                   {errors.title && (
@@ -593,7 +593,7 @@ export default function NonprofitOnboardingPage() {
                 </div>
 
                 <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Email *
                   </label>
                   <input
@@ -604,7 +604,7 @@ export default function NonprofitOnboardingPage() {
                       required: 'Please provide an email address',
                     })}
                     onChange={handleInputChange}
-                    className={`w-full rounded-md border ${errors.email ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400`}
+                    className={`w-full rounded-md border ${errors.email ? 'border-red-500' : 'border-border'} bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring`}
                     placeholder='Enter email address'
                   />
                   {errors.email && (
@@ -613,7 +613,7 @@ export default function NonprofitOnboardingPage() {
                 </div>
 
                 <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Phone Number *
                   </label>
                   <input
@@ -625,8 +625,8 @@ export default function NonprofitOnboardingPage() {
                       required: 'Please provide a phone number',
                     })}
                     onChange={handleInputChange}
-                    // className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400'
-                    className={`w-full rounded-md border ${errors.phone ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400`}
+                    // className='w-full rounded-md border border-border bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring'
+                    className={`w-full rounded-md border ${errors.phone ? 'border-red-500' : 'border-border'} bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring`}
                     placeholder='Enter phone number (digits only)'
                     pattern='[0-9]{9,10}'
                     title='Phone number must be 9-10 digits'
@@ -647,14 +647,14 @@ export default function NonprofitOnboardingPage() {
             </div>
 
             {/* Resources & Capabilities Section */}
-            <div className='rounded-lg border border-slate-200 bg-slate-50 p-4'>
-              <h2 className='mb-4 text-xl font-semibold text-slate-800'>
+            <div className='rounded-lg border border-border bg-muted p-4'>
+              <h2 className='mb-4 text-xl font-semibold text-foreground'>
                 Resources & Capabilities
               </h2>
 
               <div className='grid gap-4 md:grid-cols-2'>
                 <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Do you have cold storage space?
                   </label>
                   <div className='space-y-2'>
@@ -666,11 +666,11 @@ export default function NonprofitOnboardingPage() {
                         value='yes'
                         checked={formData.coldStorage === 'yes'}
                         onChange={handleInputChange}
-                        className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                        className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                       />
                       <label
                         htmlFor='coldStorageYes'
-                        className='ml-2 text-sm text-slate-700'
+                        className='ml-2 text-sm text-muted-foreground'
                       >
                         Yes
                       </label>
@@ -683,11 +683,11 @@ export default function NonprofitOnboardingPage() {
                         value='no'
                         checked={formData.coldStorage === 'no'}
                         onChange={handleInputChange}
-                        className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                        className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                       />
                       <label
                         htmlFor='coldStorageNo'
-                        className='ml-2 text-sm text-slate-700'
+                        className='ml-2 text-sm text-muted-foreground'
                       >
                         No
                       </label>
@@ -696,7 +696,7 @@ export default function NonprofitOnboardingPage() {
                 </div>
 
                 <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Do you have shelf space?
                   </label>
                   <div className='space-y-2'>
@@ -708,11 +708,11 @@ export default function NonprofitOnboardingPage() {
                         value='yes'
                         checked={formData.shelfSpace === 'yes'}
                         onChange={handleInputChange}
-                        className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                        className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                       />
                       <label
                         htmlFor='shelfSpaceYes'
-                        className='ml-2 text-sm text-slate-700'
+                        className='ml-2 text-sm text-muted-foreground'
                       >
                         Yes
                       </label>
@@ -725,11 +725,11 @@ export default function NonprofitOnboardingPage() {
                         value='no'
                         checked={formData.shelfSpace === 'no'}
                         onChange={handleInputChange}
-                        className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                        className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                       />
                       <label
                         htmlFor='shelfSpaceNo'
-                        className='ml-2 text-sm text-slate-700'
+                        className='ml-2 text-sm text-muted-foreground'
                       >
                         No
                       </label>
@@ -738,7 +738,7 @@ export default function NonprofitOnboardingPage() {
                 </div>
 
                 <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Do you have transportation to pick up product?
                   </label>
                   <div className='space-y-2'>
@@ -750,11 +750,11 @@ export default function NonprofitOnboardingPage() {
                         value='yes'
                         checked={formData.transportation === 'yes'}
                         onChange={handleInputChange}
-                        className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                        className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                       />
                       <label
                         htmlFor='transportationYes'
-                        className='ml-2 text-sm text-slate-700'
+                        className='ml-2 text-sm text-muted-foreground'
                       >
                         Yes
                       </label>
@@ -767,11 +767,11 @@ export default function NonprofitOnboardingPage() {
                         value='no'
                         checked={formData.transportation === 'no'}
                         onChange={handleInputChange}
-                        className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                        className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                       />
                       <label
                         htmlFor='transportationNo'
-                        className='ml-2 text-sm text-slate-700'
+                        className='ml-2 text-sm text-muted-foreground'
                       >
                         No
                       </label>
@@ -780,7 +780,7 @@ export default function NonprofitOnboardingPage() {
                 </div>
 
                 <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     Funding Sources (Check all that apply)
                   </label>
                   <div className='space-y-2'>
@@ -791,11 +791,11 @@ export default function NonprofitOnboardingPage() {
                         name='donated'
                         checked={formData.budget.donated}
                         onChange={handleBudgetChange}
-                        className='h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500'
+                        className='h-4 w-4 rounded border-border text-blue-600 focus:ring-blue-500'
                       />
                       <label
                         htmlFor='donated'
-                        className='ml-2 text-sm text-slate-700'
+                        className='ml-2 text-sm text-muted-foreground'
                       >
                         Donated goods only
                       </label>
@@ -807,11 +807,11 @@ export default function NonprofitOnboardingPage() {
                         name='purchased'
                         checked={formData.budget.purchased}
                         onChange={handleBudgetChange}
-                        className='h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500'
+                        className='h-4 w-4 rounded border-border text-blue-600 focus:ring-blue-500'
                       />
                       <label
                         htmlFor='purchased'
-                        className='ml-2 text-sm text-slate-700'
+                        className='ml-2 text-sm text-muted-foreground'
                       >
                         Budget to purchase
                       </label>
@@ -822,14 +822,14 @@ export default function NonprofitOnboardingPage() {
             </div>
 
             {/* Product Interests Section */}
-            <div className='rounded-lg border border-slate-200 bg-slate-50 p-4'>
-              <h2 className='mb-4 text-xl font-semibold text-slate-800'>
+            <div className='rounded-lg border border-border bg-muted p-4'>
+              <h2 className='mb-4 text-xl font-semibold text-foreground'>
                 Product Interests
               </h2>
 
               <div className='space-y-4'>
                 <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700'>
+                  <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                     What product categories are you interested in receiving?
                   </label>
                   <div className='grid gap-2 md:grid-cols-2'>
@@ -843,7 +843,7 @@ export default function NonprofitOnboardingPage() {
                     ].map(([value, label]) => (
                       <label
                         key={value}
-                        className='flex items-center whitespace-nowrap text-black'
+                        className='flex items-center whitespace-nowrap text-foreground'
                       >
                         <input
                           type='checkbox'
@@ -861,8 +861,8 @@ export default function NonprofitOnboardingPage() {
 
                 {/* Render product interest details for selected categories */}
                 {formData.productCategory.length > 0 && (
-                  <div className='mt-4 rounded-md border border-slate-200 bg-white p-4'>
-                    <h3 className='mb-3 text-lg font-medium text-slate-800'>
+                  <div className='mt-4 rounded-md border border-border bg-card p-4'>
+                    <h3 className='mb-3 text-lg font-medium text-foreground'>
                       Specify Your Product Interests
                     </h3>
 
@@ -870,15 +870,15 @@ export default function NonprofitOnboardingPage() {
                       {formData.productCategory.map((category: string) => (
                         <div
                           key={category}
-                          className='rounded-md border border-slate-100 bg-slate-50 p-3'
+                          className='rounded-md border border-border bg-muted p-3'
                         >
-                          <label className='mb-2 block text-sm font-medium text-slate-700'>
+                          <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                             {category === 'protein'
                               ? 'What types of protein are you interested in?'
                               : `What specific ${category.replace('-', ' ')} products are you interested in?`}
                           </label>
                           {category === 'protein' ? (
-                            <div className='grid gap-2 text-slate-700 md:grid-cols-2'>
+                            <div className='grid gap-2 text-muted-foreground md:grid-cols-2'>
                               {[
                                 'beef',
                                 'poultry',
@@ -922,7 +922,7 @@ export default function NonprofitOnboardingPage() {
                                 )
                                 ?.proteinTypes.includes('other-protein') && (
                                 <div className='col-span-2 mt-2'>
-                                  <label className='mb-1 block text-sm text-slate-700'>
+                                  <label className='mb-1 block text-sm text-muted-foreground'>
                                     Please specify other protein type:
                                   </label>
                                   <input
@@ -941,7 +941,7 @@ export default function NonprofitOnboardingPage() {
                                         e.target.value
                                       )
                                     }
-                                    className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400'
+                                    className='w-full rounded-md border border-border bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring'
                                   />
                                 </div>
                               )}
@@ -964,7 +964,7 @@ export default function NonprofitOnboardingPage() {
                                     e.target.value
                                   )
                                 }
-                                className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400'
+                                className='w-full rounded-md border border-border bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring'
                               />
                             </div>
                           )}
@@ -980,7 +980,7 @@ export default function NonprofitOnboardingPage() {
               <button
                 type='button'
                 onClick={() => router.push('/onboarding')}
-                className='rounded-md border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2'
+                className='rounded-md border border-border bg-card px-4 py-2 font-medium text-muted-foreground shadow-sm transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
               >
                 Back
               </button>

@@ -27,13 +27,13 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
         aria-modal='true'
       >
         <div
-          className='fixed inset-0 bg-gray-500/75 transition-opacity'
+          className='bg-muted0/75 fixed inset-0 transition-opacity'
           aria-hidden='true'
         ></div>
         <div className='fixed inset-0 z-10 w-screen overflow-y-auto'>
           <div className='flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0'>
-            <div className='relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg'>
-              <div className='bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4'>
+            <div className='relative transform overflow-hidden rounded-lg bg-card text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg'>
+              <div className='bg-card px-4 pb-4 pt-5 sm:p-6 sm:pb-4'>
                 <div className='sm:flex sm:items-start'>
                   <div className='mt-3 w-full text-center sm:ml-4 sm:mt-0 sm:text-left'>
                     <h3
@@ -42,13 +42,13 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
                     >
                       {isClaim ? 'Claim This Product' : 'Unclaim This Product'}
                     </h3>
-                    <hr className='my-4 border-t border-gray-300' />
+                    <hr className='my-4 border-t border-border' />
                     <div className='mt-2'>
-                      <p className='text-center text-sm text-gray-500'>
+                      <p className='text-center text-sm text-muted-foreground'>
                         {isClaim ? (
                           <>
                             Are you sure you want to claim{' '}
-                            <span className='font-semibold text-slate-700'>
+                            <span className='font-semibold text-foreground'>
                               {productName}
                             </span>
                             ? You will be responsible for picking it up on the
@@ -57,7 +57,7 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
                         ) : (
                           <>
                             Are you sure you want to unclaim{' '}
-                            <span className='font-semibold text-slate-700'>
+                            <span className='font-semibold text-foreground'>
                               {productName}
                             </span>
                             ? It will be released back to the available pool.
@@ -67,7 +67,7 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
                     </div>
                     <div className='mt-5 flex justify-between'>
                       <button
-                        className='bg-gray-50 px-4 py-2'
+                        className='bg-muted px-4 py-2'
                         onClick={closePopup}
                       >
                         Cancel

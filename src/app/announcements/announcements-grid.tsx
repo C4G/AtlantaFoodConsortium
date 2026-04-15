@@ -6,12 +6,11 @@ import {
   AllCommunityModule,
   ModuleRegistry,
   type ColDef,
-  themeAlpine,
-  colorSchemeDark,
   ICellRendererParams,
 } from 'ag-grid-community';
 import { GroupType, type Announcement } from '@prisma/client';
 import { useIsDarkTheme } from '@/hooks/use-is-dark-theme';
+import { agGridLightTheme, agGridDarkTheme } from '@/lib/ag-grid-theme';
 import {
   Dialog,
   DialogContent,
@@ -70,7 +69,7 @@ type DeleteModal = {
 export function AnnouncementsGrid() {
   const isDarkTheme = useIsDarkTheme();
   const agGridTheme = useMemo(
-    () => (isDarkTheme ? themeAlpine.withPart(colorSchemeDark) : themeAlpine),
+    () => (isDarkTheme ? agGridDarkTheme : agGridLightTheme),
     [isDarkTheme]
   );
 

@@ -19,35 +19,39 @@ export default function LighthouseReportPage() {
       <div>
         <div className='mt-4 grid grid-cols-2 gap-4 rounded-lg p-4 sm:grid-cols-4'>
           {lighthouseScores.performanceScore !== null && (
-            <div className='rounded-lg bg-gray-50 p-4'>
-              <p className='text-sm font-medium text-gray-500'>Performance</p>
-              <p className='text-2xl font-semibold text-gray-900'>
+            <div className='rounded-lg bg-muted p-4'>
+              <p className='text-sm font-medium text-muted-foreground'>
+                Performance
+              </p>
+              <p className='text-2xl font-semibold text-foreground'>
                 {lighthouseScores.performanceScore}
               </p>
             </div>
           )}
           {lighthouseScores.accessibilityScore !== null && (
-            <div className='rounded-lg bg-gray-50 p-4'>
-              <p className='text-sm font-medium text-gray-500'>Accessibility</p>
-              <p className='text-2xl font-semibold text-gray-900'>
+            <div className='rounded-lg bg-muted p-4'>
+              <p className='text-sm font-medium text-muted-foreground'>
+                Accessibility
+              </p>
+              <p className='text-2xl font-semibold text-foreground'>
                 {lighthouseScores.accessibilityScore}
               </p>
             </div>
           )}
           {lighthouseScores.bestPracticesScore !== null && (
-            <div className='rounded-lg bg-gray-50 p-4'>
-              <p className='text-sm font-medium text-gray-500'>
+            <div className='rounded-lg bg-muted p-4'>
+              <p className='text-sm font-medium text-muted-foreground'>
                 Best Practices
               </p>
-              <p className='text-2xl font-semibold text-gray-900'>
+              <p className='text-2xl font-semibold text-foreground'>
                 {lighthouseScores.bestPracticesScore}
               </p>
             </div>
           )}
           {lighthouseScores.seoScore !== null && (
-            <div className='rounded-lg bg-gray-50 p-4'>
-              <p className='text-sm font-medium text-gray-500'>SEO</p>
-              <p className='text-2xl font-semibold text-gray-900'>
+            <div className='rounded-lg bg-muted p-4'>
+              <p className='text-sm font-medium text-muted-foreground'>SEO</p>
+              <p className='text-2xl font-semibold text-foreground'>
                 {lighthouseScores.seoScore}
               </p>
             </div>

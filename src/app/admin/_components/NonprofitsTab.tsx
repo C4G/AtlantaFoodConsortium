@@ -48,7 +48,8 @@ const NonprofitsTab = ({
 
   const DocumentCell = ({ nonprofitId }: { nonprofitId: string }) => {
     const document = getDocumentForNonprofit(nonprofitId);
-    if (!document) return <span className='text-slate-500'>No Document</span>;
+    if (!document)
+      return <span className='text-muted-foreground'>No Document</span>;
     return (
       <button
         onClick={() => downloadDocument(document)}
@@ -97,7 +98,7 @@ const NonprofitsTab = ({
                   ].map((header) => (
                     <th
                       key={header}
-                      className='border-b border-border px-6 py-3 text-sm font-medium text-slate-700'
+                      className='border-b border-border px-6 py-3 text-sm font-medium text-foreground'
                     >
                       {header}
                     </th>
@@ -203,7 +204,7 @@ const NonprofitsTab = ({
                   <td colSpan={5} className='border-b border-border px-6 py-4'>
                     <h3 className='flex items-center gap-2 text-lg font-semibold text-foreground'>
                       Processed Approvals
-                      <span className='inline-flex items-center justify-center rounded-full bg-slate-100 px-2.5 py-0.5 text-sm font-bold text-slate-700'>
+                      <span className='inline-flex items-center justify-center rounded-full bg-muted px-2.5 py-0.5 text-sm font-bold text-foreground'>
                         {processedNonprofits.length}
                       </span>
                     </h3>
