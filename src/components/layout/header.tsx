@@ -100,7 +100,7 @@ export function Header() {
               key={item.href}
               href={item.href}
               className={cn(
-                'shrink-0 text-sm font-medium whitespace-nowrap transition-colors hover:text-primary',
+                'shrink-0 whitespace-nowrap text-sm font-medium transition-colors hover:text-primary',
                 isNavActive(pathname, item.href)
                   ? 'text-primary'
                   : 'text-muted-foreground'

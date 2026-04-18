@@ -169,9 +169,7 @@ const ClaimsTab = ({
                 className='rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
               >
                 <option value='pickupSoonest'>Pickup Date (Soonest)</option>
-                <option value='recentlyClaimed'>
-                  Most Recently Claimed
-                </option>
+                <option value='recentlyClaimed'>Most Recently Claimed</option>
               </select>
             </div>
           )}
