@@ -126,6 +126,7 @@ const useClaim = ({
                 status: claimedProduct.status,
                 productType: claimedProduct.productType,
                 pickupInfo: claimedProduct.pickupInfo,
+                updatedAt: claimedProduct.updatedAt,
               },
             ],
           };
