@@ -8,9 +8,14 @@ import {
   ChevronUp,
   ChevronDown,
   ChevronsUpDown,
+  Users,
 } from 'lucide-react';
 import { DeletionConfirmationPopup } from '@/components/Supplier/DeletionConfirmationPopup';
 import { CopyRequestForm } from '@/components/Supplier/CopyRequestForm';
+import {
+  ClaimContactsModal,
+  ClaimContact,
+} from '@/components/Supplier/ClaimContactsModal';
 import { SupplierRowData } from '@/app/supplier/_types';
 
 type SortKey = 'foodName' | 'foodType' | 'foodStatus' | 'foodClaimer';
@@ -63,6 +68,11 @@ export function PickupRequestTable({
 }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showCopyRequestForm, setShowCopyRequestForm] = useState(false);
+  const [showContactsModal, setShowContactsModal] = useState(false);
+  const [contactsModalProduct, setContactsModalProduct] = useState('');
+  const [contactsModalData, setContactsModalData] = useState<ClaimContact[]>(
+    []
+  );
   const [foodId, setFoodId] = useState('');
   const [foodInfo, setFoodInfo] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
@@ -78,6 +88,40 @@ export function PickupRequestTable({
     }
   };
 
+  // Map each original product ID → its partial claim rows
+  const partialClaimsMap = useMemo(() => {
+    const map = new Map<string, SupplierRowData[]>();
+    for (const row of rowData) {
+      const origId = row.prod.originalProductId;
+      if (origId) {
+        if (!map.has(origId)) map.set(origId, []);
+        map.get(origId)!.push(row);
+      }
+    }
+    return map;
+  }, [rowData]);
+
+  const rowToContact = (row: SupplierRowData): ClaimContact => ({
+    nonprofitName: row.prod.claimingNonprofit?.name ?? null,
+    contactName: row.prod.nonprofitPickupContactName,
+    contactPhone: row.prod.nonprofitPickupContactPhone,
+    pickupDate: row.prod.nonprofitPickupDate,
+    timeframe: row.prod.nonprofitPickupTimeframe as string[],
+    quantity: row.prod.quantity,
+    isPartial: !!row.prod.originalProductId,
+  });
+
+  const openContactsModal = (row: SupplierRowData) => {
+    const partials = partialClaimsMap.get(row.foodId);
+    const contacts: ClaimContact[] =
+      partials && partials.length > 0
+        ? partials.map(rowToContact)
+        : [rowToContact(row)];
+    setContactsModalProduct(row.foodName);
+    setContactsModalData(contacts);
+    setShowContactsModal(true);
+  };
+
   const confirmDeletion = (prodId: string) => {
     setShowDeleteConfirmation(true);
     setFoodId(prodId);
@@ -88,8 +132,13 @@ export function PickupRequestTable({
     setFoodInfo(prodInfo);
   };
 
+  const displayRows = useMemo(
+    () => rowData.filter((r) => !r.prod.originalProductId),
+    [rowData]
+  );
+
   const filteredAndSorted = useMemo(() => {
-    let list = rowData;
+    let list = displayRows;
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter(
@@ -103,7 +152,7 @@ export function PickupRequestTable({
       const cmp = a[sortKey].localeCompare(b[sortKey]);
       return sortDir === 'asc' ? cmp : -cmp;
     });
-  }, [rowData, searchQuery, sortKey, sortDir]);
+  }, [displayRows, searchQuery, sortKey, sortDir]);
 
   return (
     <div className='h-full w-full'>
@@ -212,7 +261,20 @@ export function PickupRequestTable({
                       </span>
                     </td>
                     <td className='px-4 py-3'>
-                      <div className='flex items-center gap-3'>
+                      <div className='flex items-center gap-2'>
+                        {/* Contact button — visible when the product has been claimed
+                            (full RESERVED, partial RESERVED row, or AVAILABLE with
+                             partial claims pointing to it) */}
+                        {(row.prod.status === 'RESERVED' ||
+                          partialClaimsMap.has(row.foodId)) && (
+                          <button
+                            onClick={() => openContactsModal(row)}
+                            className='flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-50 hover:text-blue-800 dark:text-blue-400 dark:hover:bg-blue-900/30 dark:hover:text-blue-300'
+                          >
+                            <Users className='h-3.5 w-3.5' />
+                            Contact
+                          </button>
+                        )}
                         <button
                           onClick={() => duplicateRequest(row.prod)}
                           className='flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-muted-foreground dark:hover:bg-secondary dark:hover:text-foreground'
@@ -238,7 +300,7 @@ export function PickupRequestTable({
 
         {filteredAndSorted.length > 0 && (
           <div className='border-t border-slate-100 px-4 py-2.5 text-xs text-slate-400 dark:border-border'>
-            Showing {filteredAndSorted.length} of {rowData.length} requests
+            Showing {filteredAndSorted.length} of {displayRows.length} requests
           </div>
         )}
       </div>
@@ -253,6 +315,12 @@ export function PickupRequestTable({
         showCopyRequestForm={showCopyRequestForm}
         closeRequestForm={() => setShowCopyRequestForm(false)}
         productInfo={foodInfo}
+      />
+      <ClaimContactsModal
+        open={showContactsModal}
+        onClose={() => setShowContactsModal(false)}
+        productName={contactsModalProduct}
+        contacts={contactsModalData}
       />
     </div>
   );
