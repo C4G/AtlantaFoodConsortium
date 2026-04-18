@@ -79,6 +79,12 @@ export async function POST(req: Request) {
       pickupInstructions: product.pickupInfo.pickupInstructions,
       nonprofitContactEmail: supplierUser.email,
       nonprofitContactNumber: supplierUser.phoneNumber || '',
+      nonprofitPickupContactName:
+        product.nonprofitPickupContactName ?? undefined,
+      nonprofitPickupContactPhone:
+        product.nonprofitPickupContactPhone ?? undefined,
+      nonprofitPickupDate: product.nonprofitPickupDate?.toISOString(),
+      nonprofitPickupTimeframe: product.nonprofitPickupTimeframe,
     });
 
     const response = await resend.emails.send({

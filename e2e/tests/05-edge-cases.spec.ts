@@ -157,19 +157,19 @@ test.describe('A — Unapproved nonprofit sees disabled claim button', () => {
   });
 });
 
-// ─── B. Claiming an already-RESERVED product returns an error ────────────
+// ─── B. Claiming an already-RESERVED product returns a conflict error ───
 
-test.describe('B — Double-claim a RESERVED product is idempotent', () => {
+test.describe('B — Double-claim a RESERVED product returns 409', () => {
   test.use({ storageState: 'e2e/.auth/nonprofit.json' });
 
-  test('PATCH /api/item-availability on already-RESERVED product returns 200 and status stays RESERVED', async ({
+  test('PATCH /api/item-availability on already-RESERVED product returns 409', async ({
     request,
   }) => {
     const state = readState();
     const productId = state.postedProductId;
 
     // The product was claimed in test 03 — its status is now RESERVED.
-    // A second PATCH should still respond. the API responds and the status stays RESERVED.
+    // The API guards against re-claiming and returns 409 Conflict.
     if (!productId) {
       console.warn(
         'postedProductId not found in state — skipping double-claim check'
@@ -181,9 +181,10 @@ test.describe('B — Double-claim a RESERVED product is idempotent', () => {
       data: { productId },
     });
 
-    // The API has no guard against re-claiming
-    // RESERVED again and returns 200.
-    expect(res.status()).toBe(200);
+    // API correctly rejects claiming an already-RESERVED product.
+    expect(res.status()).toBe(409);
+    const body = await res.json();
+    expect(body.error).toMatch(/no longer available/i);
 
     // Confirm the product is still RESERVED in the DB
     const getRes = await request.get(`/api/item-availability?status=RESERVED`);
@@ -228,6 +229,19 @@ test.describe('C — Email failure is non-blocking during claim', () => {
     await productCard
       .getByRole('button', { name: /claim this product/i })
       .click();
+
+    // Fill required pickup contact fields
+    await page.locator('#np-contact-name').fill('Test Contact');
+    await page.locator('#np-contact-phone').fill('4045550099');
+    const pickupDate = new Date();
+    pickupDate.setDate(pickupDate.getDate() + 7);
+    await page
+      .locator('#np-pickup-date')
+      .fill(pickupDate.toISOString().split('T')[0]);
+    await page
+      .locator('input[name="np-pickup-timeframe"][value="MORNING"]')
+      .check();
+
     await page.getByRole('button', { name: /confirm claim/i }).click();
 
     await expect(
