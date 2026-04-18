@@ -89,6 +89,49 @@ export default async function HomePage() {
         <div className='mt-8 flex justify-center'>
           <UserMenu />
         </div>
+        {process.env.ENABLE_TEST_LOGIN === 'true' && (
+          <div className='border-t pt-4'>
+            <p className='mb-3 text-center text-xs font-semibold uppercase tracking-wide text-slate-400'>
+              Dev: quick login
+            </p>
+            <div className='grid grid-cols-2 gap-2'>
+              {[
+                {
+                  role: 'admin',
+                  label: 'Admin',
+                  color:
+                    'bg-red-50 text-red-700 hover:bg-red-100 border-red-200',
+                },
+                {
+                  role: 'supplier',
+                  label: 'Supplier',
+                  color:
+                    'bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200',
+                },
+                {
+                  role: 'nonprofit',
+                  label: 'Nonprofit',
+                  color:
+                    'bg-green-50 text-green-700 hover:bg-green-100 border-green-200',
+                },
+                {
+                  role: 'other',
+                  label: 'Other',
+                  color:
+                    'bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200',
+                },
+              ].map(({ role, label, color }) => (
+                <a
+                  key={role}
+                  href={`/api/auth/test-login?role=${role}`}
+                  className={`rounded-md border px-3 py-2 text-center text-sm font-medium transition ${color}`}
+                >
+                  {label}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
