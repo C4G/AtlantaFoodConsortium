@@ -84,7 +84,9 @@ describe('/api/nonprofits - GET', () => {
       productsClaimed: [],
     };
 
-    vi.mocked(prisma.nonprofit.findFirst).mockResolvedValue(nonprofitExists as any);
+    vi.mocked(prisma.nonprofit.findFirst).mockResolvedValue(
+      nonprofitExists as any
+    );
     vi.mocked(prisma.nonprofit.findUnique).mockResolvedValue(
       nonprofitDetails as any
     );
@@ -101,6 +103,11 @@ describe('/api/nonprofits - GET', () => {
       where: { id: nonprofitId },
       include: {
         productsClaimed: {
+          orderBy: {
+            pickupInfo: {
+              pickupDate: 'asc',
+            },
+          },
           include: {
             productType: true,
             pickupInfo: true,
@@ -412,6 +419,8 @@ describe('/api/nonprofits - PATCH', () => {
     const data = await response.json();
 
     expect(response.status).toBe(500);
-    expect(data).toEqual({ error: 'Failed to update nonprofit approval status' });
+    expect(data).toEqual({
+      error: 'Failed to update nonprofit approval status',
+    });
   });
 });
