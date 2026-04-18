@@ -112,11 +112,21 @@ export function PickupRequestTable({
   });
 
   const openContactsModal = (row: SupplierRowData) => {
-    const partials = partialClaimsMap.get(row.foodId);
-    const contacts: ClaimContact[] =
-      partials && partials.length > 0
-        ? partials.map(rowToContact)
-        : [rowToContact(row)];
+    const partials = partialClaimsMap.get(row.foodId) ?? [];
+
+    let contacts: ClaimContact[];
+    if (partials.length > 0) {
+      // Include all partial-claim children
+      contacts = partials.map(rowToContact);
+      // If the parent record itself is also directly claimed (the last chunk was
+      // claimed as a "full claim" of the remaining quantity), include it too.
+      if (row.prod.claimedById) {
+        contacts.push({ ...rowToContact(row), isPartial: true });
+      }
+    } else {
+      contacts = [rowToContact(row)];
+    }
+
     setContactsModalProduct(row.foodName);
     setContactsModalData(contacts);
     setShowContactsModal(true);
@@ -250,15 +260,35 @@ export function PickupRequestTable({
                       </span>
                     </td>
                     <td className='px-4 py-3'>
-                      <span
-                        className={`inline-flex rounded-md px-2 py-0.5 text-xs font-medium ${
-                          row.foodClaimer === 'Claimed'
-                            ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400'
-                            : 'bg-slate-100 text-slate-500 dark:bg-secondary dark:text-muted-foreground'
-                        }`}
-                      >
-                        {row.foodClaimer}
-                      </span>
+                      {(() => {
+                        const hasPartials = partialClaimsMap.has(row.foodId);
+                        // All units claimed when parent is RESERVED (last chunk was
+                        // a full-claim of remaining qty) and partial children exist
+                        const fullyClaimedViaPartials =
+                          hasPartials && row.prod.status === 'RESERVED';
+                        const isClaimed =
+                          row.foodClaimer === 'Claimed' ||
+                          fullyClaimedViaPartials;
+                        const label =
+                          hasPartials && !fullyClaimedViaPartials
+                            ? 'Partially Claimed'
+                            : isClaimed
+                              ? 'Claimed'
+                              : 'Not claimed';
+                        const style =
+                          hasPartials && !fullyClaimedViaPartials
+                            ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
+                            : isClaimed
+                              ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400'
+                              : 'bg-slate-100 text-slate-500 dark:bg-secondary dark:text-muted-foreground';
+                        return (
+                          <span
+                            className={`inline-flex rounded-md px-2 py-0.5 text-xs font-medium ${style}`}
+                          >
+                            {label}
+                          </span>
+                        );
+                      })()}
                     </td>
                     <td className='px-4 py-3'>
                       <div className='flex items-center gap-2'>
