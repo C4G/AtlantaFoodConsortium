@@ -177,6 +177,7 @@ const ClaimsTab = ({
         {nonprofit.productsClaimed.length > 0 ? (
           <div className='grid gap-4 md:grid-cols-2'>
             {sortedClaimedProducts.map((product) => {
+              const isPartial = !!product.originalProductId;
               const pickupLabel = new Date(
                 product.pickupInfo.pickupDate
               ).toLocaleDateString();
@@ -186,15 +187,25 @@ const ClaimsTab = ({
                   className='cursor-pointer rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-sm transition-all hover:border-blue-500 hover:shadow-md'
                   onClick={(e) => showItemDetails(e, product)}
                 >
-                  <h3 className='text-lg font-bold leading-snug tracking-tight text-slate-900'>
-                    {product.name}
-                  </h3>
+                  <div className='flex items-start justify-between gap-2'>
+                    <h3 className='text-lg font-bold leading-snug tracking-tight text-slate-900'>
+                      {product.name}
+                    </h3>
+                    {isPartial ? (
+                      <span className='shrink-0 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700'>
+                        Partially Claimed
+                      </span>
+                    ) : (
+                      <span className='shrink-0 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700'>
+                        Claimed
+                      </span>
+                    )}
+                  </div>
                   <p className='mt-2 text-base font-semibold text-blue-900'>
                     Pickup: {pickupLabel}
                   </p>
                   <div className='mt-3 space-y-1 border-t border-slate-200/80 pt-3 text-sm text-slate-600'>
                     <p>Quantity: {product.quantity}</p>
-                    <p>Status: {product.status}</p>
                     <p>Location: {product.pickupInfo.pickupLocation}</p>
                   </div>
                   <button
