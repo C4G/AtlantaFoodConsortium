@@ -1,5 +1,8 @@
 'use client';
-import { ClaimConfirmationPopup } from '@/components/Nonprofit/ClaimConfirmationPopup';
+import {
+  ClaimConfirmationPopup,
+  NonprofitPickupContact,
+} from '@/components/Nonprofit/ClaimConfirmationPopup';
 import { Nonprofit, ProductRequest } from '../_types';
 
 interface AvailableProductsTabProps {
@@ -21,7 +24,11 @@ interface AvailableProductsTabProps {
       unit: string;
     }>
   >;
-  handleClaimProduct: (_productId: string, _quantity: number) => Promise<void>;
+  handleClaimProduct: (
+    _productId: string,
+    _quantity: number,
+    _contact: NonprofitPickupContact
+  ) => Promise<void>;
 }
 
 const AvailableProductsTab = ({
@@ -170,8 +177,8 @@ const AvailableProductsTab = ({
         productName={claimConfirm.productName}
         maxQuantity={claimConfirm.maxQuantity}
         unit={claimConfirm.unit}
-        onConfirm={(quantity) =>
-          handleClaimProduct(claimConfirm.productId, quantity)
+        onConfirm={(quantity, contact) =>
+          handleClaimProduct(claimConfirm.productId, quantity, contact)
         }
       />
     </div>

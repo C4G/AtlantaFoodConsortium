@@ -1,11 +1,18 @@
 'use client';
 import { useState, useEffect } from 'react';
 
+export interface NonprofitPickupContact {
+  name: string;
+  phone: string;
+  date: string;
+  timeframe: string;
+}
+
 interface ClaimConfirmationPopupProps {
   openPopup: boolean;
   closePopup: () => void;
   productName: string;
-  onConfirm: (_quantity: number) => void;
+  onConfirm: (_quantity: number, _contact: NonprofitPickupContact) => void;
   mode?: 'claim' | 'unclaim';
   /** Total available quantity — required in claim mode */
   maxQuantity?: number;
@@ -23,11 +30,20 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
   unit = '',
 }) => {
   const [quantity, setQuantity] = useState<number>(maxQuantity);
+  const [contact, setContact] = useState<NonprofitPickupContact>({
+    name: '',
+    phone: '',
+    date: '',
+    timeframe: '',
+  });
 
-  // Reset to full quantity whenever the popup opens or the product changes
+  // Reset all fields whenever the popup opens or the product changes
   useEffect(() => {
     setQuantity(maxQuantity);
+    setContact({ name: '', phone: '', date: '', timeframe: '' });
   }, [openPopup, maxQuantity]);
+
+  const today = new Date().toISOString().split('T')[0];
 
   if (!openPopup) return null;
 
@@ -80,45 +96,154 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
                       </p>
 
                       {isClaim && (
-                        <div className='mt-4'>
-                          <label
-                            htmlFor='claim-quantity'
-                            className='block text-sm font-medium text-slate-700'
-                          >
-                            Quantity to claim
-                            {unit ? ` (${unit})` : ''}
-                          </label>
-                          <div className='mt-1 flex items-center gap-2'>
-                            <input
-                              id='claim-quantity'
-                              type='number'
-                              min={1}
-                              max={maxQuantity}
-                              value={quantity}
-                              onChange={(e) => {
-                                const val = Math.max(
-                                  1,
-                                  Math.min(
-                                    maxQuantity,
-                                    Math.floor(Number(e.target.value))
-                                  )
-                                );
-                                setQuantity(val);
-                              }}
-                              className='w-28 rounded-md border border-slate-300 px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
-                            />
-                            <span className='text-sm text-slate-500'>
-                              of {maxQuantity} {unit} available
-                            </span>
+                        <>
+                          <div className='mt-4'>
+                            <label
+                              htmlFor='claim-quantity'
+                              className='block text-sm font-medium text-slate-700'
+                            >
+                              Quantity to claim
+                              {unit ? ` (${unit})` : ''}
+                            </label>
+                            <div className='mt-1 flex items-center gap-2'>
+                              <input
+                                id='claim-quantity'
+                                type='number'
+                                min={1}
+                                max={maxQuantity}
+                                value={quantity}
+                                onChange={(e) => {
+                                  const val = Math.max(
+                                    1,
+                                    Math.min(
+                                      maxQuantity,
+                                      Math.floor(Number(e.target.value))
+                                    )
+                                  );
+                                  setQuantity(val);
+                                }}
+                                className='w-28 rounded-md border border-slate-300 px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+                              />
+                              <span className='text-sm text-slate-500'>
+                                of {maxQuantity} {unit} available
+                              </span>
+                            </div>
+                            {quantity < maxQuantity && (
+                              <p className='mt-1 text-xs text-amber-600'>
+                                Partial claim — the remaining{' '}
+                                {maxQuantity - quantity} {unit} will stay
+                                available for other nonprofits.
+                              </p>
+                            )}
                           </div>
-                          {quantity < maxQuantity && (
-                            <p className='mt-1 text-xs text-amber-600'>
-                              Partial claim — the remaining{' '}
-                              {maxQuantity - quantity} {unit} will stay
-                              available for other nonprofits.
+
+                          {/* Nonprofit pickup contact info */}
+                          <div className='mt-5 space-y-3 border-t border-slate-200 pt-4'>
+                            <p className='text-sm font-semibold text-slate-700'>
+                              Your Pickup Contact
                             </p>
-                          )}
-                        </div>
+                            <div className='grid gap-3 sm:grid-cols-2'>
+                              <div>
+                                <label
+                                  htmlFor='np-contact-name'
+                                  className='block text-sm font-medium text-slate-700'
+                                >
+                                  Contact Name *
+                                </label>
+                                <input
+                                  id='np-contact-name'
+                                  type='text'
+                                  required
+                                  value={contact.name}
+                                  onChange={(e) =>
+                                    setContact((c) => ({
+                                      ...c,
+                                      name: e.target.value,
+                                    }))
+                                  }
+                                  placeholder='Full name'
+                                  className='mt-1 w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+                                />
+                              </div>
+                              <div>
+                                <label
+                                  htmlFor='np-contact-phone'
+                                  className='block text-sm font-medium text-slate-700'
+                                >
+                                  Phone Number *
+                                </label>
+                                <input
+                                  id='np-contact-phone'
+                                  type='tel'
+                                  required
+                                  value={contact.phone}
+                                  onChange={(e) =>
+                                    setContact((c) => ({
+                                      ...c,
+                                      phone: e.target.value,
+                                    }))
+                                  }
+                                  placeholder='(404) 555-0100'
+                                  className='mt-1 w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <label
+                                htmlFor='np-pickup-date'
+                                className='block text-sm font-medium text-slate-700'
+                              >
+                                Pickup Date *
+                              </label>
+                              <input
+                                id='np-pickup-date'
+                                type='date'
+                                required
+                                min={today}
+                                value={contact.date}
+                                onChange={(e) =>
+                                  setContact((c) => ({
+                                    ...c,
+                                    date: e.target.value,
+                                  }))
+                                }
+                                className='mt-1 rounded-md border border-slate-300 px-3 py-1.5 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+                              />
+                            </div>
+                            <div>
+                              <p className='block text-sm font-medium text-slate-700'>
+                                Pickup Time *
+                              </p>
+                              <div className='mt-1 flex flex-wrap gap-x-4 gap-y-1'>
+                                {[
+                                  ['MORNING', '7 AM – 10 AM'],
+                                  ['MID_DAY', '10 AM – 2 PM'],
+                                  ['AFTERNOON', '2 PM – 5 PM'],
+                                ].map(([val, label]) => (
+                                  <label
+                                    key={val}
+                                    className='flex items-center gap-1.5 text-sm text-slate-700'
+                                  >
+                                    <input
+                                      type='radio'
+                                      name='np-pickup-timeframe'
+                                      value={val}
+                                      checked={contact.timeframe === val}
+                                      onChange={() =>
+                                        setContact((c) => ({
+                                          ...c,
+                                          timeframe: val,
+                                        }))
+                                      }
+                                      className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                                    />
+                                    {label}
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </>
                       )}
                     </div>
                     <div className='mt-5 flex justify-between'>
@@ -129,9 +254,16 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
                         Cancel
                       </button>
                       <button
-                        className={`rounded-md px-4 py-2 text-white ${isClaim ? 'bg-blue-600 hover:bg-blue-700' : 'bg-red-500 hover:bg-red-600'}`}
+                        className={`rounded-md px-4 py-2 text-white ${isClaim ? 'bg-blue-600 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300' : 'bg-red-500 hover:bg-red-600'}`}
+                        disabled={
+                          isClaim &&
+                          (!contact.name ||
+                            !contact.phone ||
+                            !contact.date ||
+                            !contact.timeframe)
+                        }
                         onClick={() => {
-                          onConfirm(quantity);
+                          onConfirm(quantity, contact);
                           closePopup();
                         }}
                       >

@@ -78,6 +78,19 @@ test('nonprofit partially claims 30 units — product stays in Available and app
     page.getByRole('heading', { name: /claim this product/i })
   ).toBeVisible();
   await page.locator('#claim-quantity').fill('30');
+
+  // Fill required pickup contact fields (added with the partial-claim feature)
+  await page.locator('#np-contact-name').fill('Test Contact');
+  await page.locator('#np-contact-phone').fill('4045550099');
+  const pickupDate = new Date();
+  pickupDate.setDate(pickupDate.getDate() + 7);
+  await page
+    .locator('#np-pickup-date')
+    .fill(pickupDate.toISOString().split('T')[0]);
+  await page
+    .locator('input[name="np-pickup-timeframe"][value="MORNING"]')
+    .check();
+
   await page.getByRole('button', { name: /confirm claim/i }).click();
 
   // Product card should still be visible (partial claim leaves the remainder available)
@@ -154,10 +167,20 @@ test('nonprofit claims the product and it moves to My Claims', async ({
     .getByRole('button', { name: /claim this product/i })
     .click();
 
-  // Confirm in the modal
+  // Confirm in the modal — fill required pickup contact fields first
   await expect(
     page.getByRole('heading', { name: /claim this product/i })
   ).toBeVisible();
+  await page.locator('#np-contact-name').fill('Test Contact');
+  await page.locator('#np-contact-phone').fill('4045550099');
+  const claimDate = new Date();
+  claimDate.setDate(claimDate.getDate() + 7);
+  await page
+    .locator('#np-pickup-date')
+    .fill(claimDate.toISOString().split('T')[0]);
+  await page
+    .locator('input[name="np-pickup-timeframe"][value="MORNING"]')
+    .check();
   await page.getByRole('button', { name: /confirm claim/i }).click();
 
   // Product card should vanish from the available list.

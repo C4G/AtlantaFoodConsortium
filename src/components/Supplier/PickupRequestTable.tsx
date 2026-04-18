@@ -7,6 +7,8 @@ import {
   CircleChevronDownIcon,
   Trash2,
   Copy,
+  CalendarDays,
+  User,
 } from 'lucide-react';
 import CustomColumnHeader from './CustomColumnHeader';
 import { AgGridReact } from 'ag-grid-react';
@@ -87,6 +89,29 @@ export function PickupRequestTable({
       editable: false,
       headerComponent: CustomColumnHeader,
       headerComponentParams: { icon: AlignLeft },
+    },
+    {
+      field: 'pickupContact',
+      headerName: 'Pickup Contact',
+      editable: false,
+      headerComponent: CustomColumnHeader,
+      headerComponentParams: { icon: User },
+      valueFormatter: (params: any) => params.value ?? '—',
+    },
+    {
+      field: 'pickupDate',
+      headerName: 'Pickup Date',
+      editable: false,
+      headerComponent: CustomColumnHeader,
+      headerComponentParams: { icon: CalendarDays },
+      valueFormatter: (params: any) =>
+        params.value
+          ? new Date(params.value).toLocaleDateString('en-US', {
+              weekday: 'short',
+              month: 'short',
+              day: 'numeric',
+            })
+          : '—',
     },
     {
       headerName: 'Action',

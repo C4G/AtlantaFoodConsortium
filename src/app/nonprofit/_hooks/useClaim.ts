@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Nonprofit, ProductRequest } from '../_types';
+import { NonprofitPickupContact } from '@/components/Nonprofit/ClaimConfirmationPopup';
 
 interface UseClaimOptions {
   nonprofit: Nonprofit | null;
@@ -33,12 +34,20 @@ const useClaim = ({
     pickupDate: string;
   }>({ open: false, productId: '', productName: '', pickupDate: '' });
 
-  const handleClaimProduct = async (productId: string, quantity: number) => {
+  const handleClaimProduct = async (
+    productId: string,
+    quantity: number,
+    pickupContact: NonprofitPickupContact
+  ) => {
     try {
       const response = await fetch('/api/item-availability', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId, quantityClaimed: quantity }),
+        body: JSON.stringify({
+          productId,
+          quantityClaimed: quantity,
+          pickupContact,
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to claim product');
