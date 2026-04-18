@@ -4,7 +4,7 @@ import AnnouncementNotification from '@/emails/AnnouncementNotification';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { resend } from '@/lib/resend';
-import { GroupType } from '@/generated/prisma/client';
+import { UserRole, GroupType } from '../../../../types/types';
 
 export async function POST(req: Request) {
   try {
@@ -36,16 +36,14 @@ export async function POST(req: Request) {
       );
     }
 
-    // Build role filter based on groupType
+    // Build role filter based on groupType; exclude users who opted out of emails
     const roleFilter =
       announcement.groupType === GroupType.ALL
         ? {}
-        : {
-            role: announcement.groupType as unknown as typeof announcement.groupType,
-          };
+        : { role: announcement.groupType as unknown as UserRole };
 
     const users = await prisma.user.findMany({
-      where: roleFilter,
+      where: { ...roleFilter, announcementEmailOptOut: false },
       select: { email: true, name: true },
     });
 
@@ -61,6 +59,7 @@ export async function POST(req: Request) {
     }
 
     const authorName = announcement.author?.name ?? 'Admin Team';
+    const settingsUrl = `${new URL(req.url).origin}/settings`;
 
     const emailRequests = users.map((user) => ({
       from: 'Metro Atlanta Food Consortium <mafc-no-reply@c4g.dev>',
@@ -71,6 +70,7 @@ export async function POST(req: Request) {
         title: announcement.title,
         content: announcement.content,
         authorName,
+        settingsUrl,
       }),
     }));
 

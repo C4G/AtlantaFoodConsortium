@@ -77,8 +77,8 @@ export const ClaimConfirmationPopup: React.FC<ClaimConfirmationPopupProps> = ({
                       <p className='text-center text-sm text-muted-foreground'>
                         {isClaim ? (
                           <>
-                            Are you sure you want to claim{' '}
-                            <span className='font-semibold text-foreground'>
+                            How much of{' '}
+                            <span className='font-semibold text-slate-700'>
                               {productName}
                             </span>{' '}
                             would you like to claim? You will be responsible for

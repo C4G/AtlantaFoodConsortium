@@ -175,7 +175,7 @@ describe('POST /api/discussion-emails', () => {
     await POST(req);
 
     expect(prisma.user.findMany).toHaveBeenCalledWith({
-      where: { role: 'NONPROFIT' },
+      where: { role: 'NONPROFIT', discussionEmailOptOut: false },
       select: { email: true, name: true },
     });
   });
@@ -199,7 +199,7 @@ describe('POST /api/discussion-emails', () => {
     await POST(req);
 
     expect(prisma.user.findMany).toHaveBeenCalledWith({
-      where: {},
+      where: { discussionEmailOptOut: false },
       select: { email: true, name: true },
     });
   });

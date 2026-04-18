@@ -6,6 +6,7 @@ export interface AnnouncementNotificationProps {
   title: string;
   content: string;
   authorName: string;
+  settingsUrl: string;
 }
 
 export default function AnnouncementNotification({
@@ -13,6 +14,7 @@ export default function AnnouncementNotification({
   title,
   content,
   authorName,
+  settingsUrl,
 }: AnnouncementNotificationProps) {
   return (
     <Html>
@@ -53,6 +55,15 @@ export default function AnnouncementNotification({
           Best regards,
           <br />
           Metro Atlanta Food Consortium
+        </p>
+
+        <hr style={{ borderColor: '#e2e8f0', margin: '24px 0' }} />
+        <p style={{ fontSize: '12px', color: '#a0aec0', textAlign: 'center' }}>
+          You are receiving this email because you are a member of the Metro
+          Atlanta Food Consortium platform.{' '}
+          <a href={settingsUrl} style={{ color: '#718096' }}>
+            Unsubscribe from announcement emails
+          </a>
         </p>
       </div>
     </Html>

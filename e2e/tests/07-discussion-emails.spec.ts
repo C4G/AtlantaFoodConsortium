@@ -16,6 +16,10 @@ import { PrismaClient } from '../../src/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { E2E_PREFIX } from '../shared-state';
 
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
+
 test.use({ storageState: 'e2e/.auth/admin.json' });
 test.describe.configure({ mode: 'serial' });
 
@@ -24,7 +28,6 @@ const TEST_THREAD_CONTENT =
   'This is an automated E2E test discussion thread. Please ignore.';
 
 test.afterAll(async () => {
-  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
   const prisma = new PrismaClient({ adapter });
   try {
     await prisma.thread.deleteMany({

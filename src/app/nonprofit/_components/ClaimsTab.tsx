@@ -192,11 +192,11 @@ const ClaimsTab = ({
                       {product.name}
                     </h3>
                     {isPartial ? (
-                      <span className='shrink-0 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'>
+                      <span className='shrink-0 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700'>
                         Partially Claimed
                       </span>
                     ) : (
-                      <span className='shrink-0 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-900/40 dark:text-green-300'>
+                      <span className='shrink-0 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700'>
                         Claimed
                       </span>
                     )}

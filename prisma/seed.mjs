@@ -38,7 +38,7 @@ const main = async () => {
   await seedAnnouncements(prisma, adminUser);
   await seedDiscussions(prisma, allUsers);
 
-  console.log('----- Seeding hardcoded test accounts -----');
+  console.log('----- Seeding test accounts (dev/staging only) -----');
   await seedTestAccounts(prisma);
 
   console.log('----- Seed process completed successfully! -----');
