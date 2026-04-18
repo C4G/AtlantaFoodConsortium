@@ -15,6 +15,11 @@ export interface ProductRequestClaimedNotificationProps {
   pickupInstructions: string;
   nonprofitContactEmail: string;
   nonprofitContactNumber: string;
+  // Nonprofit-provided pickup contact (collected at claim time)
+  nonprofitPickupContactName?: string;
+  nonprofitPickupContactPhone?: string;
+  nonprofitPickupDate?: string;
+  nonprofitPickupTimeframe?: string[];
 }
 
 const getTimeWindowDisplay = (timeframe: string): string => {
@@ -43,6 +48,10 @@ export default function ProductRequestClaimedNotification({
   pickupInstructions,
   nonprofitContactEmail,
   nonprofitContactNumber,
+  nonprofitPickupContactName,
+  nonprofitPickupContactPhone,
+  nonprofitPickupDate,
+  nonprofitPickupTimeframe,
 }: ProductRequestClaimedNotificationProps) {
   return (
     <Html>
@@ -138,6 +147,52 @@ export default function ProductRequestClaimedNotification({
             <strong>Phone:</strong> {nonprofitContactNumber}
           </p>
         </div>
+
+        {nonprofitPickupContactName && (
+          <div
+            style={{
+              backgroundColor: '#ebf8ff',
+              padding: '20px',
+              borderRadius: '8px',
+              margin: '20px 0',
+            }}
+          >
+            <h2 style={{ color: '#2b6cb0', marginBottom: '15px' }}>
+              Nonprofit Pickup Contact:
+            </h2>
+            <p>
+              <strong>Name:</strong> {nonprofitPickupContactName}
+            </p>
+            {nonprofitPickupContactPhone && (
+              <p>
+                <strong>Phone:</strong> {nonprofitPickupContactPhone}
+              </p>
+            )}
+            {nonprofitPickupDate && (
+              <p>
+                <strong>Planned Pickup Date:</strong>{' '}
+                {new Date(nonprofitPickupDate).toLocaleDateString()}
+              </p>
+            )}
+            {nonprofitPickupTimeframe &&
+              nonprofitPickupTimeframe.length > 0 && (
+                <p>
+                  <strong>Planned Pickup Time:</strong>{' '}
+                  {nonprofitPickupTimeframe
+                    .map((t) =>
+                      t === 'MORNING'
+                        ? '7 AM – 10 AM'
+                        : t === 'MID_DAY'
+                          ? '10 AM – 2 PM'
+                          : t === 'AFTERNOON'
+                            ? '2 PM – 5 PM'
+                            : t
+                    )
+                    .join(', ')}
+                </p>
+              )}
+          </div>
+        )}
 
         <p>
           Please ensure the product is ready for pickup at the specified

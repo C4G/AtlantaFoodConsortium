@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { ProductStatus, UserRole } from '../../../generated/prisma/client';
+import { PickupTimeframe, ProductStatus, UserRole } from '@prisma/client';
 
 // Add interface for extended user type
 interface ExtendedUser {
@@ -62,7 +62,22 @@ export async function PATCH(req: Request) {
   }
 
   try {
-    const { productId, action, quantityClaimed } = await req.json();
+    const { productId, action, quantityClaimed, pickupContact } =
+      await req.json();
+
+    // Build the nonprofit pickup data helper (applied on every claim path)
+    const npPickup = pickupContact
+      ? {
+          nonprofitPickupContactName: pickupContact.name as string,
+          nonprofitPickupContactPhone: pickupContact.phone as string,
+          nonprofitPickupDate: pickupContact.date
+            ? new Date(pickupContact.date)
+            : undefined,
+          nonprofitPickupTimeframe: pickupContact.timeframe
+            ? ([pickupContact.timeframe] as PickupTimeframe[])
+            : ([] as PickupTimeframe[]),
+        }
+      : {};
 
     if (!productId) {
       return NextResponse.json(
@@ -177,7 +192,11 @@ export async function PATCH(req: Request) {
           //    (originalProductId = null) so unclaim treats it as a full claim.
           const updated = await tx.productRequest.update({
             where: { id: existingPartialClaim.id },
-            data: { quantity: { increment: qty }, originalProductId: null },
+            data: {
+              quantity: { increment: qty },
+              originalProductId: null,
+              ...npPickup,
+            },
             include: { productType: true, supplier: true, pickupInfo: true },
           });
           // 2. Delete the now-fully-consumed original product record.
@@ -208,6 +227,7 @@ export async function PATCH(req: Request) {
         data: {
           status: 'RESERVED',
           claimedById: user.nonprofitId,
+          ...npPickup,
         },
         include: {
           productType: true,
@@ -238,10 +258,10 @@ export async function PATCH(req: Request) {
       });
 
       if (existingClaim) {
-        // Merge: increment the existing partial claim's quantity
+        // Merge: increment the existing partial claim's quantity and update contact
         return tx.productRequest.update({
           where: { id: existingClaim.id },
-          data: { quantity: { increment: qty } },
+          data: { quantity: { increment: qty }, ...npPickup },
           include: { productType: true, supplier: true, pickupInfo: true },
         });
       }
@@ -298,6 +318,7 @@ export async function PATCH(req: Request) {
           productTypeId: newProductType.id,
           pickupInfoId: newPickupInfoId,
           originalProductId: productId,
+          ...npPickup,
         },
         include: {
           productType: true,

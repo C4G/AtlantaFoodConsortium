@@ -154,6 +154,12 @@ export interface ProductRequest {
   productType: ProductType;
   pickupInfoId: string | null;
   pickupInfo: PickupInfo | null;
+  originalProductId: string | null;
+  // Nonprofit-provided pickup contact info (collected at claim time)
+  nonprofitPickupContactName: string | null;
+  nonprofitPickupContactPhone: string | null;
+  nonprofitPickupDate: Date | null;
+  nonprofitPickupTimeframe: PickupTimeframe[];
   createdAt: Date;
   updatedAt: Date;
 }

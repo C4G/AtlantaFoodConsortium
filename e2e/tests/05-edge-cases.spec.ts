@@ -229,6 +229,19 @@ test.describe('C — Email failure is non-blocking during claim', () => {
     await productCard
       .getByRole('button', { name: /claim this product/i })
       .click();
+
+    // Fill required pickup contact fields
+    await page.locator('#np-contact-name').fill('Test Contact');
+    await page.locator('#np-contact-phone').fill('4045550099');
+    const pickupDate = new Date();
+    pickupDate.setDate(pickupDate.getDate() + 7);
+    await page
+      .locator('#np-pickup-date')
+      .fill(pickupDate.toISOString().split('T')[0]);
+    await page
+      .locator('input[name="np-pickup-timeframe"][value="MORNING"]')
+      .check();
+
     await page.getByRole('button', { name: /confirm claim/i }).click();
 
     await expect(
