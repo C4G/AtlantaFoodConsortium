@@ -187,7 +187,7 @@ describe('POST /api/announcement-emails', () => {
     await POST(req);
 
     expect(prisma.user.findMany).toHaveBeenCalledWith({
-      where: { role: 'NONPROFIT' },
+      where: { role: 'NONPROFIT', announcementEmailOptOut: false },
       select: { email: true, name: true },
     });
   });
@@ -210,7 +210,7 @@ describe('POST /api/announcement-emails', () => {
     await POST(req);
 
     expect(prisma.user.findMany).toHaveBeenCalledWith({
-      where: {},
+      where: { announcementEmailOptOut: false },
       select: { email: true, name: true },
     });
   });

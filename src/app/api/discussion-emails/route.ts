@@ -33,12 +33,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Thread not found' }, { status: 404 });
     }
 
-    // Build role filter based on groupType
+    // Build role filter based on groupType; exclude users who opted out of emails
     const roleFilter =
       thread.groupType === GroupType.ALL ? {} : { role: thread.groupType };
 
     const users = await prisma.user.findMany({
-      where: roleFilter,
+      where: { ...roleFilter, discussionEmailOptOut: false },
       select: { email: true, name: true },
     });
 
@@ -54,6 +54,7 @@ export async function POST(req: Request) {
     }
 
     const authorName = thread.author?.name ?? 'Community Member';
+    const settingsUrl = `${new URL(req.url).origin}/settings`;
 
     const emailRequests = users.map((user) => ({
       from: 'Metro Atlanta Food Consortium <mafc-no-reply@c4g.dev>',
@@ -65,6 +66,7 @@ export async function POST(req: Request) {
         threadContent: thread.content,
         authorName,
         groupType: thread.groupType,
+        settingsUrl,
       }),
     }));
 

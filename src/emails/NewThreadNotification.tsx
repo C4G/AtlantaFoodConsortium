@@ -7,6 +7,7 @@ export interface NewThreadNotificationProps {
   threadContent: string;
   authorName: string;
   groupType: string;
+  settingsUrl: string;
 }
 
 export default function NewThreadNotification({
@@ -15,6 +16,7 @@ export default function NewThreadNotification({
   threadContent,
   authorName,
   groupType,
+  settingsUrl,
 }: NewThreadNotificationProps) {
   return (
     <Html>
@@ -63,6 +65,15 @@ export default function NewThreadNotification({
           Best regards,
           <br />
           Metro Atlanta Food Consortium
+        </p>
+
+        <hr style={{ borderColor: '#e2e8f0', margin: '24px 0' }} />
+        <p style={{ fontSize: '12px', color: '#a0aec0', textAlign: 'center' }}>
+          You are receiving this email because you are a member of the Metro
+          Atlanta Food Consortium platform.{' '}
+          <a href={settingsUrl} style={{ color: '#718096' }}>
+            Unsubscribe from discussion emails
+          </a>
         </p>
       </div>
     </Html>
