@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 interface EmailPrefs {
   announcementEmailOptOut: boolean;
@@ -45,13 +46,13 @@ function Toggle({
 }
 
 export function EmailSettingsForm() {
+  const { toast } = useToast();
   const [prefs, setPrefs] = useState<EmailPrefs>({
     announcementEmailOptOut: false,
     discussionEmailOptOut: false,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     fetch('/api/settings')
@@ -63,18 +64,18 @@ export function EmailSettingsForm() {
 
   const save = async (next: EmailPrefs) => {
     setSaving(true);
-    setSaved(false);
     try {
-      await fetch('/api/settings', {
+      const res = await fetch('/api/settings', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(next),
       });
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2500);
+      if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+      toast({ title: '✓ Preferences saved', variant: 'success' });
     } catch {
-      // revert on error
+      // revert optimistic update and surface the error
       setPrefs(prefs);
+      toast({ title: 'Failed to save preferences', variant: 'destructive' });
     } finally {
       setSaving(false);
     }
@@ -132,12 +133,6 @@ export function EmailSettingsForm() {
           label='Toggle discussion emails'
         />
       </div>
-
-      {saved && (
-        <p className='text-xs text-green-600 dark:text-green-400'>
-          ✓ Preferences saved
-        </p>
-      )}
     </div>
   );
 }

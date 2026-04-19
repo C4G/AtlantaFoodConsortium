@@ -87,9 +87,7 @@ export function AnnouncementsGrid() {
   const [loading, setLoading] = useState(false);
 
   const { data: session } = useSession();
-  const isAdmin =
-    session?.user?.role === UserRole.ADMIN ||
-    session?.user?.role === UserRole.STAFF;
+  const isAdmin = session?.user?.role === UserRole.ADMIN;
 
   useEffect(() => {
     const loadAnnouncements = async () => {

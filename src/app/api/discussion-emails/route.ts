@@ -25,12 +25,16 @@ export async function POST(req: Request) {
     const thread = await prisma.thread.findUnique({
       where: { id: threadId },
       include: {
-        author: { select: { name: true } },
+        author: { select: { id: true, name: true } },
       },
     });
 
     if (!thread) {
       return NextResponse.json({ error: 'Thread not found' }, { status: 404 });
+    }
+
+    if (thread.author?.id !== session.user.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Build role filter based on groupType; exclude users who opted out of emails
