@@ -9,7 +9,7 @@ import { UserRole, GroupType } from '../../../../types/types';
 export async function POST(req: Request) {
   try {
     const session = await auth();
-    if (!session || !session.user) {
+    if (!session || !session.user || session.user.role !== UserRole.ADMIN) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
