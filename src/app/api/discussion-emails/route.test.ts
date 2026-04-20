@@ -40,7 +40,7 @@ const mockThread = {
   title: 'Best practices for cold storage pickups?',
   content: "We've been having trouble coordinating refrigerated item pickups.",
   groupType: 'NONPROFIT',
-  author: { name: 'Supplier Jane' },
+  author: { id: 'user-1', name: 'Supplier Jane' },
 };
 
 const mockUsers = [
@@ -70,6 +70,23 @@ describe('POST /api/discussion-emails', () => {
 
   it('should return 401 if session has no user', async () => {
     vi.mocked(auth).mockResolvedValue({ user: null } as any);
+
+    const req = new NextRequest('http://localhost/api/discussion-emails', {
+      method: 'POST',
+      body: JSON.stringify({ threadId: 'thread-1' }),
+    });
+    const response = await POST(req);
+    const data = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(data).toEqual({ error: 'Unauthorized' });
+    expect(resend.batch.send).not.toHaveBeenCalled();
+  });
+
+  it('should return 401 if caller is not the thread author', async () => {
+    const otherSession = { user: { id: 'other-user-99', role: 'NONPROFIT' } };
+    vi.mocked(auth).mockResolvedValue(otherSession as any);
+    vi.mocked(prisma.thread.findUnique).mockResolvedValue(mockThread as any);
 
     const req = new NextRequest('http://localhost/api/discussion-emails', {
       method: 'POST',
@@ -204,26 +221,23 @@ describe('POST /api/discussion-emails', () => {
     });
   });
 
-  it('should fall back to "Community Member" when thread has no author', async () => {
+  it('should return 401 when thread has no author (cannot verify authorship)', async () => {
     const threadNoAuthor = { ...mockThread, author: null };
     vi.mocked(auth).mockResolvedValue(userSession as any);
     vi.mocked(prisma.thread.findUnique).mockResolvedValue(
       threadNoAuthor as any
     );
-    vi.mocked(prisma.user.findMany).mockResolvedValue([mockUsers[0]] as any);
-    vi.mocked(resend.batch.send).mockResolvedValue({
-      data: null,
-      error: null,
-    } as any);
 
     const req = new NextRequest('http://localhost/api/discussion-emails', {
       method: 'POST',
       body: JSON.stringify({ threadId: 'thread-1' }),
     });
     const response = await POST(req);
+    const data = await response.json();
 
-    expect(response.status).toBe(200);
-    expect(resend.batch.send).toHaveBeenCalledOnce();
+    expect(response.status).toBe(401);
+    expect(data).toEqual({ error: 'Unauthorized' });
+    expect(resend.batch.send).not.toHaveBeenCalled();
   });
 
   it('should return 500 when resend.batch.send throws', async () => {

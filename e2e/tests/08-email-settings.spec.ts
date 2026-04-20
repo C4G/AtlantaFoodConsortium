@@ -125,7 +125,7 @@ test('toggling announcement emails off saves and shows confirmation', async ({
   await announcementToggle.click();
 
   // Should show saved confirmation
-  await expect(page.getByText(/preferences saved/i)).toBeVisible({
+  await expect(page.getByText(/preferences saved/i).first()).toBeVisible({
     timeout: 5_000,
   });
 
@@ -175,7 +175,7 @@ test('toggling discussion emails off saves independently', async ({ page }) => {
   });
 
   await discussionToggle.click();
-  await expect(page.getByText(/preferences saved/i)).toBeVisible({
+  await expect(page.getByText(/preferences saved/i).first()).toBeVisible({
     timeout: 5_000,
   });
 
@@ -251,13 +251,13 @@ test('user can opt back in to both email types', async ({ page }) => {
 
   // Toggle announcements back ON
   await announcementToggle.click();
-  await expect(page.getByText(/preferences saved/i)).toBeVisible({
+  await expect(page.getByText(/preferences saved/i).first()).toBeVisible({
     timeout: 5_000,
   });
 
   // Toggle discussions back ON
   await discussionToggle.click();
-  await expect(page.getByText(/preferences saved/i)).toBeVisible({
+  await expect(page.getByText(/preferences saved/i).first()).toBeVisible({
     timeout: 5_000,
   });
 
