@@ -54,6 +54,7 @@ services:
       - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
       - AUTH_TRUST_HOST=${AUTH_TRUST_HOST:-true}
       - FILE_UPLOADS=${FILE_UPLOADS}
+      - ENABLE_TEST_LOGIN=true
     volumes:
       - atlanta-food-consortium-uploads:/app/uploads
     command: node server.js
