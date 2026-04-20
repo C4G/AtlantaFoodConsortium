@@ -59,6 +59,10 @@ ENV NODE_ENV=production
 # We disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Allow enabling test login via build arg (for staging)
+ARG ENABLE_TEST_LOGIN=false
+ENV ENABLE_TEST_LOGIN=$ENABLE_TEST_LOGIN
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
