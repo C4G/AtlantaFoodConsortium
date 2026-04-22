@@ -89,9 +89,7 @@ export function PickupRequestTable({
     setFoodId(prodId);
   };
 
-  const duplicateRequest = (
-    prodInfo: {} // eslint-disable-line @typescript-eslint/no-empty-object-type
-  ) => {
+  const duplicateRequest = (prodInfo: object) => {
     setShowCopyRequestForm(true);
     setFoodInfo(prodInfo);
   };

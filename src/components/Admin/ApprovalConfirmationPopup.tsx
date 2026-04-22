@@ -60,7 +60,7 @@ export default function ApprovalConfirmationPopup({
       />
 
       {/* Modal */}
-      <div className='relative z-10 w-full max-w-md rounded-xl bg-white p-6 shadow-xl'>
+      <div className='relative z-10 w-full max-w-md rounded-xl bg-card p-6 shadow-xl'>
         <h2
           className={`mb-4 text-xl font-semibold ${
             mode === 'approve'
@@ -73,12 +73,12 @@ export default function ApprovalConfirmationPopup({
           {config.title}
         </h2>
 
-        <p className='mb-6 text-slate-700'>
+        <p className='mb-6 text-muted-foreground'>
           Are you sure you want to{' '}
           <span className='font-medium'>
             {config.body.replace('are you sure you want to ', '')}
           </span>{' '}
-          <span className='font-semibold text-slate-900'>
+          <span className='font-semibold text-foreground'>
             &ldquo;{nonprofitName}&rdquo;
           </span>
           ? This action will notify the nonprofit via email.
@@ -87,7 +87,7 @@ export default function ApprovalConfirmationPopup({
         <div className='flex justify-end gap-3'>
           <button
             onClick={closePopup}
-            className='rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2'
+            className='rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground shadow-sm hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
           >
             Cancel
           </button>

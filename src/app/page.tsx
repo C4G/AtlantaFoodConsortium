@@ -19,13 +19,13 @@ export default async function HomePage() {
 
   if (session?.user?.role === UserRole.OTHER) {
     return (
-      <div className='flex min-h-screen flex-col items-center justify-center bg-slate-50 p-4'>
-        <div className='w-full max-w-lg space-y-6 rounded-xl bg-white p-8 shadow-lg'>
+      <div className='flex min-h-screen flex-col items-center justify-center bg-background p-4'>
+        <div className='w-full max-w-lg space-y-6 rounded-xl border border-border bg-card p-8 shadow-lg'>
           <div className='text-center'>
-            <h1 className='text-2xl font-bold text-slate-900'>
+            <h1 className='text-2xl font-bold text-foreground'>
               Welcome, {session.user.name ?? session.user.email}
             </h1>
-            <p className='mt-2 text-sm text-slate-600'>
+            <p className='mt-2 text-sm text-muted-foreground'>
               You have access to community discussions and announcements.
             </p>
           </div>
@@ -33,37 +33,37 @@ export default async function HomePage() {
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
             <Link
               href='/discussion'
-              className='flex flex-col items-center rounded-lg border border-slate-200 p-4 text-center transition hover:border-slate-400 hover:shadow-sm'
+              className='flex flex-col items-center rounded-lg border border-border p-4 text-center transition hover:border-primary/50 hover:shadow-sm'
             >
               <span className='text-2xl'>💬</span>
-              <span className='mt-2 font-medium text-slate-800'>
+              <span className='mt-2 font-medium text-foreground'>
                 Discussions
               </span>
-              <span className='mt-1 text-xs text-slate-500'>
+              <span className='mt-1 text-xs text-muted-foreground'>
                 Participate in community threads
               </span>
             </Link>
 
             <Link
               href='/announcements'
-              className='flex flex-col items-center rounded-lg border border-slate-200 p-4 text-center transition hover:border-slate-400 hover:shadow-sm'
+              className='flex flex-col items-center rounded-lg border border-border p-4 text-center transition hover:border-primary/50 hover:shadow-sm'
             >
               <span className='text-2xl'>📢</span>
-              <span className='mt-2 font-medium text-slate-800'>
+              <span className='mt-2 font-medium text-foreground'>
                 Announcements
               </span>
-              <span className='mt-1 text-xs text-slate-500'>
+              <span className='mt-1 text-xs text-muted-foreground'>
                 Stay up to date with platform news
               </span>
             </Link>
           </div>
 
-          <div className='border-t pt-4 text-center'>
-            <p className='text-sm text-slate-500'>
+          <div className='border-t border-border pt-4 text-center'>
+            <p className='text-sm text-muted-foreground'>
               Want to donate or receive food?{' '}
               <Link
                 href='/onboarding'
-                className='font-medium text-slate-800 underline underline-offset-2 hover:text-slate-600'
+                className='font-medium text-foreground underline underline-offset-2 hover:text-muted-foreground'
               >
                 Complete your profile
               </Link>{' '}
@@ -76,13 +76,13 @@ export default async function HomePage() {
   }
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-slate-50 p-4'>
-      <div className='w-full max-w-md space-y-6 rounded-xl bg-white p-6 shadow-lg'>
+    <div className='flex min-h-screen items-center justify-center bg-background p-4'>
+      <div className='w-full max-w-md space-y-6 rounded-xl border border-border bg-card p-6 shadow-lg'>
         <div className='text-center'>
-          <h1 className='text-2xl font-bold text-slate-900'>
+          <h1 className='text-2xl font-bold text-foreground'>
             Welcome to Metro Atlanta Food Consortium
           </h1>
-          <p className='mt-2 text-sm text-slate-600'>
+          <p className='mt-2 text-sm text-muted-foreground'>
             Please sign in to continue
           </p>
         </div>

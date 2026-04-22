@@ -66,7 +66,7 @@ export function NonProfitRoleFields({
   return (
     <div>
       <div className='mt-4'>
-        <label className='mb-2 block text-sm font-medium text-slate-700'>
+        <label className='mb-2 block text-sm font-medium text-muted-foreground'>
           Upload 501c3
         </label>
         <input
@@ -74,22 +74,22 @@ export function NonProfitRoleFields({
           name='document'
           accept='.pdf,.png,.jpg,.jpeg'
           onChange={handleInputChange}
-          className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400'
+          className='w-full rounded-md border border-border bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring'
         />
-        <p className='mt-1 text-sm text-slate-500'>
+        <p className='mt-1 text-sm text-muted-foreground'>
           Accepted formats: PDF, PNG, JPG, JPEG
         </p>
       </div>
 
       <div className='mt-4'>
-        <label className='mb-2 block text-sm font-medium text-slate-700'>
+        <label className='mb-2 block text-sm font-medium text-muted-foreground'>
           Organization Type
         </label>
         <select
           name='orgType'
           value={formData.orgType}
           onChange={handleOrgType}
-          className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400'
+          className='w-full rounded-md border border-border bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring'
         >
           <option value=''>Select Organization Type</option>
           <option value='FOOD_BANK'>Food Bank</option>
@@ -102,12 +102,12 @@ export function NonProfitRoleFields({
       </div>
 
       <div className='pt-6'>
-        <h2 className='mb-4 text-lg font-semibold text-slate-900'>
+        <h2 className='mb-4 text-lg font-semibold text-foreground'>
           Product Questions
         </h2>
 
         <div>
-          <label className='mb-2 block text-sm font-medium text-slate-700'>
+          <label className='mb-2 block text-sm font-medium text-muted-foreground'>
             What product category are you looking for?
           </label>
           <div className='space-x-6'>
@@ -115,7 +115,7 @@ export function NonProfitRoleFields({
               {productCategories.map(([value, label]) => (
                 <label
                   key={value}
-                  className='flex items-center whitespace-nowrap text-black'
+                  className='flex items-center whitespace-nowrap text-foreground'
                 >
                   <input
                     type='checkbox'
@@ -134,7 +134,7 @@ export function NonProfitRoleFields({
           {/* Render product details for selected categories */}
           {formData.productCategory.map((category: string) => (
             <div key={category} className='mt-4'>
-              <label className='mb-2 block text-sm font-medium text-slate-700'>
+              <label className='mb-2 block text-sm font-medium text-muted-foreground'>
                 {category === 'protein'
                   ? 'Specify protein type:'
                   : `Details for ${productCategoryLabels.get(category)}:`}
@@ -145,7 +145,7 @@ export function NonProfitRoleFields({
                     (protein: string) => (
                       <label
                         key={protein}
-                        className='mb-2 mr-4 flex items-center text-slate-700'
+                        className='mb-2 mr-4 flex items-center text-muted-foreground'
                       >
                         <input
                           type='checkbox'
@@ -189,7 +189,7 @@ export function NonProfitRoleFields({
                           e.target.value
                         )
                       }
-                      className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400'
+                      className='w-full rounded-md border border-border bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring'
                     />
                   )}
                 </div>
@@ -209,14 +209,14 @@ export function NonProfitRoleFields({
                       e.target.value
                     )
                   }
-                  className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400'
+                  className='w-full rounded-md border border-border bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring'
                 />
               )}
             </div>
           ))}
 
           <div className='mt-4'>
-            <label className='mb-2 block text-sm font-medium text-slate-700'>
+            <label className='mb-2 block text-sm font-medium text-muted-foreground'>
               Do you have cold storage space?
             </label>
             <div className='space-y-2'>
@@ -228,11 +228,11 @@ export function NonProfitRoleFields({
                   value='yes'
                   checked={formData.coldStorage === 'yes'}
                   onChange={handleInputChange}
-                  className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                  className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                 />
                 <label
                   htmlFor='coldStorageYes'
-                  className='ml-2 text-sm text-slate-700'
+                  className='ml-2 text-sm text-muted-foreground'
                 >
                   Yes
                 </label>
@@ -245,11 +245,11 @@ export function NonProfitRoleFields({
                   value='no'
                   checked={formData.coldStorage === 'no'}
                   onChange={handleInputChange}
-                  className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                  className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                 />
                 <label
                   htmlFor='coldStorageNo'
-                  className='ml-2 text-sm text-slate-700'
+                  className='ml-2 text-sm text-muted-foreground'
                 >
                   No
                 </label>
@@ -258,7 +258,7 @@ export function NonProfitRoleFields({
           </div>
 
           <div className='mt-4'>
-            <label className='mb-2 block text-sm font-medium text-slate-700'>
+            <label className='mb-2 block text-sm font-medium text-muted-foreground'>
               Do you have shelf space?
             </label>
             <div className='space-y-2'>
@@ -270,11 +270,11 @@ export function NonProfitRoleFields({
                   value='yes'
                   checked={formData.shelfSpace === 'yes'}
                   onChange={handleInputChange}
-                  className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                  className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                 />
                 <label
                   htmlFor='shelfSpaceYes'
-                  className='ml-2 text-sm text-slate-700'
+                  className='ml-2 text-sm text-muted-foreground'
                 >
                   Yes
                 </label>
@@ -287,11 +287,11 @@ export function NonProfitRoleFields({
                   value='no'
                   checked={formData.shelfSpace === 'no'}
                   onChange={handleInputChange}
-                  className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                  className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                 />
                 <label
                   htmlFor='shelfSpaceNo'
-                  className='ml-2 text-sm text-slate-700'
+                  className='ml-2 text-sm text-muted-foreground'
                 >
                   No
                 </label>
@@ -300,7 +300,7 @@ export function NonProfitRoleFields({
           </div>
 
           <div className='mt-4'>
-            <label className='mb-2 block text-sm font-medium text-slate-700'>
+            <label className='mb-2 block text-sm font-medium text-muted-foreground'>
               Donated goods only or a budget to purchase goods? (Check all that
               apply)
             </label>
@@ -312,11 +312,11 @@ export function NonProfitRoleFields({
                   name='donated'
                   checked={formData.budget.donated}
                   onChange={handleBudgetChange}
-                  className='h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500'
+                  className='h-4 w-4 rounded border-border text-blue-600 focus:ring-blue-500'
                 />
                 <label
                   htmlFor='donated'
-                  className='ml-2 text-sm text-slate-700'
+                  className='ml-2 text-sm text-muted-foreground'
                 >
                   Donated goods only
                 </label>
@@ -328,11 +328,11 @@ export function NonProfitRoleFields({
                   name='purchased'
                   checked={formData.budget.purchased}
                   onChange={handleBudgetChange}
-                  className='h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500'
+                  className='h-4 w-4 rounded border-border text-blue-600 focus:ring-blue-500'
                 />
                 <label
                   htmlFor='purchased'
-                  className='ml-2 text-sm text-slate-700'
+                  className='ml-2 text-sm text-muted-foreground'
                 >
                   Budget to purchase
                 </label>
@@ -341,7 +341,7 @@ export function NonProfitRoleFields({
           </div>
 
           <div className='mt-4'>
-            <label className='mb-2 block text-sm font-medium text-slate-700'>
+            <label className='mb-2 block text-sm font-medium text-muted-foreground'>
               Do you have transportation to pick up product?
             </label>
             <div className='space-y-2'>
@@ -353,11 +353,11 @@ export function NonProfitRoleFields({
                   value='yes'
                   checked={formData.transportation === 'yes'}
                   onChange={handleInputChange}
-                  className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                  className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                 />
                 <label
                   htmlFor='transportationYes'
-                  className='ml-2 text-sm text-slate-700'
+                  className='ml-2 text-sm text-muted-foreground'
                 >
                   Yes
                 </label>
@@ -370,11 +370,11 @@ export function NonProfitRoleFields({
                   value='no'
                   checked={formData.transportation === 'no'}
                   onChange={handleInputChange}
-                  className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                  className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
                 />
                 <label
                   htmlFor='transportationNo'
-                  className='ml-2 text-sm text-slate-700'
+                  className='ml-2 text-sm text-muted-foreground'
                 >
                   No
                 </label>
