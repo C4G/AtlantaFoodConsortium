@@ -58,7 +58,7 @@ export async function POST(req: Request) {
     }
 
     const authorName = thread.author?.name ?? 'Community Member';
-    const settingsUrl = `${new URL(req.url).origin}/settings`;
+    const settingsUrl = `${process.env.NEXTAUTH_URL}/settings`;
 
     const emailRequests = users.map((user) => ({
       from: 'Metro Atlanta Food Consortium <mafc-no-reply@c4g.dev>',

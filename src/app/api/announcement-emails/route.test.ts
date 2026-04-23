@@ -83,6 +83,22 @@ describe('POST /api/announcement-emails', () => {
     expect(resend.batch.send).not.toHaveBeenCalled();
   });
 
+  it('should return 401 if authenticated user is not an admin', async () => {
+    const nonAdminSession = { user: { id: 'user-2', role: 'SUPPLIER' } };
+    vi.mocked(auth).mockResolvedValue(nonAdminSession as any);
+
+    const req = new NextRequest('http://localhost/api/announcement-emails', {
+      method: 'POST',
+      body: JSON.stringify({ announcementId: 'ann-1' }),
+    });
+    const response = await POST(req);
+    const data = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(data).toEqual({ error: 'Unauthorized' });
+    expect(resend.batch.send).not.toHaveBeenCalled();
+  });
+
   it('should return 400 if announcementId is missing', async () => {
     vi.mocked(auth).mockResolvedValue(adminSession as any);
 
