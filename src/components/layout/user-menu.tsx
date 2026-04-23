@@ -13,7 +13,7 @@ import {
 import { EditProfileDialog } from './edit-profile-dialog';
 import { ThemeSwitcher } from './theme-switcher';
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
-import { LogOut, UserCog, UserCheck } from 'lucide-react';
+import { LogOut, Settings, UserCog, UserCheck } from 'lucide-react';
 import Link from 'next/link';
 
 export function UserMenu() {
@@ -62,6 +62,13 @@ export function UserMenu() {
           >
             <UserCog className='h-4 w-4' />
             <span className='grow'>Edit Profile</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild className='cursor-pointer'>
+            <Link href='/settings'>
+              <Settings className='h-4 w-4' />
+              <span className='grow'>Settings</span>
+            </Link>
           </DropdownMenuItem>
           {session.user?.role === 'OTHER' && (
             <>
