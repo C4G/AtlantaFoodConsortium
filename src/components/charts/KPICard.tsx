@@ -29,6 +29,14 @@ export function KPICard({
   return (
     <div
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      tabIndex={onClick ? 0 : undefined}
+      role={onClick ? 'button' : undefined}
       className={`rounded-lg border p-4 shadow-md transition-all sm:p-6 ${
         onClick ? 'cursor-pointer' : ''
       } ${
