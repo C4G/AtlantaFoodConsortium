@@ -46,7 +46,7 @@ export const DeletionConfirmationPopup: React.FC<DeletionConfirmationProps> = ({
                     </div>
                     <div className='mt-6 flex justify-between'>
                       <button
-                        className='rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50'
+                        className='rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:border-border dark:bg-secondary dark:text-muted-foreground dark:hover:bg-secondary'
                         onClick={closePopup}
                       >
                         Cancel
