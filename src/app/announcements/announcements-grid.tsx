@@ -87,9 +87,7 @@ export function AnnouncementsGrid() {
   const [loading, setLoading] = useState(false);
 
   const { data: session } = useSession();
-  const isAdmin =
-    session?.user?.role === UserRole.ADMIN ||
-    session?.user?.role === UserRole.STAFF;
+  const isAdmin = session?.user?.role === UserRole.ADMIN;
 
   useEffect(() => {
     const loadAnnouncements = async () => {
@@ -131,6 +129,15 @@ export function AnnouncementsGrid() {
       if (editMode === 'create') {
         const newItem = await createAnnouncement(form);
         setAnnouncements((prev) => [newItem, ...prev]);
+        try {
+          await fetch('/api/announcement-emails', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ announcementId: newItem.id }),
+          });
+        } catch (emailErr) {
+          console.error('Failed to send announcement emails:', emailErr);
+        }
       } else if (editMode === 'edit' && form.id) {
         const updated = await updateAnnouncement(form.id, form);
         setAnnouncements((prev) =>
