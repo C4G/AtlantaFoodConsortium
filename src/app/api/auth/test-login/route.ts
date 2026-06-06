@@ -17,7 +17,8 @@ export async function GET(request: NextRequest) {
   }
 
   const role = request.nextUrl.searchParams.get('role')?.toLowerCase();
-  const email = role ? TEST_EMAILS[role] : null;
+  const emailParam = request.nextUrl.searchParams.get('email');
+  const email = emailParam ?? (role ? TEST_EMAILS[role] : null);
 
   if (!email) {
     return NextResponse.json({ error: 'Invalid role.' }, { status: 400 });
