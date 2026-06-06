@@ -4,6 +4,9 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME/bin:$PATH"
 RUN corepack enable
 
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
 # Install dependencies only when needed
 FROM base AS prod-deps
 
@@ -62,9 +65,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Allow enabling test login via build arg (for staging)
 ARG ENABLE_TEST_LOGIN=false
 ENV ENABLE_TEST_LOGIN=$ENABLE_TEST_LOGIN
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
 
 # Install wget for healthcheck
 RUN apk add --no-cache wget
