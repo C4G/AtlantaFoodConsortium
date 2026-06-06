@@ -4,6 +4,9 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME/bin:$PATH"
 RUN corepack enable
 
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
 # Install dependencies only when needed
 FROM base AS prod-deps
 
@@ -58,9 +61,6 @@ WORKDIR /app
 ENV NODE_ENV=production
 # We disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
 
 # Install wget for healthcheck
 RUN apk add --no-cache wget
