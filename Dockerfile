@@ -36,7 +36,7 @@ ENV NODE_OPTIONS=--max-old-space-size=4096
 COPY . .
 
 # Install project dependencies with frozen lockfile for reproducible builds
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Not used during build, but needs to be set
 ENV FILE_UPLOADS="/app/uploads"
