@@ -39,6 +39,7 @@ import {
 } from './actions';
 import { UserRole } from '../../../types/types';
 import { useSession } from 'next-auth/react';
+import { ExtendedUser } from '../nonprofit/_types';
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -87,7 +88,8 @@ export function AnnouncementsGrid() {
   const [loading, setLoading] = useState(false);
 
   const { data: session } = useSession();
-  const isAdmin = session?.user?.role === UserRole.ADMIN;
+  const user = session?.user as ExtendedUser;
+  const isAdmin = user.role === UserRole.ADMIN || user.role === UserRole.STAFF;
 
   useEffect(() => {
     const loadAnnouncements = async () => {
@@ -163,7 +165,9 @@ export function AnnouncementsGrid() {
     }
   };
 
-  const gridColumnDefs: ColDef[] = [
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const gridColumnDefs: ColDef<AnnouncementWithAuthor, any>[] = [
+    /* eslint-enable @typescript-eslint/no-explicit-any */
     { field: 'title', headerName: 'Title' },
     {
       field: 'createdBy',

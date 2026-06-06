@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import cuid from 'cuid';
+import { createId as cuid } from '@paralleldrive/cuid2';
 import { type Prisma, UserRole } from '../../../generated/prisma/client';
 import {
   NONPROFIT_DOCUMENTS_DIR,

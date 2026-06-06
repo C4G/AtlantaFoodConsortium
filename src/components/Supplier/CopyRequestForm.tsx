@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { FormSuccessPopup } from '@/components/Supplier/FormSuccessPopup';
-import { User, Phone, CalendarDays, Clock } from 'lucide-react';
+import { User, Phone, CalendarDays } from 'lucide-react';
 
 interface CopyRequestFormProps {
   showCopyRequestForm: boolean;
@@ -14,6 +14,12 @@ interface FormData {
   pickupLocation: string;
   availabilityTimeframe: string;
 }
+
+const inputClass =
+  'w-full rounded-md border border-slate-200 dark:border-border bg-slate-50 dark:bg-secondary px-3 py-2 text-sm text-slate-700 dark:text-muted-foreground shadow-sm focus:border-blue-300 focus:bg-white dark:focus:bg-secondary focus:outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-800';
+
+const readonlyClass =
+  'w-full rounded-md border border-slate-200 dark:border-border bg-slate-100 dark:bg-secondary/50 px-3 py-2 text-sm text-slate-500 dark:text-muted-foreground shadow-sm';
 
 export const CopyRequestForm: React.FC<CopyRequestFormProps> = ({
   productInfo,
@@ -121,7 +127,7 @@ export const CopyRequestForm: React.FC<CopyRequestFormProps> = ({
 
   return (
     <div
-      className='relative z-10'
+      className='relative z-50'
       aria-labelledby='modal-title'
       role='dialog'
       aria-modal='true'
@@ -295,95 +301,260 @@ export const CopyRequestForm: React.FC<CopyRequestFormProps> = ({
                       <div className='flex items-start gap-3'>
                         <User className='mt-0.5 h-4 w-4 shrink-0 text-blue-600' />
                         <div>
-                          <p className='text-xs text-slate-500'>Name</p>
-                          <p className='font-medium text-slate-800'>
-                            {productInfo.nonprofitPickupContactName}
-                          </p>
+                          <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                            Product Category
+                          </label>
+                          <input
+                            type='text'
+                            readOnly
+                            value={productCategory}
+                            className={readonlyClass}
+                          />
+                        </div>
+                        <div>
+                          <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                            Item Name
+                          </label>
+                          <input
+                            type='text'
+                            readOnly
+                            value={productInfo.name}
+                            className={readonlyClass}
+                          />
+                        </div>
+                        <div>
+                          <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                            Description
+                          </label>
+                          <input
+                            type='text'
+                            readOnly
+                            value={productInfo.description}
+                            className={readonlyClass}
+                          />
+                        </div>
+                        <div>
+                          <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                            Quantity
+                          </label>
+                          <input
+                            type='text'
+                            readOnly
+                            value={`${productInfo.quantity} ${productInfo.unit}`}
+                            className={readonlyClass}
+                          />
                         </div>
                       </div>
-
-                      {productInfo.nonprofitPickupContactPhone && (
-                        <div className='flex items-start gap-3'>
-                          <Phone className='mt-0.5 h-4 w-4 shrink-0 text-blue-600' />
-                          <div>
-                            <p className='text-xs text-slate-500'>Phone</p>
-                            <p className='font-medium text-slate-800'>
-                              {productInfo.nonprofitPickupContactPhone}
-                            </p>
-                          </div>
-                        </div>
-                      )}
                     </div>
-
-                    {productInfo.nonprofitPickupDate && (
-                      <div className='mt-3 flex items-start gap-3'>
-                        <CalendarDays className='mt-0.5 h-4 w-4 shrink-0 text-blue-600' />
-                        <div>
-                          <p className='text-xs text-slate-500'>Pickup Date</p>
-                          <p className='font-medium text-slate-800'>
-                            {new Date(
-                              productInfo.nonprofitPickupDate
-                            ).toLocaleDateString('en-US', {
-                              weekday: 'short',
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric',
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {productInfo.nonprofitPickupTimeframe?.length > 0 && (
-                      <div className='mt-3 flex items-start gap-3'>
-                        <Clock className='mt-0.5 h-4 w-4 shrink-0 text-blue-600' />
-                        <div>
-                          <p className='text-xs text-slate-500'>Time Window</p>
-                          <p className='font-medium text-slate-800'>
-                            {productInfo.nonprofitPickupTimeframe
-                              .map((t: string) =>
-                                t === 'MORNING'
-                                  ? '7\u201310 AM'
-                                  : t === 'MID_DAY'
-                                    ? '10 AM\u20132 PM'
-                                    : t === 'AFTERNOON'
-                                      ? '2\u20135 PM'
-                                      : t
-                              )
-                              .join(', ')}
-                          </p>
-                        </div>
-                      </div>
-                    )}
                   </fieldset>
                 )}
-              </div>
 
-              {/* Footer */}
-              <div className='flex justify-end gap-3 border-t border-slate-200 px-6 py-4 dark:border-border'>
-                <button
-                  type='button'
-                  onClick={closeRequestForm}
-                  className='rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-border dark:bg-secondary dark:text-muted-foreground dark:hover:bg-secondary/80'
-                >
-                  Cancel
-                </button>
-                <button
-                  type='submit'
-                  className='rounded-md bg-green-800 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600'
-                >
-                  Save Copy
-                </button>
+                {/* Pickup details (editable) */}
+                <fieldset className='rounded-lg border border-slate-200 p-4 dark:border-border'>
+                  <legend className='px-2 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-muted-foreground'>
+                    Pickup Details
+                  </legend>
+                  <div className='space-y-4'>
+                    <div>
+                      <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
+                        Pick Up By
+                      </label>
+                      <input
+                        type='date'
+                        name='pickupDate'
+                        value={formData.pickupDate}
+                        onChange={handleInputChange}
+                        min={new Date().toISOString().split('T')[0]}
+                        className={inputClass}
+                      />
+                    </div>
+
+                    <div>
+                      <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
+                        Timeframe
+                      </label>
+                      <div className='flex flex-wrap gap-2'>
+                        {[
+                          { value: 'MORNING', label: '7 AM - 10 AM' },
+                          { value: 'MID_DAY', label: '10 AM - 2 PM' },
+                          { value: 'AFTERNOON', label: '2 PM - 5 PM' },
+                        ].map(({ value, label }) => {
+                          const isSelected =
+                            formData.availabilityTimeframe === value;
+                          return (
+                            <label
+                              key={value}
+                              htmlFor={`copy-${value}`}
+                              className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                                isSelected
+                                  ? 'border-blue-300 bg-blue-50 text-blue-700 ring-1 ring-blue-200 dark:border-blue-600 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'
+                                  : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-border dark:bg-card dark:text-muted-foreground dark:hover:border-slate-600 dark:hover:bg-secondary'
+                              }`}
+                            >
+                              <input
+                                type='radio'
+                                id={`copy-${value}`}
+                                name='availabilityTimeframe'
+                                value={value}
+                                checked={isSelected}
+                                onChange={handleInputChange}
+                                className='h-4 w-4 border-slate-300 bg-white text-blue-600 focus:ring-blue-200 dark:border-slate-500 dark:bg-secondary'
+                              />
+                              {label}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
+                        Pickup Location
+                      </label>
+                      <input
+                        type='text'
+                        name='pickupLocation'
+                        value={formData.pickupLocation}
+                        onChange={handleInputChange}
+                        className={inputClass}
+                        placeholder='Enter pickup address'
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+
+                {/* Contact info (read-only) */}
+                <fieldset className='rounded-lg border border-slate-200 p-4 dark:border-border'>
+                  <legend className='px-2 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-muted-foreground'>
+                    Contact Information
+                  </legend>
+                  <div className='space-y-3'>
+                    <div>
+                      <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                        Contact Name
+                      </label>
+                      <input
+                        type='text'
+                        readOnly
+                        value={productInfo.pickupInfo?.contactName}
+                        className={readonlyClass}
+                      />
+                    </div>
+                    <div>
+                      <label className='mb-1 block text-xs font-medium text-slate-500 dark:text-muted-foreground'>
+                        Contact Phone
+                      </label>
+                      <input
+                        type='tel'
+                        readOnly
+                        value={productInfo.pickupInfo?.contactPhone}
+                        className={readonlyClass}
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+
+                <div className='flex justify-between'>
+                  <button
+                    type='button'
+                    className='rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 dark:border-border dark:bg-secondary dark:text-muted-foreground dark:hover:bg-secondary'
+                    onClick={closeRequestForm}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className='rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
+                    type='submit'
+                  >
+                    Save Copy
+                  </button>
+                  <FormSuccessPopup
+                    openPopup={showSuccessMessage}
+                    closePopup={() => setShowSuccessMessage(false)}
+                  />
+                </div>
               </div>
             </form>
-
-            <FormSuccessPopup
-              openPopup={showSuccessMessage}
-              closePopup={() => setShowSuccessMessage(false)}
-            />
           </div>
         </div>
       </div>
+
+      {/* Nonprofit Pickup Contact — shown only when the product is already claimed */}
+      {productInfo.nonprofitPickupContactName && (
+        <div className='px-4 pb-4 sm:px-6'>
+          <fieldset className='rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20'>
+            <legend className='px-2 text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400'>
+              Nonprofit Pickup Contact
+            </legend>
+
+            <div className='mt-2 grid grid-cols-2 gap-4'>
+              <div className='flex items-start gap-3'>
+                <User className='mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400' />
+                <div>
+                  <p className='text-xs text-slate-500 dark:text-muted-foreground'>
+                    Name
+                  </p>
+                  <p className='font-medium text-slate-800 dark:text-foreground'>
+                    {productInfo.nonprofitPickupContactName}
+                  </p>
+                </div>
+              </div>
+
+              {productInfo.nonprofitPickupContactPhone && (
+                <div className='flex items-start gap-3'>
+                  <Phone className='mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400' />
+                  <div>
+                    <p className='text-xs text-slate-500 dark:text-muted-foreground'>
+                      Phone
+                    </p>
+                    <p className='font-medium text-slate-800 dark:text-foreground'>
+                      {productInfo.nonprofitPickupContactPhone}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {productInfo.nonprofitPickupDate && (
+              <div className='mt-3 flex items-start gap-3'>
+                <CalendarDays className='mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400' />
+                <div>
+                  <p className='text-xs text-slate-500 dark:text-muted-foreground'>
+                    Pickup Date
+                  </p>
+                  <p className='font-medium text-slate-800 dark:text-foreground'>
+                    {new Date(
+                      productInfo.nonprofitPickupDate
+                    ).toLocaleDateString('en-US', {
+                      weekday: 'short',
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Footer */}
+            <div className='flex justify-end gap-3 border-t border-slate-200 px-6 py-4 dark:border-border'>
+              <button
+                type='button'
+                onClick={closeRequestForm}
+                className='rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-border dark:bg-secondary dark:text-muted-foreground dark:hover:bg-secondary/80'
+              >
+                Cancel
+              </button>
+              <button
+                type='submit'
+                className='rounded-md bg-green-800 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600'
+              >
+                Save Copy
+              </button>
+            </div>
+          </fieldset>
+        </div>
+      )}
     </div>
   );
 };

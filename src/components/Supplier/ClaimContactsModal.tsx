@@ -70,7 +70,7 @@ export function ClaimContactsModal({
           {/* Contact cards */}
           <div className='max-h-[60vh] space-y-3 overflow-y-auto px-6 py-4'>
             {contacts.length === 0 ? (
-              <p className='py-6 text-center text-sm text-slate-400'>
+              <p className='py-6 text-center text-sm text-slate-400 dark:text-muted-foreground'>
                 No contact information available.
               </p>
             ) : (
