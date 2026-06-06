@@ -44,6 +44,13 @@ ENV FILE_UPLOADS="/app/uploads"
 # Build Next.js application
 RUN pnpm run build
 
+FROM builder AS migrations
+
+USER nextjs
+
+# Run migrations
+CMD ["pnpm", "exec", "prisma", "migrate", "deploy"]
+
 # Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
