@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import NonprofitRegistrationStatusNotification from '@/emails/NonprofitRegistrationStatusNotification';
-import { render } from '@react-email/render';
+import { render } from 'react-email';
 import { resend } from '@/lib/resend';
 
 export async function POST(request: Request) {

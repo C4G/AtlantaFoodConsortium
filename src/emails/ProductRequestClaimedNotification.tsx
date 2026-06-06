@@ -1,4 +1,4 @@
-import { Html } from '@react-email/components';
+import { Html } from 'react-email';
 import * as React from 'react';
 import { PickupTimeframe } from '../../types/types';
 

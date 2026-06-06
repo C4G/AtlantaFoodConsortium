@@ -30,7 +30,7 @@ vi.mock('@/lib/resend', () => ({
 }));
 
 // render() is called on the email component — mock both
-vi.mock('@react-email/render', () => ({
+vi.mock('react-email', () => ({
   render: vi.fn().mockResolvedValue('<html>email</html>'),
 }));
 

@@ -1,22 +1,24 @@
 # Base image with Node.js
 FROM node:24-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME/bin:$PATH"
+RUN corepack enable
 
 # Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
+FROM base AS prod-deps
+
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json* .npmrc* ./
+# Copy package-related files first to leverage Docker's caching mechanism
+COPY package.json pnpm-*.yaml prisma.config.ts ./
+COPY prisma ./prisma
 
-# Install dependencies
-RUN \
-  if [ -f package-lock.json ]; then npm ci --omit=dev; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Install production project dependencies with frozen lockfile for reproducible builds
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Rebuild the source code only when needed
-FROM base AS builder
+FROM prod-deps AS builder
+
 WORKDIR /app
 
 # Declare build arguments for Next.js public variables
@@ -30,26 +32,17 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 ENV NODE_OPTIONS=--max-old-space-size=4096
 
-# Copy package files
-COPY package.json package-lock.json* .npmrc* ./
-
-# Install ALL dependencies (including dev dependencies needed for build)
-RUN \
-  if [ -f package-lock.json ]; then npm ci --ignore-scripts; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
-
 # Copy source code
 COPY . .
 
-# Generate Prisma client
-RUN DATABASE_URL="postgres://user:pass@localhost/test" npx prisma generate
+# Install project dependencies with frozen lockfile for reproducible builds
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
 
 # Not used during build, but needs to be set
 ENV FILE_UPLOADS="/app/uploads"
 
 # Build Next.js application
-RUN npm run build
+RUN pnpm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
