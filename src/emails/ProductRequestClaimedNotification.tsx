@@ -1,6 +1,5 @@
 import { Html } from 'react-email';
 import * as React from 'react';
-import { PickupTimeframe } from '../../types/types';
 
 export interface ProductRequestClaimedNotificationProps {
   supplierName: string;
@@ -9,10 +8,6 @@ export interface ProductRequestClaimedNotificationProps {
   quantity: number;
   unit: string;
   description: string;
-  pickupDate: string;
-  pickupLocation: string;
-  pickupTimeframe: string[];
-  pickupInstructions: string;
   nonprofitContactEmail: string;
   nonprofitContactNumber: string;
   // Nonprofit-provided pickup contact (collected at claim time)
@@ -22,19 +17,6 @@ export interface ProductRequestClaimedNotificationProps {
   nonprofitPickupTimeframe?: string[];
 }
 
-const getTimeWindowDisplay = (timeframe: string): string => {
-  switch (timeframe) {
-    case PickupTimeframe.MORNING:
-      return '7 AM - 10 AM';
-    case PickupTimeframe.MID_DAY:
-      return '10 AM - 2 PM';
-    case PickupTimeframe.AFTERNOON:
-      return '2 PM - 5 PM';
-    default:
-      return timeframe;
-  }
-};
-
 export default function ProductRequestClaimedNotification({
   supplierName,
   nonprofitName,
@@ -42,10 +24,6 @@ export default function ProductRequestClaimedNotification({
   quantity,
   unit,
   description,
-  pickupDate,
-  pickupLocation,
-  pickupTimeframe,
-  pickupInstructions,
   nonprofitContactEmail,
   nonprofitContactNumber,
   nonprofitPickupContactName,
@@ -91,32 +69,6 @@ export default function ProductRequestClaimedNotification({
           </p>
           <p>
             <strong>Description:</strong> {description}
-          </p>
-        </div>
-
-        <div
-          style={{
-            backgroundColor: '#f8fafc',
-            padding: '20px',
-            borderRadius: '8px',
-            margin: '20px 0',
-          }}
-        >
-          <h2 style={{ color: '#2d3748', marginBottom: '15px' }}>
-            Pickup Information:
-          </h2>
-          <p>
-            <strong>Date:</strong> {new Date(pickupDate).toLocaleDateString()}
-          </p>
-          <p>
-            <strong>Location:</strong> {pickupLocation}
-          </p>
-          <p>
-            <strong>Time Window:</strong>{' '}
-            {pickupTimeframe.map(getTimeWindowDisplay).join(', ')}
-          </p>
-          <p>
-            <strong>Instructions:</strong> {pickupInstructions}
           </p>
         </div>
 
