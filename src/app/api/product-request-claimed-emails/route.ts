@@ -31,20 +31,12 @@ export async function POST(req: Request) {
       include: {
         productType: true,
         supplier: true,
-        pickupInfo: true,
         claimingNonprofit: true,
       },
     });
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
-    }
-
-    if (!product.pickupInfo) {
-      return NextResponse.json(
-        { error: 'Product pickup information not found' },
-        { status: 404 }
-      );
     }
 
     if (!product.claimingNonprofit) {
@@ -54,7 +46,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Get the first user associated with the supplier for contact info
+    // Get the first user associated with the supplier (to send the email to)
     const supplierUser = await prisma.user.findFirst({
       where: { supplierId: product.supplierId },
     });
@@ -66,6 +58,11 @@ export async function POST(req: Request) {
       );
     }
 
+    // Get the nonprofit's user for contact information
+    const nonprofitUser = await prisma.user.findFirst({
+      where: { nonprofitId: product.claimingNonprofit.id },
+    });
+
     const emailHtml = React.createElement(ProductRequestClaimedNotification, {
       supplierName: product.supplier.name,
       nonprofitName: product.claimingNonprofit.name,
@@ -73,12 +70,8 @@ export async function POST(req: Request) {
       quantity: product.quantity,
       unit: product.unit,
       description: product.description,
-      pickupDate: product.pickupInfo.pickupDate.toISOString(),
-      pickupLocation: product.pickupInfo.pickupLocation,
-      pickupTimeframe: product.pickupInfo.pickupTimeframe,
-      pickupInstructions: product.pickupInfo.pickupInstructions,
-      nonprofitContactEmail: supplierUser.email,
-      nonprofitContactNumber: supplierUser.phoneNumber || '',
+      nonprofitContactEmail: nonprofitUser?.email ?? '',
+      nonprofitContactNumber: nonprofitUser?.phoneNumber ?? '',
       nonprofitPickupContactName:
         product.nonprofitPickupContactName ?? undefined,
       nonprofitPickupContactPhone:
