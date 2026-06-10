@@ -19,7 +19,8 @@ services:
   atlanta-food-consortium-migrations:
     build:
       context: .
-      dockerfile: Dockerfile.migrations
+      dockerfile: Dockerfile
+      target: migrations
     environment:
       - DATABASE_URL=postgresql://${DATABASE_USER}:${DATABASE_PW}@atlanta-food-consortium-db:5432/${DATABASE_NAME}
     restart: "no"
