@@ -1,22 +1,27 @@
 # Base image with Node.js
 FROM node:24-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME/bin:$PATH"
+RUN corepack enable
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
 # Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json* .npmrc* ./
+# Copy package-related files first to leverage Docker's caching mechanism
+COPY package.json pnpm-*.yaml prisma.config.ts ./
+COPY prisma ./prisma
 
-# Install dependencies
-RUN \
-  if [ -f package-lock.json ]; then npm ci --omit=dev; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Install production project dependencies with frozen lockfile for reproducible builds
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Rebuild the source code only when needed
-FROM base AS builder
+FROM deps AS builder
+
 WORKDIR /app
 
 # Declare build arguments for Next.js public variables
@@ -30,26 +35,24 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 ENV NODE_OPTIONS=--max-old-space-size=4096
 
-# Copy package files
-COPY package.json package-lock.json* .npmrc* ./
-
-# Install ALL dependencies (including dev dependencies needed for build)
-RUN \
-  if [ -f package-lock.json ]; then npm ci --ignore-scripts; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
-
 # Copy source code
 COPY . .
 
-# Generate Prisma client
-RUN DATABASE_URL="postgres://user:pass@localhost/test" npx prisma generate
+# Install project dependencies with frozen lockfile for reproducible builds
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Not used during build, but needs to be set
 ENV FILE_UPLOADS="/app/uploads"
 
 # Build Next.js application
-RUN npm run build
+RUN pnpm run build
+
+FROM builder AS migrations
+
+USER nextjs
+
+# Run migrations
+CMD ["pnpm", "exec", "prisma", "migrate", "deploy"]
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -58,9 +61,6 @@ WORKDIR /app
 ENV NODE_ENV=production
 # We disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
 
 # Install wget for healthcheck
 RUN apk add --no-cache wget

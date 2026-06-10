@@ -56,42 +56,44 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: '24'
+          cache: 'pnpm'
 
-      - name: Cache Next.js build
+      - name: NextJS Cache
         uses: actions/cache@v5
         with:
           path: |
             ~/.npm
             ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          # Generate a new cache whenever packages or source files change.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: pnpx playwright install --with-deps chromium
 
       - name: Create file upload directory
         run: mkdir -p /tmp/e2e-uploads
 
-      - name: Generate Prisma client
-        run: npx prisma generate
-
       - name: Run database migrations
-        run: npx prisma migrate deploy
+        run: pnpx prisma migrate deploy
 
       - name: Seed database
-        run: npx prisma db seed
+        run: pnpx prisma db seed
 
       - name: Build Next.js application
-        run: npm run build
+        run: pnpm run build
 
       - name: Copy static assets into standalone output
         run: |
@@ -102,14 +104,14 @@ jobs:
         run: |
           node .next/standalone/server.js > /tmp/server.log 2>&1 &
           echo "Server PID: $!"
-          npx wait-on tcp:localhost:3000 --timeout 60000
+          pnpx wait-on tcp:localhost:3000 --timeout 60000
           echo "Server is ready"
         env:
           PORT: 3000
           HOSTNAME: 0.0.0.0
 
       - name: Run Playwright E2E tests
-        run: npm run test:e2e
+        run: pnpm run test:e2e
 
       - name: Print server logs on failure
         if: failure()
