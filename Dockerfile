@@ -8,8 +8,8 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Install dependencies only when needed
-FROM base AS prod-deps
-
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy package-related files first to leverage Docker's caching mechanism
@@ -20,7 +20,7 @@ COPY prisma ./prisma
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Rebuild the source code only when needed
-FROM prod-deps AS builder
+FROM deps AS builder
 
 WORKDIR /app
 
