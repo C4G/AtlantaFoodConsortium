@@ -61,6 +61,12 @@ const mockSupplierUser = {
   phoneNumber: '404-555-0200',
 };
 
+const mockNonprofitUser = {
+  id: 'np-user-1',
+  email: 'contact@foodbank.org',
+  phoneNumber: '404-555-0100',
+};
+
 describe('POST /api/product-request-claimed-emails', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -131,25 +137,6 @@ describe('POST /api/product-request-claimed-emails', () => {
     expect(resend.emails.send).not.toHaveBeenCalled();
   });
 
-  it('should return 404 if product has no pickup info', async () => {
-    vi.mocked(auth).mockResolvedValue(nonprofitSession as any);
-    vi.mocked(prisma.productRequest.findUnique).mockResolvedValue({
-      ...mockProduct,
-      pickupInfo: null,
-    } as any);
-
-    const req = new NextRequest(
-      'http://localhost/api/product-request-claimed-emails',
-      { method: 'POST', body: JSON.stringify({ productId: 'prod-1' }) }
-    );
-    const response = await POST(req);
-    const data = await response.json();
-
-    expect(response.status).toBe(404);
-    expect(data).toEqual({ error: 'Product pickup information not found' });
-    expect(resend.emails.send).not.toHaveBeenCalled();
-  });
-
   it('should return 400 if product has not been claimed', async () => {
     vi.mocked(auth).mockResolvedValue(nonprofitSession as any);
     vi.mocked(prisma.productRequest.findUnique).mockResolvedValue({
@@ -174,7 +161,8 @@ describe('POST /api/product-request-claimed-emails', () => {
     vi.mocked(prisma.productRequest.findUnique).mockResolvedValue(
       mockProduct as any
     );
-    vi.mocked(prisma.user.findFirst).mockResolvedValue(null);
+    // First findFirst (supplier) returns null
+    vi.mocked(prisma.user.findFirst).mockResolvedValueOnce(null);
 
     const req = new NextRequest(
       'http://localhost/api/product-request-claimed-emails',
@@ -193,7 +181,10 @@ describe('POST /api/product-request-claimed-emails', () => {
     vi.mocked(prisma.productRequest.findUnique).mockResolvedValue(
       mockProduct as any
     );
-    vi.mocked(prisma.user.findFirst).mockResolvedValue(mockSupplierUser as any);
+    // First findFirst = supplier, second = nonprofit
+    vi.mocked(prisma.user.findFirst)
+      .mockResolvedValueOnce(mockSupplierUser as any)
+      .mockResolvedValueOnce(mockNonprofitUser as any);
     vi.mocked(resend.emails.send).mockResolvedValue({
       data: { id: 'email-1' },
       error: null,
@@ -217,12 +208,39 @@ describe('POST /api/product-request-claimed-emails', () => {
     expect(sendCall.from).toContain('mafc-no-reply@c4g.dev');
   });
 
+  it('should use nonprofit user email and phone as contact info', async () => {
+    vi.mocked(auth).mockResolvedValue(nonprofitSession as any);
+    vi.mocked(prisma.productRequest.findUnique).mockResolvedValue(
+      mockProduct as any
+    );
+    vi.mocked(prisma.user.findFirst)
+      .mockResolvedValueOnce(mockSupplierUser as any)
+      .mockResolvedValueOnce(mockNonprofitUser as any);
+    vi.mocked(resend.emails.send).mockResolvedValue({
+      data: null,
+      error: null,
+    } as any);
+
+    const req = new NextRequest(
+      'http://localhost/api/product-request-claimed-emails',
+      { method: 'POST', body: JSON.stringify({ productId: 'prod-1' }) }
+    );
+    await POST(req);
+
+    // Verify nonprofit user was looked up by nonprofitId (second findFirst call)
+    expect(prisma.user.findFirst).toHaveBeenNthCalledWith(2, {
+      where: { nonprofitId: mockProduct.claimingNonprofit.id },
+    });
+  });
+
   it('should look up supplier user by supplierId', async () => {
     vi.mocked(auth).mockResolvedValue(nonprofitSession as any);
     vi.mocked(prisma.productRequest.findUnique).mockResolvedValue(
       mockProduct as any
     );
-    vi.mocked(prisma.user.findFirst).mockResolvedValue(mockSupplierUser as any);
+    vi.mocked(prisma.user.findFirst)
+      .mockResolvedValueOnce(mockSupplierUser as any)
+      .mockResolvedValueOnce(mockNonprofitUser as any);
     vi.mocked(resend.emails.send).mockResolvedValue({
       data: null,
       error: null,
@@ -244,7 +262,9 @@ describe('POST /api/product-request-claimed-emails', () => {
     vi.mocked(prisma.productRequest.findUnique).mockResolvedValue(
       mockProduct as any
     );
-    vi.mocked(prisma.user.findFirst).mockResolvedValue(mockSupplierUser as any);
+    vi.mocked(prisma.user.findFirst)
+      .mockResolvedValueOnce(mockSupplierUser as any)
+      .mockResolvedValueOnce(mockNonprofitUser as any);
     vi.mocked(resend.emails.send).mockRejectedValue(
       new Error('resend failure')
     );
