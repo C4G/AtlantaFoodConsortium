@@ -36,19 +36,23 @@ function SortableHeader({
 }) {
   const isActive = activeSortKey === sortKey;
   return (
-    <button
+    <th
       onClick={() => onSort(sortKey)}
-      className='flex items-center gap-1 font-medium text-slate-700 hover:text-slate-900'
+      className='cursor-pointer select-none px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-500 transition-colors hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground'
     >
-      {label}
-      {isActive && activeSortDir === 'asc' ? (
-        <ChevronUp className='h-3.5 w-3.5' />
-      ) : isActive && activeSortDir === 'desc' ? (
-        <ChevronDown className='h-3.5 w-3.5' />
-      ) : (
-        <ChevronsUpDown className='h-3.5 w-3.5 text-slate-400' />
-      )}
-    </button>
+      <div className='flex items-center gap-1'>
+        {label}
+        <span className='inline-flex flex-col'>
+          {isActive && activeSortDir === 'asc' ? (
+            <ChevronUp className='h-3.5 w-3.5 text-blue-600' />
+          ) : isActive && activeSortDir === 'desc' ? (
+            <ChevronDown className='h-3.5 w-3.5 text-blue-600' />
+          ) : (
+            <ChevronsUpDown className='h-3.5 w-3.5 text-slate-300' />
+          )}
+        </span>
+      </div>
+    </th>
   );
 }
 
@@ -89,9 +93,7 @@ export function PickupRequestTable({
     setFoodId(prodId);
   };
 
-  const duplicateRequest = (
-    prodInfo: {} // eslint-disable-line @typescript-eslint/no-empty-object-type
-  ) => {
+  const duplicateRequest = (prodInfo: object) => {
     setShowCopyRequestForm(true);
     setFoodInfo(prodInfo);
   };
@@ -152,7 +154,6 @@ export function PickupRequestTable({
     let contacts: ClaimContact[];
     if (partials.length > 0) {
       contacts = partials.map(rowToContact);
-      // If the parent itself was also claimed (last chunk taken as a direct claim)
       if (row.prod.claimedById) {
         contacts.push({ ...rowToContact(row), isPartial: true });
       }
@@ -166,69 +167,62 @@ export function PickupRequestTable({
 
   return (
     <div className='h-full w-full'>
-      <div className='mb-8 rounded-lg bg-white p-6 shadow-sm'>
-        <div className='mb-6 flex items-center justify-between gap-4'>
-          <h2 className='text-2xl font-semibold text-black'>
+      <div className='mb-8 rounded-lg border border-slate-200 bg-white shadow-md dark:border-border dark:bg-card'>
+        {/* Header */}
+        <div className='flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-border sm:px-6'>
+          <h2 className='font-semibold text-slate-800 dark:text-foreground'>
             Pickup Request History
           </h2>
-          <div className='relative max-w-xs flex-1'>
-            <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400' />
+          <div className='relative'>
+            <Search className='pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-muted-foreground' />
             <input
               type='text'
               placeholder='Search requests…'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className='w-full rounded-md border border-slate-200 py-2 pl-9 pr-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='rounded-md border border-slate-200 bg-slate-50 py-1.5 pl-9 pr-3 text-sm text-slate-600 placeholder:text-slate-400 focus:border-blue-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-border dark:bg-secondary dark:text-muted-foreground dark:placeholder:text-muted-foreground dark:focus:bg-secondary dark:focus:ring-blue-800'
             />
           </div>
         </div>
 
         <div className='overflow-x-auto'>
-          <table className='min-w-full text-sm'>
-            <thead>
-              <tr className='border-b border-slate-200 text-left text-xs text-slate-500'>
-                <th className='py-3 pr-4'>
-                  <SortableHeader
-                    label='Food Item'
-                    sortKey='foodName'
-                    activeSortKey={sortKey}
-                    activeSortDir={sortDir}
-                    onSort={handleSort}
-                  />
-                </th>
-                <th className='py-3 pr-4'>
-                  <SortableHeader
-                    label='Type'
-                    sortKey='foodType'
-                    activeSortKey={sortKey}
-                    activeSortDir={sortDir}
-                    onSort={handleSort}
-                  />
-                </th>
-                <th className='py-3 pr-4'>
-                  <SortableHeader
-                    label='Status'
-                    sortKey='foodStatus'
-                    activeSortKey={sortKey}
-                    activeSortDir={sortDir}
-                    onSort={handleSort}
-                  />
-                </th>
-                <th className='py-3 pr-4'>
-                  <SortableHeader
-                    label='Recipient'
-                    sortKey='foodClaimer'
-                    activeSortKey={sortKey}
-                    activeSortDir={sortDir}
-                    onSort={handleSort}
-                  />
-                </th>
-                <th className='py-3 pr-4 font-medium text-slate-700'>
+          <table className='w-full text-left text-sm'>
+            <thead className='border-b border-slate-100 bg-slate-50/60 dark:border-border dark:bg-card/60'>
+              <tr>
+                <SortableHeader
+                  label='Food Item'
+                  sortKey='foodName'
+                  activeSortKey={sortKey}
+                  activeSortDir={sortDir}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label='Type'
+                  sortKey='foodType'
+                  activeSortKey={sortKey}
+                  activeSortDir={sortDir}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label='Status'
+                  sortKey='foodStatus'
+                  activeSortKey={sortKey}
+                  activeSortDir={sortDir}
+                  onSort={handleSort}
+                />
+                <SortableHeader
+                  label='Recipient'
+                  sortKey='foodClaimer'
+                  activeSortKey={sortKey}
+                  activeSortDir={sortDir}
+                  onSort={handleSort}
+                />
+                <th className='px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-muted-foreground'>
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className='divide-y divide-slate-100'>
+            <tbody className='divide-y divide-slate-100 dark:divide-border'>
               {filteredAndSorted.map((row) => {
                 const status = row.prod.status;
                 const hasPartials = partialClaimsMap.has(row.foodId);
@@ -237,24 +231,31 @@ export function PickupRequestTable({
                 const showContactButton = status === 'RESERVED' || hasPartials;
 
                 return (
-                  <tr key={row.foodId} className='hover:bg-slate-50'>
+                  <tr
+                    key={row.foodId}
+                    className='transition-colors hover:bg-slate-50 dark:hover:bg-secondary'
+                  >
                     {/* Food Item */}
-                    <td className='py-3 pr-4 font-medium text-slate-800'>
+                    <td className='px-4 py-3 font-medium text-slate-900 dark:text-foreground'>
                       {row.foodName}
                     </td>
 
-                    {/* Type */}
-                    <td className='py-3 pr-4 text-slate-600'>{row.foodType}</td>
+                    {/* Type badge */}
+                    <td className='px-4 py-3'>
+                      <span className='inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-secondary dark:text-muted-foreground'>
+                        {row.foodType}
+                      </span>
+                    </td>
 
                     {/* Status badge */}
-                    <td className='py-3 pr-4'>
+                    <td className='px-4 py-3'>
                       <span
                         className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ring-1 ${
                           status === 'AVAILABLE'
-                            ? 'bg-green-50 text-green-700 ring-green-200'
+                            ? 'bg-green-50 text-green-700 ring-green-200 dark:bg-green-900/40 dark:text-green-400 dark:ring-green-800'
                             : status === 'RESERVED'
-                              ? 'bg-blue-50 text-blue-700 ring-blue-200'
-                              : 'bg-amber-50 text-amber-700 ring-amber-200'
+                              ? 'bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'
+                              : 'bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:ring-amber-800'
                         }`}
                       >
                         {status}
@@ -262,34 +263,34 @@ export function PickupRequestTable({
                     </td>
 
                     {/* Recipient badge */}
-                    <td className='py-3 pr-4'>
+                    <td className='px-4 py-3'>
                       {fullyClaimedViaPartials ? (
-                        <span className='inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200'>
+                        <span className='inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'>
                           Claimed
                         </span>
                       ) : hasPartials ? (
-                        <span className='inline-flex rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-amber-200'>
+                        <span className='inline-flex rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:ring-amber-800'>
                           Partially Claimed
                         </span>
                       ) : status === 'RESERVED' ? (
-                        <span className='inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200'>
+                        <span className='inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'>
                           Claimed
                         </span>
                       ) : (
-                        <span className='inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 ring-1 ring-slate-200'>
+                        <span className='inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 ring-1 ring-slate-200 dark:bg-secondary dark:text-muted-foreground dark:ring-border'>
                           Not claimed
                         </span>
                       )}
                     </td>
 
                     {/* Actions */}
-                    <td className='py-3 pr-4'>
+                    <td className='px-4 py-3'>
                       <div className='flex items-center gap-3'>
                         {showContactButton && (
                           <button
                             onClick={() => openContactsModal(row)}
                             title='View claimant contacts'
-                            className='flex items-center gap-1 text-blue-600 hover:text-blue-800'
+                            className='flex items-center gap-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
                           >
                             <Users className='h-3.5 w-3.5' />
                             Contacts
@@ -297,14 +298,14 @@ export function PickupRequestTable({
                         )}
                         <button
                           onClick={() => duplicateRequest(row.prod)}
-                          className='flex items-center gap-1 text-slate-600 hover:text-slate-900'
+                          className='flex items-center gap-1 text-slate-600 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-foreground'
                         >
                           <Copy className='h-3.5 w-3.5' />
                           Copy
                         </button>
                         <button
                           onClick={() => confirmDeletion(row.foodId)}
-                          className='flex items-center gap-1 text-red-400 hover:text-red-600'
+                          className='flex items-center gap-1 text-red-400 hover:text-red-600 dark:text-red-500 dark:hover:text-red-400'
                         >
                           <Trash2 className='h-3.5 w-3.5' />
                           Delete
@@ -319,9 +320,11 @@ export function PickupRequestTable({
                 <tr>
                   <td
                     colSpan={5}
-                    className='py-10 text-center text-sm text-slate-400'
+                    className='px-4 py-10 text-center text-sm text-slate-400 dark:text-muted-foreground'
                   >
-                    No requests found.
+                    {searchQuery
+                      ? 'No requests match your search.'
+                      : 'No requests found.'}
                   </td>
                 </tr>
               )}
@@ -329,9 +332,11 @@ export function PickupRequestTable({
           </table>
         </div>
 
-        <p className='mt-4 text-xs text-slate-400'>
-          Showing {filteredAndSorted.length} of {displayRows.length} requests
-        </p>
+        {filteredAndSorted.length > 0 && (
+          <div className='border-t border-slate-100 px-4 py-2.5 text-xs text-slate-400 dark:border-border dark:text-muted-foreground'>
+            Showing {filteredAndSorted.length} of {displayRows.length} requests
+          </div>
+        )}
       </div>
 
       <DeletionConfirmationPopup

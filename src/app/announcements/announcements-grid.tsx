@@ -6,13 +6,12 @@ import {
   AllCommunityModule,
   ModuleRegistry,
   type ColDef,
-  themeAlpine,
-  colorSchemeDark,
   ICellRendererParams,
 } from 'ag-grid-community';
 import { type Announcement } from '../../generated/prisma/client';
 import { Group, GroupType } from '../../lib/group-type';
 import { useIsDarkTheme } from '@/hooks/use-is-dark-theme';
+import { agGridLightTheme, agGridDarkTheme } from '@/lib/ag-grid-theme';
 import {
   Dialog,
   DialogContent,
@@ -40,6 +39,7 @@ import {
 } from './actions';
 import { UserRole } from '../../../types/types';
 import { useSession } from 'next-auth/react';
+import { ExtendedUser } from '../nonprofit/_types';
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -71,7 +71,7 @@ type DeleteModal = {
 export function AnnouncementsGrid() {
   const isDarkTheme = useIsDarkTheme();
   const agGridTheme = useMemo(
-    () => (isDarkTheme ? themeAlpine.withPart(colorSchemeDark) : themeAlpine),
+    () => (isDarkTheme ? agGridDarkTheme : agGridLightTheme),
     [isDarkTheme]
   );
 
@@ -88,7 +88,8 @@ export function AnnouncementsGrid() {
   const [loading, setLoading] = useState(false);
 
   const { data: session } = useSession();
-  const isAdmin = session?.user?.role === UserRole.ADMIN;
+  const user = session?.user as ExtendedUser;
+  const isAdmin = user.role === UserRole.ADMIN || user.role === UserRole.STAFF;
 
   useEffect(() => {
     const loadAnnouncements = async () => {
@@ -164,7 +165,9 @@ export function AnnouncementsGrid() {
     }
   };
 
-  const gridColumnDefs: ColDef[] = [
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const gridColumnDefs: ColDef<AnnouncementWithAuthor, any>[] = [
+    /* eslint-enable @typescript-eslint/no-explicit-any */
     { field: 'title', headerName: 'Title' },
     {
       field: 'createdBy',

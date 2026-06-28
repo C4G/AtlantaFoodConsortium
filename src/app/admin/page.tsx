@@ -62,14 +62,14 @@ const AdminPage = () => {
   ]);
 
   return (
-    <div className='flex min-h-screen flex-col bg-slate-50 p-6'>
+    <div className='flex min-h-screen flex-col bg-background p-6 text-foreground'>
       <div className='mx-auto w-full max-w-7xl'>
-        <h1 className='mb-6 text-center text-3xl font-bold text-slate-900'>
+        <h1 className='mb-6 text-center text-3xl font-bold text-foreground'>
           Admin Dashboard
         </h1>
 
         {error && (
-          <div className='mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-600'>
+          <div className='mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-600 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400'>
             <div className='flex items-center'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'

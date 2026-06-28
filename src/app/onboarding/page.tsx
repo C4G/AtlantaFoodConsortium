@@ -36,15 +36,15 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-slate-50 p-4'>
-      <div className='w-full max-w-md space-y-6 rounded-xl bg-white p-6 shadow-lg'>
+    <div className='flex min-h-screen items-center justify-center bg-background p-4'>
+      <div className='w-full max-w-md space-y-6 rounded-xl bg-card p-6 shadow-lg'>
         <div className='flex items-center justify-between'>
-          <h1 className='text-2xl font-bold text-slate-900'>
+          <h1 className='text-2xl font-bold text-foreground'>
             Complete Your Profile
           </h1>
         </div>
 
-        <p className='text-sm text-slate-600'>
+        <p className='text-sm text-muted-foreground'>
           To post or claim food donations, register as a supplier or nonprofit
           below. You can continue using discussions and announcements without
           completing this step.
@@ -53,20 +53,20 @@ export default function OnboardingPage() {
         <div className='space-y-4'>
           <button
             onClick={() => handleRoleSelection('nonprofit')}
-            className='w-full rounded-lg border border-slate-200 p-4 text-left transition hover:border-slate-400 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400'
+            className='w-full rounded-lg border border-border p-4 text-left transition hover:border-primary/50 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-ring'
           >
-            <p className='font-semibold text-slate-800'>🏢 Nonprofit</p>
-            <p className='mt-1 text-sm text-slate-500'>
+            <p className='font-semibold text-foreground'>🏢 Nonprofit</p>
+            <p className='mt-1 text-sm text-muted-foreground'>
               Receive food donations for your community organization.
             </p>
           </button>
 
           <button
             onClick={() => handleRoleSelection('supplier')}
-            className='w-full rounded-lg border border-slate-200 p-4 text-left transition hover:border-slate-400 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400'
+            className='w-full rounded-lg border border-border p-4 text-left transition hover:border-primary/50 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-ring'
           >
-            <p className='font-semibold text-slate-800'>🚚 Supplier</p>
-            <p className='mt-1 text-sm text-slate-500'>
+            <p className='font-semibold text-foreground'>🚚 Supplier</p>
+            <p className='mt-1 text-sm text-muted-foreground'>
               Post surplus food available for donation or pickup.
             </p>
           </button>

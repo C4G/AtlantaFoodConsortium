@@ -33,7 +33,7 @@ export function AreaChartComponent({
     <div className='w-full'>
       {title && (
         <div className='mb-4 flex items-center justify-center gap-2'>
-          <h3 className='text-center text-lg font-semibold text-slate-800'>
+          <h3 className='text-center text-lg font-semibold text-foreground'>
             {title}
           </h3>
           {info && <ChartInfoTooltip info={info} position='top' />}

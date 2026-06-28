@@ -61,13 +61,13 @@ export function SupplierRoleFields({
 }: SupplierRoleFieldsProps) {
   return (
     <div className='pt-6'>
-      <h2 className='mb-4 text-lg font-semibold text-slate-900'>
+      <h2 className='mb-4 text-lg font-semibold text-foreground'>
         Product Questions
       </h2>
 
       <div className='space-y-4'>
         <div>
-          <label className='mb-2 block text-sm font-medium text-slate-700'>
+          <label className='mb-2 block text-sm font-medium text-muted-foreground'>
             What products are you able to provide?
           </label>
           <div className='space-x-6'>
@@ -75,7 +75,7 @@ export function SupplierRoleFields({
               {productCategories.map(([value, label]) => (
                 <label
                   key={value}
-                  className='flex items-center whitespace-nowrap text-black'
+                  className='flex items-center whitespace-nowrap text-foreground'
                 >
                   <input
                     type='checkbox'
@@ -95,7 +95,7 @@ export function SupplierRoleFields({
         {/* Render product details for selected categories */}
         {formData.productCategory.map((category: string) => (
           <div key={category} className='mt-4'>
-            <label className='mb-2 block text-sm font-medium text-slate-700'>
+            <label className='mb-2 block text-sm font-medium text-muted-foreground'>
               {category === 'protein'
                 ? 'Specify protein type:'
                 : `Details for ${productCategoryLabels.get(category)}:`}
@@ -106,7 +106,7 @@ export function SupplierRoleFields({
                   (protein: string) => (
                     <label
                       key={protein}
-                      className='mb-2 mr-4 flex items-center text-slate-700'
+                      className='mb-2 mr-4 flex items-center text-muted-foreground'
                     >
                       <input
                         type='checkbox'
@@ -150,7 +150,7 @@ export function SupplierRoleFields({
                         e.target.value
                       )
                     }
-                    className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400'
+                    className='w-full rounded-md border border-border bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring'
                   />
                 )}
               </div>
@@ -166,14 +166,14 @@ export function SupplierRoleFields({
                 onChange={(e) =>
                   handleProductInfoChange(category, 'specifics', e.target.value)
                 }
-                className='w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400'
+                className='w-full rounded-md border border-border bg-card px-3 py-2 text-muted-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring'
               />
             )}
           </div>
         ))}
 
         <div>
-          <label className='mb-2 block text-sm font-medium text-slate-700'>
+          <label className='mb-2 block text-sm font-medium text-muted-foreground'>
             How often can you provide products?
           </label>
           <div className='space-y-2'>
@@ -185,11 +185,11 @@ export function SupplierRoleFields({
                 value='daily'
                 checked={formData.frequency === 'daily'}
                 onChange={handleInputChange}
-                className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
               />
               <label
                 htmlFor='dailyFrequency'
-                className='ml-2 text-sm text-slate-700'
+                className='ml-2 text-sm text-muted-foreground'
               >
                 Daily
               </label>
@@ -203,11 +203,11 @@ export function SupplierRoleFields({
                 value='weekly'
                 checked={formData.frequency === 'weekly'}
                 onChange={handleInputChange}
-                className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
               />
               <label
                 htmlFor='weeklyFrequency'
-                className='ml-2 text-sm text-slate-700'
+                className='ml-2 text-sm text-muted-foreground'
               >
                 Weekly
               </label>
@@ -221,11 +221,11 @@ export function SupplierRoleFields({
                 value='biweekly'
                 checked={formData.frequency === 'biweekly'}
                 onChange={handleInputChange}
-                className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
               />
               <label
                 htmlFor='biweeklyFrequency'
-                className='ml-2 text-sm text-slate-700'
+                className='ml-2 text-sm text-muted-foreground'
               >
                 Biweekly
               </label>
@@ -239,11 +239,11 @@ export function SupplierRoleFields({
                 value='monthly'
                 checked={formData.frequency === 'monthly'}
                 onChange={handleInputChange}
-                className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
+                className='h-4 w-4 border-border text-blue-600 focus:ring-blue-500'
               />
               <label
                 htmlFor='monthlyFrequency'
-                className='ml-2 text-sm text-slate-700'
+                className='ml-2 text-sm text-muted-foreground'
               >
                 Monthly
               </label>

@@ -14,7 +14,7 @@ const TabNav = ({
   claimedCount,
 }: TabNavProps) => {
   return (
-    <div className='flex gap-2 border-b border-slate-200'>
+    <div className='flex gap-2 border-b border-border'>
       {(
         [
           { key: 'overview', label: 'Overview' },
@@ -27,8 +27,8 @@ const TabNav = ({
           onClick={() => setActiveTab(key)}
           className={`px-5 py-3 text-sm font-semibold transition-colors ${
             activeTab === key
-              ? 'border-b-2 border-blue-600 text-blue-600'
-              : 'text-slate-500 hover:text-slate-800'
+              ? 'border-b-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           {label}

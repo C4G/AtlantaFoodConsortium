@@ -24,10 +24,10 @@ const OverviewTab = ({
   return (
     <div className='space-y-6'>
       <div className='flex items-center'>
-        <h2 className='text-2xl font-bold text-slate-800'>
+        <h2 className='text-2xl font-bold text-foreground'>
           Your Activity & Insights
         </h2>
-        <div className='ml-4 h-px flex-grow bg-slate-200'></div>
+        <div className='ml-4 h-px flex-grow bg-border'></div>
       </div>
 
       {/* KPI Cards */}
@@ -103,7 +103,7 @@ const OverviewTab = ({
       {/* Charts Grid */}
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         {metricsData.availabilityTrends.length > 0 && (
-          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+          <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
             <LineChartComponent
               title='Product Availability (Last 30 Days)'
               info={NONPROFIT_CHART_INFO.productAvailabilityTrend}
@@ -121,7 +121,7 @@ const OverviewTab = ({
         )}
 
         {metricsData.monthlyTimeline.length > 0 && (
-          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+          <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
             <LineChartComponent
               title='Your Monthly Claims'
               info={NONPROFIT_CHART_INFO.monthlyClaimsTimeline}
@@ -139,9 +139,9 @@ const OverviewTab = ({
         )}
 
         {productInterests && (
-          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+          <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
             <div className='mb-4 flex items-center justify-center gap-2'>
-              <h3 className='text-center text-lg font-semibold text-slate-800'>
+              <h3 className='text-center text-lg font-semibold text-foreground'>
                 Product Interest Match Score
               </h3>
               <ChartInfoTooltip
@@ -158,16 +158,16 @@ const OverviewTab = ({
                 .map(([key, value]) => (
                   <div key={key}>
                     <div className='mb-1 flex justify-between text-sm'>
-                      <span className='font-medium text-slate-700'>
+                      <span className='font-medium text-muted-foreground'>
                         {key
                           .replace(/([A-Z])/g, ' $1')
                           .replace(/^./, (str) => str.toUpperCase())}
                       </span>
-                      <span className='text-slate-600'>
+                      <span className='text-muted-foreground'>
                         {Math.round(value as number)}%
                       </span>
                     </div>
-                    <div className='h-2 w-full rounded-full bg-slate-200'>
+                    <div className='h-2 w-full rounded-full bg-slate-200 dark:bg-slate-700'>
                       <div
                         className='h-2 rounded-full bg-blue-600'
                         style={{ width: `${value}%` }}
@@ -180,7 +180,7 @@ const OverviewTab = ({
         )}
 
         {Object.values(metricsData.typeBreakdown).some((v) => v > 0) && (
-          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+          <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
             <DonutChart
               title='Your Claimed Product Types'
               info={NONPROFIT_CHART_INFO.claimedProductTypes}

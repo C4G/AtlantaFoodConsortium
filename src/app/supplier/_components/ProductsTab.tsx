@@ -47,26 +47,26 @@ const ProductsTab = ({
   formatSnakeCase,
 }: ProductsTabProps) => {
   return (
-    <>
-      <div className='mb-8 rounded-lg bg-white p-6 shadow-sm'>
-        <h2 className='mb-6 text-2xl font-semibold text-black'>
+    <div className='space-y-6'>
+      <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md dark:border-border dark:bg-card'>
+        <h2 className='mb-2 text-xl font-semibold text-slate-900 dark:text-foreground'>
           New Food Pick Up Request
         </h2>
-        <p className='mb-6 text-black'>
+        <p className='mb-6 text-sm text-slate-500 dark:text-muted-foreground'>
           Please fill out all fields to submit a new food pick up request.
         </p>
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-8'>
           {/* Product Info Section */}
-          <fieldset className='rounded-md border p-4'>
-            <legend className='px-2 text-lg font-semibold text-black'>
+          <fieldset className='rounded-lg border border-slate-200 p-4 dark:border-border'>
+            <legend className='px-2 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-muted-foreground'>
               Product Information
             </legend>
             <div className='space-y-4'>
               <div className='space-y-2'>
-                <label className='block text-sm font-medium text-black'>
+                <label className='block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                   Product Category (Select one or more)
                 </label>
-                <div className='space-y-2'>
+                <div className='grid grid-cols-2 gap-2 sm:grid-cols-3'>
                   {[
                     [ItemType.PROTEIN, 'Protein'],
                     [ItemType.PRODUCE, 'Produce'],
@@ -77,25 +77,35 @@ const ProductsTab = ({
                     ],
                     [ItemType.ALREADY_PREPARED_FOOD, 'Already Prepared Food'],
                     [ItemType.OTHER, 'Other'],
-                  ].map(([value, label]) => (
-                    <label key={value} className='flex items-center text-black'>
-                      <input
-                        type='checkbox'
-                        {...register('productTypes', {
-                          required: 'Please select a category',
-                        })}
-                        name='productTypes'
-                        id='productTypes'
-                        value={value}
-                        checked={formData.productTypes.includes(value)}
-                        onChange={() =>
-                          handleProductTypeToggle(value as ItemType)
-                        }
-                        className='mr-2'
-                      />
-                      {label}
-                    </label>
-                  ))}
+                  ].map(([value, label]) => {
+                    const isChecked = formData.productTypes.includes(value);
+                    return (
+                      <label
+                        key={value}
+                        className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition-colors ${
+                          isChecked
+                            ? 'border-blue-300 bg-blue-50 text-blue-700 ring-1 ring-blue-200 dark:border-blue-600 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'
+                            : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-border dark:bg-card dark:text-muted-foreground dark:hover:border-slate-600 dark:hover:bg-secondary'
+                        }`}
+                      >
+                        <input
+                          type='checkbox'
+                          {...register('productTypes', {
+                            required: 'Please select a category',
+                          })}
+                          name='productTypes'
+                          id='productTypes'
+                          value={value}
+                          checked={isChecked}
+                          onChange={() =>
+                            handleProductTypeToggle(value as ItemType)
+                          }
+                          className='h-4 w-4 rounded border-slate-300 bg-white text-blue-600 focus:ring-blue-200 dark:border-slate-500 dark:bg-secondary'
+                        />
+                        {label}
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
               <ProductDetailsInputs
@@ -106,7 +116,7 @@ const ProductsTab = ({
                 formatSnakeCase={formatSnakeCase}
               />
               {errors.productTypes && (
-                <span className='text-red-500'>
+                <span className='text-sm text-red-500'>
                   {errors.productTypes.message}
                 </span>
               )}
@@ -114,12 +124,12 @@ const ProductsTab = ({
           </fieldset>
 
           {/* Pickup Details Section */}
-          <fieldset className='rounded-md border p-4'>
-            <legend className='px-2 text-lg font-semibold text-black'>
+          <fieldset className='rounded-lg border border-slate-200 p-4 dark:border-border'>
+            <legend className='px-2 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-muted-foreground'>
               Pickup Details
             </legend>
             <div>
-              <label className='mb-2 block text-sm font-medium text-black'>
+              <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                 Pick Up By
               </label>
               <input
@@ -131,10 +141,10 @@ const ProductsTab = ({
                 value={formData.pickupDate}
                 onChange={handleInputChange}
                 min={new Date().toISOString().split('T')[0]}
-                className={`max-w-md rounded-md border ${errors.pickupDate ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-black`}
+                className={`max-w-md rounded-md border ${errors.pickupDate ? 'border-red-500' : 'border-slate-200 dark:border-border'} bg-slate-50 px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-blue-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:bg-secondary dark:text-muted-foreground dark:focus:bg-secondary dark:focus:ring-blue-800`}
               />
               {errors.pickupDate && (
-                <span className='block text-red-500'>
+                <span className='block text-sm text-red-500'>
                   {errors.pickupDate.message}
                 </span>
               )}
@@ -142,46 +152,52 @@ const ProductsTab = ({
 
             <div className='mt-6 space-y-4'>
               <div>
-                <label className='mb-2 block text-sm font-medium text-slate-700'>
+                <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                   What is the timeframe the product is available?
                 </label>
-                <div className='space-y-2'>
+                <div className='flex flex-wrap gap-2'>
                   {[
                     { value: 'MORNING', label: '7 AM - 10 AM' },
                     { value: 'MID_DAY', label: '10 AM - 2 PM' },
                     { value: 'AFTERNOON', label: '2 PM - 5 PM' },
-                  ].map(({ value, label }) => (
-                    <div key={value} className='flex items-center'>
-                      <input
-                        type='radio'
-                        {...register('availabilityTimeframe', {
-                          required: 'Please select a timeframe',
-                        })}
-                        id={value}
-                        name='availabilityTimeframe'
-                        value={value}
-                        checked={formData.availabilityTimeframe === value}
-                        onChange={handleInputChange}
-                        className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500'
-                      />
+                  ].map(({ value, label }) => {
+                    const isSelected = formData.availabilityTimeframe === value;
+                    return (
                       <label
+                        key={value}
                         htmlFor={value}
-                        className='ml-2 text-sm text-slate-700'
+                        className={`flex cursor-pointer items-center gap-2 rounded-lg border px-4 py-2.5 text-sm transition-colors ${
+                          isSelected
+                            ? 'border-blue-300 bg-blue-50 text-blue-700 ring-1 ring-blue-200 dark:border-blue-600 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'
+                            : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-border dark:bg-card dark:text-muted-foreground dark:hover:border-slate-600 dark:hover:bg-secondary'
+                        }`}
                       >
+                        <input
+                          type='radio'
+                          {...register('availabilityTimeframe', {
+                            required: 'Please select a timeframe',
+                          })}
+                          id={value}
+                          name='availabilityTimeframe'
+                          value={value}
+                          checked={isSelected}
+                          onChange={handleInputChange}
+                          className='h-4 w-4 border-slate-300 bg-white text-blue-600 focus:ring-blue-200 dark:border-slate-500 dark:bg-secondary'
+                        />
                         {label}
                       </label>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 {errors.availabilityTimeframe && (
-                  <span className='text-red-500'>
+                  <span className='text-sm text-red-500'>
                     {errors.availabilityTimeframe.message}
                   </span>
                 )}
               </div>
 
               <div>
-                <label className='mb-2 block text-sm font-medium text-slate-700'>
+                <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                   Where does the product need to be picked up?
                 </label>
                 <input
@@ -193,12 +209,13 @@ const ProductsTab = ({
                   name='pickupLocation'
                   value={formData.pickupLocation}
                   onChange={handleInputChange}
-                  className={`w-full rounded-md border ${errors.pickupLocation ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-black`}
+                  className={`w-full rounded-md border ${errors.pickupLocation ? 'border-red-500' : 'border-slate-200 dark:border-border'} bg-slate-50 px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-blue-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:bg-secondary dark:text-muted-foreground dark:focus:bg-secondary dark:focus:ring-blue-800`}
                   placeholder='Enter pickup address'
+                  style={{ colorScheme: 'inherit' }}
                 />
               </div>
               {errors.pickupLocation && (
-                <span className='text-red-500'>
+                <span className='text-sm text-red-500'>
                   {errors.pickupLocation.message}
                 </span>
               )}
@@ -206,13 +223,13 @@ const ProductsTab = ({
           </fieldset>
 
           {/* Contact Info Section */}
-          <fieldset className='rounded-md border p-4'>
-            <legend className='px-2 text-lg font-semibold text-black'>
+          <fieldset className='rounded-lg border border-slate-200 p-4 dark:border-border'>
+            <legend className='px-2 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-muted-foreground'>
               Contact Information
             </legend>
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
               <div>
-                <label className='mb-2 block text-sm font-medium text-slate-700'>
+                <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                   Main Contact Person&apos;s Name
                 </label>
                 <input
@@ -224,17 +241,17 @@ const ProductsTab = ({
                   name='mainContactName'
                   value={formData.mainContactName}
                   onChange={handleInputChange}
-                  className={`w-full rounded-md border ${errors.mainContactName ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-black`}
+                  className={`w-full rounded-md border ${errors.mainContactName ? 'border-red-500' : 'border-slate-200 dark:border-border'} bg-slate-50 px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-blue-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:bg-secondary dark:text-muted-foreground dark:focus:bg-secondary dark:focus:ring-blue-800`}
                   placeholder='Enter name'
                 />
                 {errors.mainContactName && (
-                  <span className='text-red-500'>
+                  <span className='text-sm text-red-500'>
                     {errors.mainContactName.message}
                   </span>
                 )}
               </div>
               <div>
-                <label className='mb-2 block text-sm font-medium text-slate-700'>
+                <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                   Main Contact Person&apos;s Phone Number
                 </label>
                 <input
@@ -249,11 +266,11 @@ const ProductsTab = ({
                   maxLength={10}
                   pattern='\d{10}'
                   inputMode='numeric'
-                  className={`w-full rounded-md border ${errors.mainContactNumber ? 'border-red-500' : 'border-slate-300'} bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-black`}
+                  className={`w-full rounded-md border ${errors.mainContactNumber ? 'border-red-500' : 'border-slate-200 dark:border-border'} bg-slate-50 px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-blue-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:bg-secondary dark:text-muted-foreground dark:focus:bg-secondary dark:focus:ring-blue-800`}
                   placeholder='Enter phone number'
                 />
                 {errors.mainContactNumber && (
-                  <span className='text-red-500'>
+                  <span className='text-sm text-red-500'>
                     {errors.mainContactNumber.message}
                   </span>
                 )}
@@ -262,12 +279,12 @@ const ProductsTab = ({
           </fieldset>
 
           {/* Additional Info Section */}
-          <fieldset className='rounded-md border p-4'>
-            <legend className='px-2 text-lg font-semibold text-black'>
+          <fieldset className='rounded-lg border border-slate-200 p-4 dark:border-border'>
+            <legend className='px-2 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-muted-foreground'>
               Additional Information
             </legend>
             <div>
-              <label className='mb-2 block text-sm font-medium text-black'>
+              <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-muted-foreground'>
                 Pick up instructions or other details
               </label>
               <textarea
@@ -275,7 +292,7 @@ const ProductsTab = ({
                 value={formData.instructions}
                 onChange={handleInputChange}
                 rows={3}
-                className='w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                className='w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-blue-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-border dark:bg-secondary dark:text-muted-foreground dark:focus:bg-secondary dark:focus:ring-blue-800'
                 placeholder='Enter instructions...'
               />
             </div>
@@ -284,9 +301,9 @@ const ProductsTab = ({
           <div>
             <button
               type='submit'
-              className='rounded-md bg-yellow-400 px-4 py-2 font-medium text-black hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2'
+              className='rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-offset-background'
             >
-              Submit
+              Submit Request
             </button>
           </div>
         </form>
@@ -295,7 +312,7 @@ const ProductsTab = ({
         rowData={rowData}
         deleteProductRequest={deleteProductRequest}
       />
-    </>
+    </div>
   );
 };
 
