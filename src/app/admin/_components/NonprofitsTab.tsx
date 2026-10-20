@@ -48,7 +48,8 @@ const NonprofitsTab = ({
 
   const DocumentCell = ({ nonprofitId }: { nonprofitId: string }) => {
     const document = getDocumentForNonprofit(nonprofitId);
-    if (!document) return <span className='text-slate-500'>No Document</span>;
+    if (!document)
+      return <span className='text-muted-foreground'>No Document</span>;
     return (
       <button
         onClick={() => downloadDocument(document)}
@@ -77,17 +78,17 @@ const NonprofitsTab = ({
     <>
       <div className='mt-6 space-y-4'>
         <div className='flex items-center'>
-          <h2 className='text-2xl font-bold capitalize text-slate-800'>
+          <h2 className='text-2xl font-bold capitalize text-foreground dark:text-white'>
             Nonprofits
           </h2>
           <div className='ml-4 h-px flex-grow bg-slate-200'></div>
         </div>
 
-        <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-md'>
+        <div className='rounded-lg border border-border bg-card p-6 shadow-md'>
           <div className='overflow-x-auto'>
             <table className='w-full'>
               <thead>
-                <tr className='bg-slate-50 text-left'>
+                <tr className='bg-muted/40 text-left'>
                   {[
                     'Nonprofit Name',
                     'Organization Type',
@@ -97,7 +98,7 @@ const NonprofitsTab = ({
                   ].map((header) => (
                     <th
                       key={header}
-                      className='border-b border-slate-200 px-6 py-3 text-sm font-medium text-slate-700'
+                      className='border-b border-border px-6 py-3 text-sm font-medium text-foreground'
                     >
                       {header}
                     </th>
@@ -107,11 +108,8 @@ const NonprofitsTab = ({
               <tbody>
                 {/* Pending Approvals Section */}
                 <tr>
-                  <td
-                    colSpan={5}
-                    className='border-b border-slate-200 px-6 py-4'
-                  >
-                    <h3 className='flex items-center gap-2 text-lg font-semibold text-slate-800'>
+                  <td colSpan={5} className='border-b border-border px-6 py-4'>
+                    <h3 className='flex items-center gap-2 text-lg font-semibold text-foreground'>
                       Pending Approvals
                       <span className='inline-flex items-center justify-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-sm font-bold text-yellow-800'>
                         {pendingNonprofits.length}
@@ -122,20 +120,20 @@ const NonprofitsTab = ({
                 {pendingNonprofits.map((nonprofit, index) => (
                   <tr
                     key={nonprofit.id}
-                    className={`hover:bg-slate-50 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}
+                    className={`hover:bg-muted/40 ${index % 2 === 0 ? 'bg-card' : '/30 bg-muted/40'}`}
                   >
-                    <td className='border-b border-slate-200 px-6 py-4 text-slate-800'>
+                    <td className='border-b border-border px-6 py-4 text-foreground'>
                       {nonprofit.name}
                     </td>
-                    <td className='border-b border-slate-200 px-6 py-4'>
+                    <td className='border-b border-border px-6 py-4'>
                       <span className='inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800'>
                         {nonprofit.organizationType}
                       </span>
                     </td>
-                    <td className='border-b border-slate-200 px-6 py-4'>
+                    <td className='border-b border-border px-6 py-4'>
                       <DocumentCell nonprofitId={nonprofit.id} />
                     </td>
-                    <td className='border-b border-slate-200 px-6 py-4'>
+                    <td className='border-b border-border px-6 py-4'>
                       <div className='flex space-x-2'>
                         <button
                           onClick={() =>
@@ -193,7 +191,7 @@ const NonprofitsTab = ({
                         </button>
                       </div>
                     </td>
-                    <td className='border-b border-slate-200 px-6 py-4'>
+                    <td className='border-b border-border px-6 py-4'>
                       <span className='inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800'>
                         Pending
                       </span>
@@ -203,13 +201,10 @@ const NonprofitsTab = ({
 
                 {/* Processed Approvals Section */}
                 <tr>
-                  <td
-                    colSpan={5}
-                    className='border-b border-slate-200 px-6 py-4'
-                  >
-                    <h3 className='flex items-center gap-2 text-lg font-semibold text-slate-800'>
+                  <td colSpan={5} className='border-b border-border px-6 py-4'>
+                    <h3 className='flex items-center gap-2 text-lg font-semibold text-foreground'>
                       Processed Approvals
-                      <span className='inline-flex items-center justify-center rounded-full bg-slate-100 px-2.5 py-0.5 text-sm font-bold text-slate-700'>
+                      <span className='inline-flex items-center justify-center rounded-full bg-muted px-2.5 py-0.5 text-sm font-bold text-foreground'>
                         {processedNonprofits.length}
                       </span>
                     </h3>
@@ -218,20 +213,20 @@ const NonprofitsTab = ({
                 {processedNonprofits.map((nonprofit, index) => (
                   <tr
                     key={nonprofit.id}
-                    className={`hover:bg-slate-50 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}
+                    className={`hover:bg-muted/40 ${index % 2 === 0 ? 'bg-card' : '/30 bg-muted/40'}`}
                   >
-                    <td className='border-b border-slate-200 px-6 py-4 text-slate-800'>
+                    <td className='border-b border-border px-6 py-4 text-foreground'>
                       {nonprofit.name}
                     </td>
-                    <td className='border-b border-slate-200 px-6 py-4'>
+                    <td className='border-b border-border px-6 py-4'>
                       <span className='inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800'>
                         {nonprofit.organizationType}
                       </span>
                     </td>
-                    <td className='border-b border-slate-200 px-6 py-4'>
+                    <td className='border-b border-border px-6 py-4'>
                       <DocumentCell nonprofitId={nonprofit.id} />
                     </td>
-                    <td className='border-b border-slate-200 px-6 py-4'>
+                    <td className='border-b border-border px-6 py-4'>
                       <div className='flex space-x-2'>
                         <button
                           onClick={() =>
@@ -264,7 +259,7 @@ const NonprofitsTab = ({
                         </button>
                       </div>
                     </td>
-                    <td className='border-b border-slate-200 px-6 py-4'>
+                    <td className='border-b border-border px-6 py-4'>
                       {nonprofit.nonprofitDocumentApproval ? (
                         <span className='inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800'>
                           Approved

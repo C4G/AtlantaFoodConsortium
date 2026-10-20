@@ -6,11 +6,11 @@ import {
   AllCommunityModule,
   ModuleRegistry,
   type ColDef,
-  themeAlpine,
-  colorSchemeDark,
 } from 'ag-grid-community';
-import { GroupType, type Thread, type Comment } from '@prisma/client';
+import { type Thread, type Comment } from '../../generated/prisma/client';
+import { Group, GroupType } from '../../lib/group-type';
 import { useIsDarkTheme } from '@/hooks/use-is-dark-theme';
+import { agGridLightTheme, agGridDarkTheme } from '@/lib/ag-grid-theme';
 import {
   Dialog,
   DialogContent,
@@ -70,7 +70,7 @@ type ThreadWithAuthor = Thread & {
 export function DiscussionThreadsGrid() {
   const isDarkTheme = useIsDarkTheme();
   const agGridTheme = useMemo(
-    () => (isDarkTheme ? themeAlpine.withPart(colorSchemeDark) : themeAlpine),
+    () => (isDarkTheme ? agGridDarkTheme : agGridLightTheme),
     [isDarkTheme]
   );
 
@@ -152,14 +152,23 @@ export function DiscussionThreadsGrid() {
     }
 
     try {
-      await createThread({
+      const newThread = await createThread({
         title: form.title,
         content: form.content ?? '',
-        groupType: form.groupType ?? GroupType.ADMIN,
+        groupType: form.groupType ?? Group.ADMIN,
       });
       setOpenDialog(false);
       setForm({});
       loadThreads();
+      try {
+        await fetch('/api/discussion-emails', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ threadId: newThread.id }),
+        });
+      } catch (emailErr) {
+        console.error('Failed to send discussion emails:', emailErr);
+      }
     } catch (err) {
       console.error('Failed to create thread:', err);
     }
@@ -297,7 +306,7 @@ export function DiscussionThreadsGrid() {
               Select Targeted Group
             </p>
             <Select
-              value={form.groupType ?? GroupType.ADMIN}
+              value={form.groupType ?? Group.ADMIN}
               onValueChange={(v) =>
                 setForm({ ...form, groupType: v as GroupType })
               }
@@ -306,9 +315,9 @@ export function DiscussionThreadsGrid() {
                 <SelectValue placeholder='Select Targeted Group' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={GroupType.ADMIN}>Admin</SelectItem>
-                <SelectItem value={GroupType.SUPPLIER}>Supplier</SelectItem>
-                <SelectItem value={GroupType.NONPROFIT}>Non-Profit</SelectItem>
+                <SelectItem value={Group.ADMIN}>Admin</SelectItem>
+                <SelectItem value={Group.SUPPLIER}>Supplier</SelectItem>
+                <SelectItem value={Group.NONPROFIT}>Non-Profit</SelectItem>
               </SelectContent>
             </Select>
 

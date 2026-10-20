@@ -40,12 +40,12 @@ export const ClaimedItemDetailsPopup: React.FC<
         ></div>
         <div className='fixed inset-0 z-10 w-screen overflow-y-auto'>
           <div className='flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0'>
-            <div className='relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg'>
-              <div className='bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4'>
+            <div className='relative transform overflow-hidden rounded-lg bg-card text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg'>
+              <div className='bg-card px-4 pb-4 pt-5 sm:p-6 sm:pb-4'>
                 <div className='sm:flex sm:items-start'>
                   <div className='mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left'>
                     <button
-                      className='absolute right-2 top-2 text-gray-500 hover:text-gray-700 focus:outline-none'
+                      className='absolute right-2 top-2 text-muted-foreground hover:text-foreground focus:outline-none'
                       onClick={closeDetailsPopup}
                     >
                       {' '}
@@ -53,15 +53,15 @@ export const ClaimedItemDetailsPopup: React.FC<
                     </button>
 
                     <h3
-                      className='text-base font-bold text-black'
+                      className='text-base font-bold text-foreground'
                       id='modal-title'
                     >
                       Product Details
                     </h3>
-                    <hr className='my-4 border-t border-gray-300' />
-                    <div className='mt-2 text-black'>
+                    <hr className='my-4 border-t border-border' />
+                    <div className='mt-2 text-foreground'>
                       <div className='mb-4'>
-                        <h3 className='font-semibold text-black'>
+                        <h3 className='font-semibold text-foreground'>
                           Product Information
                         </h3>
                         <p>
@@ -78,7 +78,7 @@ export const ClaimedItemDetailsPopup: React.FC<
                         </p>
                       </div>
                       <div className='mb-4'>
-                        <h3 className='font-semibold text-black'>
+                        <h3 className='font-semibold text-foreground'>
                           Supplier Information
                         </h3>
                         <p>
@@ -94,7 +94,7 @@ export const ClaimedItemDetailsPopup: React.FC<
                       </div>
 
                       <div className='mb-4'>
-                        <h3 className='font-semibold text-black'>
+                        <h3 className='font-semibold text-foreground'>
                           Pickup Information
                         </h3>
                         <p>

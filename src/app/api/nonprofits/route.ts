@@ -39,6 +39,11 @@ export async function GET(req: Request) {
       },
       include: {
         productsClaimed: {
+          orderBy: {
+            pickupInfo: {
+              pickupDate: 'asc',
+            },
+          },
           include: {
             productType: true,
             pickupInfo: true,

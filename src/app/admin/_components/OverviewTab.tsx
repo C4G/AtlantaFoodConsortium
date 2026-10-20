@@ -127,7 +127,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         {/* Product Distribution Donut Chart */}
         {hasProductDistribution && (
-          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+          <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
             <DonutChart
               title='Product Type Distribution'
               info={ADMIN_CHART_INFO.productTypeDistribution}
@@ -166,7 +166,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
 
         {/* Product Status Trends Line Chart */}
         {hasTrends && (
-          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+          <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
             <LineChartComponent
               title='Product Status Trends'
               info={ADMIN_CHART_INFO.productStatusTrends}
@@ -183,7 +183,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
 
         {/* Supplier Activity Bar Chart */}
         {hasSupplierActivity && (
-          <div className='flex h-[400px] flex-col rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:h-[550px] sm:p-6'>
+          <div className='flex h-[400px] flex-col rounded-lg border border-border bg-card p-3 shadow-md sm:h-[550px] sm:p-6'>
             <BarChartComponent
               title='Top Suppliers by Products'
               info={ADMIN_CHART_INFO.topSuppliers}
@@ -203,7 +203,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
 
         {/* Nonprofit Engagement Bar Chart */}
         {hasNonprofitEngagement && (
-          <div className='flex h-[400px] flex-col rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:h-[550px] sm:p-6'>
+          <div className='flex h-[400px] flex-col rounded-lg border border-border bg-card p-3 shadow-md sm:h-[550px] sm:p-6'>
             <BarChartComponent
               title='Top Nonprofits by Claims'
               info={ADMIN_CHART_INFO.topNonprofits}
@@ -223,7 +223,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
 
         {/* Organization Type Breakdown */}
         {hasOrgTypes && (
-          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+          <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
             <DonutChart
               title='Nonprofit Organization Types'
               info={ADMIN_CHART_INFO.nonprofitOrgTypes}
@@ -269,7 +269,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
 
         {/* Supplier Cadence Breakdown */}
         {hasCadenceData && (
-          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6'>
+          <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6'>
             <DonutChart
               title='Supplier Posting Cadence'
               info={ADMIN_CHART_INFO.supplierCadence}
@@ -303,7 +303,7 @@ const OverviewTab = ({ analyticsData, loading }: OverviewTabProps) => {
 
         {/* Claims Over Time Line Chart */}
         {hasClaimsOverTime && (
-          <div className='rounded-lg border border-slate-200 bg-white p-3 shadow-md sm:p-6 lg:col-span-2'>
+          <div className='rounded-lg border border-border bg-card p-3 shadow-md sm:p-6 lg:col-span-2'>
             <LineChartComponent
               title='Claims Over Time'
               info={ADMIN_CHART_INFO.claimsOverTime}

@@ -105,7 +105,9 @@ export function ChartInfoTooltip({
         onMouseEnter={openTooltip}
         onMouseLeave={closeTooltip}
         className={`cursor-help rounded-full p-0.5 transition-colors ${
-          open ? 'text-slate-600' : 'text-slate-400 hover:text-slate-600'
+          open
+            ? 'text-muted-foreground'
+            : 'text-muted-foreground/60 hover:text-muted-foreground'
         } focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500`}
       >
         <Info className={iconSize} />

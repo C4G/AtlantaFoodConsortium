@@ -17,6 +17,7 @@ const tabs = [
   // { name: 'Weekly Updates', href: `${basePath}/weekly-updates` },
   // { name: 'Project Peer Evaluations', href: `${basePath}/peer-evaluations` },
   { name: 'Demo', href: `${basePath}/demo` },
+  { name: 'Final Presentation', href: `${basePath}/final-presentation` },
 ];
 
 export function TeamTabs() {

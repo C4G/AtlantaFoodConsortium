@@ -6,12 +6,12 @@ import {
   AllCommunityModule,
   ModuleRegistry,
   type ColDef,
-  themeAlpine,
-  colorSchemeDark,
   ICellRendererParams,
 } from 'ag-grid-community';
-import { GroupType, type Announcement } from '@prisma/client';
+import { type Announcement } from '../../generated/prisma/client';
+import { Group, GroupType } from '../../lib/group-type';
 import { useIsDarkTheme } from '@/hooks/use-is-dark-theme';
+import { agGridLightTheme, agGridDarkTheme } from '@/lib/ag-grid-theme';
 import {
   Dialog,
   DialogContent,
@@ -39,6 +39,7 @@ import {
 } from './actions';
 import { UserRole } from '../../../types/types';
 import { useSession } from 'next-auth/react';
+import { ExtendedUser } from '../nonprofit/_types';
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -70,7 +71,7 @@ type DeleteModal = {
 export function AnnouncementsGrid() {
   const isDarkTheme = useIsDarkTheme();
   const agGridTheme = useMemo(
-    () => (isDarkTheme ? themeAlpine.withPart(colorSchemeDark) : themeAlpine),
+    () => (isDarkTheme ? agGridDarkTheme : agGridLightTheme),
     [isDarkTheme]
   );
 
@@ -87,9 +88,8 @@ export function AnnouncementsGrid() {
   const [loading, setLoading] = useState(false);
 
   const { data: session } = useSession();
-  const isAdmin =
-    session?.user?.role === UserRole.ADMIN ||
-    session?.user?.role === UserRole.STAFF;
+  const user = session?.user as ExtendedUser;
+  const isAdmin = user.role === UserRole.ADMIN || user.role === UserRole.STAFF;
 
   useEffect(() => {
     const loadAnnouncements = async () => {
@@ -111,7 +111,7 @@ export function AnnouncementsGrid() {
       title: '',
       content: '',
       createdBy: '',
-      groupType: GroupType.ADMIN,
+      groupType: Group.ADMIN,
     });
     setEditMode('create');
   };
@@ -131,6 +131,15 @@ export function AnnouncementsGrid() {
       if (editMode === 'create') {
         const newItem = await createAnnouncement(form);
         setAnnouncements((prev) => [newItem, ...prev]);
+        try {
+          await fetch('/api/announcement-emails', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ announcementId: newItem.id }),
+          });
+        } catch (emailErr) {
+          console.error('Failed to send announcement emails:', emailErr);
+        }
       } else if (editMode === 'edit' && form.id) {
         const updated = await updateAnnouncement(form.id, form);
         setAnnouncements((prev) =>
@@ -156,7 +165,9 @@ export function AnnouncementsGrid() {
     }
   };
 
-  const gridColumnDefs: ColDef[] = [
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const gridColumnDefs: ColDef<AnnouncementWithAuthor, any>[] = [
+    /* eslint-enable @typescript-eslint/no-explicit-any */
     { field: 'title', headerName: 'Title' },
     {
       field: 'createdBy',
@@ -293,7 +304,7 @@ export function AnnouncementsGrid() {
             <div className='grid gap-1.5'>
               <Label>Target User Group</Label>
               <Select
-                value={form.groupType || GroupType.ADMIN}
+                value={form.groupType || Group.ADMIN}
                 onValueChange={(v) =>
                   setForm({ ...form, groupType: v as GroupType })
                 }
@@ -302,12 +313,9 @@ export function AnnouncementsGrid() {
                   <SelectValue placeholder='Select user group' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={GroupType.ADMIN}>Admin</SelectItem>
-                  <SelectItem value={GroupType.SUPPLIER}>Supplier</SelectItem>
-                  <SelectItem value={GroupType.NONPROFIT}>
-                    {' '}
-                    Non-Profit
-                  </SelectItem>
+                  <SelectItem value={Group.ADMIN}>Admin</SelectItem>
+                  <SelectItem value={Group.SUPPLIER}>Supplier</SelectItem>
+                  <SelectItem value={Group.NONPROFIT}> Non-Profit</SelectItem>
                 </SelectContent>
               </Select>
             </div>

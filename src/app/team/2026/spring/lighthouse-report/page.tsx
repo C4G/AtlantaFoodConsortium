@@ -25,15 +25,17 @@ export default function LighthouseReportPage() {
       <h1 className='mb-2 text-3xl font-semibold tracking-tight sm:text-4xl'>
         Lighthouse Report
       </h1>
-      <p className='mb-8 text-gray-500'>
+      <p className='mb-8 text-muted-foreground'>
         Scores for <span className='font-medium'>localhost:3000</span> &mdash;
         February 22, 2026
       </p>
       <div>
         <div className='mt-4 grid grid-cols-2 gap-4 rounded-lg p-4 sm:grid-cols-4'>
           {lighthouseScores.performanceScore !== null && (
-            <div className='rounded-lg bg-gray-50 p-4'>
-              <p className='text-sm font-medium text-gray-500'>Performance</p>
+            <div className='rounded-lg bg-muted p-4'>
+              <p className='text-sm font-medium text-muted-foreground'>
+                Performance
+              </p>
               <p
                 className={`text-3xl font-bold ${getScoreColor(lighthouseScores.performanceScore)}`}
               >
@@ -42,8 +44,10 @@ export default function LighthouseReportPage() {
             </div>
           )}
           {lighthouseScores.accessibilityScore !== null && (
-            <div className='rounded-lg bg-gray-50 p-4'>
-              <p className='text-sm font-medium text-gray-500'>Accessibility</p>
+            <div className='rounded-lg bg-muted p-4'>
+              <p className='text-sm font-medium text-muted-foreground'>
+                Accessibility
+              </p>
               <p
                 className={`text-3xl font-bold ${getScoreColor(lighthouseScores.accessibilityScore)}`}
               >
@@ -52,8 +56,8 @@ export default function LighthouseReportPage() {
             </div>
           )}
           {lighthouseScores.bestPracticesScore !== null && (
-            <div className='rounded-lg bg-gray-50 p-4'>
-              <p className='text-sm font-medium text-gray-500'>
+            <div className='rounded-lg bg-muted p-4'>
+              <p className='text-sm font-medium text-muted-foreground'>
                 Best Practices
               </p>
               <p
@@ -64,8 +68,8 @@ export default function LighthouseReportPage() {
             </div>
           )}
           {lighthouseScores.seoScore !== null && (
-            <div className='rounded-lg bg-gray-50 p-4'>
-              <p className='text-sm font-medium text-gray-500'>SEO</p>
+            <div className='rounded-lg bg-muted p-4'>
+              <p className='text-sm font-medium text-muted-foreground'>SEO</p>
               <p
                 className={`text-3xl font-bold ${getScoreColor(lighthouseScores.seoScore)}`}
               >
@@ -74,7 +78,7 @@ export default function LighthouseReportPage() {
             </div>
           )}
         </div>
-        <div className='mt-4 flex gap-4 text-sm text-gray-500'>
+        <div className='mt-4 flex gap-4 text-sm text-muted-foreground'>
           <span className='flex items-center gap-1'>
             <span className='font-bold text-green-600'>90–100</span> Good
           </span>

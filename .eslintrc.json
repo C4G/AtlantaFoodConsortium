@@ -1,6 +1,6 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript", "prettier"],
-  "ignorePatterns": ["node_modules/", ".next/"],
+  "ignorePatterns": ["node_modules/", ".next/", "next-env.d.ts"],
   "rules": {
     "no-unused-vars": [
       "error",

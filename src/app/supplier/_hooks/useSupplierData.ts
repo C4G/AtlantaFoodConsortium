@@ -33,7 +33,13 @@ const useSupplierData = ({
       foodName: item.name,
       foodType: findFoodType(item.productType),
       foodStatus: item.status,
-      foodClaimer: item.claimedById ? 'Claimed' : 'Not claimed',
+      foodClaimer: item.originalProductId
+        ? 'Partially Claimed'
+        : item.claimedById
+          ? 'Claimed'
+          : 'Not claimed',
+      pickupContact: item.nonprofitPickupContactName ?? null,
+      pickupDate: item.nonprofitPickupDate ?? null,
       foodId: item.id,
       supplierId: item.supplierId,
       prod: item,

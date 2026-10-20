@@ -31,7 +31,7 @@ const TeamPage = () => {
         <h1 className='text-4xl font-bold tracking-tight sm:text-5xl'>
           C4G Teams
         </h1>
-        <p className='mt-4 text-lg text-gray-600 dark:text-gray-400'>
+        <p className='mt-4 text-lg text-muted-foreground'>
           Explore our team members and projects across different semesters
         </p>
       </div>
@@ -41,7 +41,7 @@ const TeamPage = () => {
           <Link
             key={semester.path}
             href={semester.path}
-            className='group relative overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:hover:shadow-gray-900'
+            className='group relative overflow-hidden rounded-lg border border-border bg-card p-6 shadow-sm transition-all hover:shadow-lg dark:border-border dark:bg-card dark:hover:shadow-gray-900'
           >
             {semester.isCurrent && (
               <div className='absolute right-4 top-4'>
@@ -51,10 +51,10 @@ const TeamPage = () => {
               </div>
             )}
             <div className='mb-4'>
-              <h2 className='text-2xl font-semibold text-gray-900 dark:text-gray-100'>
+              <h2 className='text-2xl font-semibold text-foreground'>
                 {semester.season} {semester.year}
               </h2>
-              <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
+              <p className='mt-2 text-sm text-muted-foreground'>
                 {semester.description}
               </p>
             </div>

@@ -2,6 +2,13 @@
 
 This project is developed by students at Georgia Tech in the [Computing for Good Program](https://c4g.gatech.edu/).
 
+## Live Deployments
+
+| Environment    | URL                                                                                         | Branch    |
+| -------------- | ------------------------------------------------------------------------------------------- | --------- |
+| **Production** | [atlanta-food-consortium.c4g.dev](https://atlanta-food-consortium.c4g.dev/)                 | `main`    |
+| **Staging**    | [atlanta-food-consortium-staging.c4g.dev](https://atlanta-food-consortium-staging.c4g.dev/) | `staging` |
+
 ## Getting Started - Running Locally
 
 Follow these steps to set up and run the Atlanta Food Consortium application on your local machine.
@@ -80,6 +87,22 @@ To stop the Docker database:
 ```bash
 docker compose down
 ```
+
+## Documentation
+
+Developer documentation is available on the live site at [`/documentation/features`](https://atlanta-food-consortium.c4g.dev/documentation/features). Key pages:
+
+| Page                        | URL                                                                                                                           |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Features overview           | [`/documentation/features`](https://atlanta-food-consortium.c4g.dev/documentation/features)                                   |
+| Getting started with docs   | [`/documentation/features/getting-started`](https://atlanta-food-consortium.c4g.dev/documentation/features/getting-started)   |
+| Application flow diagram    | [`/documentation/features/application-flow`](https://atlanta-food-consortium.c4g.dev/documentation/features/application-flow) |
+| Route map & access control  | [`/documentation/features/routes`](https://atlanta-food-consortium.c4g.dev/documentation/features/routes)                     |
+| Announcements feature       | [`/documentation/features/announcements`](https://atlanta-food-consortium.c4g.dev/documentation/features/announcements)       |
+| Discussions feature         | [`/documentation/features/discussions`](https://atlanta-food-consortium.c4g.dev/documentation/features/discussions)           |
+| Markdown / schema reference | [`/documentation/features/schema-reference`](https://atlanta-food-consortium.c4g.dev/documentation/features/schema-reference) |
+
+> **Tip:** Documentation pages are driven by Markdown files in `content/docs/`. Add a `.md` file there to instantly create a new doc page — no code changes needed.
 
 ## Contributors
 

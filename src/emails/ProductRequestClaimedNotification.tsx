@@ -1,6 +1,5 @@
-import { Html } from '@react-email/components';
+import { Html } from 'react-email';
 import * as React from 'react';
-import { PickupTimeframe } from '../../types/types';
 
 export interface ProductRequestClaimedNotificationProps {
   supplierName: string;
@@ -9,26 +8,14 @@ export interface ProductRequestClaimedNotificationProps {
   quantity: number;
   unit: string;
   description: string;
-  pickupDate: string;
-  pickupLocation: string;
-  pickupTimeframe: string[];
-  pickupInstructions: string;
   nonprofitContactEmail: string;
   nonprofitContactNumber: string;
+  // Nonprofit-provided pickup contact (collected at claim time)
+  nonprofitPickupContactName?: string;
+  nonprofitPickupContactPhone?: string;
+  nonprofitPickupDate?: string;
+  nonprofitPickupTimeframe?: string[];
 }
-
-const getTimeWindowDisplay = (timeframe: string): string => {
-  switch (timeframe) {
-    case PickupTimeframe.MORNING:
-      return '7 AM - 10 AM';
-    case PickupTimeframe.MID_DAY:
-      return '10 AM - 2 PM';
-    case PickupTimeframe.AFTERNOON:
-      return '2 PM - 5 PM';
-    default:
-      return timeframe;
-  }
-};
 
 export default function ProductRequestClaimedNotification({
   supplierName,
@@ -37,12 +24,12 @@ export default function ProductRequestClaimedNotification({
   quantity,
   unit,
   description,
-  pickupDate,
-  pickupLocation,
-  pickupTimeframe,
-  pickupInstructions,
   nonprofitContactEmail,
   nonprofitContactNumber,
+  nonprofitPickupContactName,
+  nonprofitPickupContactPhone,
+  nonprofitPickupDate,
+  nonprofitPickupTimeframe,
 }: ProductRequestClaimedNotificationProps) {
   return (
     <Html>
@@ -94,32 +81,6 @@ export default function ProductRequestClaimedNotification({
           }}
         >
           <h2 style={{ color: '#2d3748', marginBottom: '15px' }}>
-            Pickup Information:
-          </h2>
-          <p>
-            <strong>Date:</strong> {new Date(pickupDate).toLocaleDateString()}
-          </p>
-          <p>
-            <strong>Location:</strong> {pickupLocation}
-          </p>
-          <p>
-            <strong>Time Window:</strong>{' '}
-            {pickupTimeframe.map(getTimeWindowDisplay).join(', ')}
-          </p>
-          <p>
-            <strong>Instructions:</strong> {pickupInstructions}
-          </p>
-        </div>
-
-        <div
-          style={{
-            backgroundColor: '#f8fafc',
-            padding: '20px',
-            borderRadius: '8px',
-            margin: '20px 0',
-          }}
-        >
-          <h2 style={{ color: '#2d3748', marginBottom: '15px' }}>
             Nonprofit Contact Information:
           </h2>
           <p>
@@ -138,6 +99,52 @@ export default function ProductRequestClaimedNotification({
             <strong>Phone:</strong> {nonprofitContactNumber}
           </p>
         </div>
+
+        {nonprofitPickupContactName && (
+          <div
+            style={{
+              backgroundColor: '#ebf8ff',
+              padding: '20px',
+              borderRadius: '8px',
+              margin: '20px 0',
+            }}
+          >
+            <h2 style={{ color: '#2b6cb0', marginBottom: '15px' }}>
+              Nonprofit Pickup Contact:
+            </h2>
+            <p>
+              <strong>Name:</strong> {nonprofitPickupContactName}
+            </p>
+            {nonprofitPickupContactPhone && (
+              <p>
+                <strong>Phone:</strong> {nonprofitPickupContactPhone}
+              </p>
+            )}
+            {nonprofitPickupDate && (
+              <p>
+                <strong>Planned Pickup Date:</strong>{' '}
+                {new Date(nonprofitPickupDate).toLocaleDateString()}
+              </p>
+            )}
+            {nonprofitPickupTimeframe &&
+              nonprofitPickupTimeframe.length > 0 && (
+                <p>
+                  <strong>Planned Pickup Time:</strong>{' '}
+                  {nonprofitPickupTimeframe
+                    .map((t) =>
+                      t === 'MORNING'
+                        ? '7 AM – 10 AM'
+                        : t === 'MID_DAY'
+                          ? '10 AM – 2 PM'
+                          : t === 'AFTERNOON'
+                            ? '2 PM – 5 PM'
+                            : t
+                    )
+                    .join(', ')}
+                </p>
+              )}
+          </div>
+        )}
 
         <p>
           Please ensure the product is ready for pickup at the specified

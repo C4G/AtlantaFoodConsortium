@@ -47,6 +47,8 @@ export interface SupplierRowData {
   foodType: string;
   foodStatus: string;
   foodClaimer: string;
+  pickupContact: string | null;
+  pickupDate: Date | string | null;
   foodId: string;
   supplierId: string;
   prod: ProductRequest;

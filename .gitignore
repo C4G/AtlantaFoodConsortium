@@ -45,3 +45,8 @@ e2e/.state/
 e2e/report/
 e2e/results/
 playwright-report/
+
+# prisma
+/src/generated/prisma
+/prisma/generated/prisma
+

@@ -14,7 +14,8 @@ import './load-env';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../src/generated/prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import {
   E2E_PREFIX,
   TEST_ADMIN_EMAIL,
@@ -25,6 +26,10 @@ import {
   EDGE_CASE_PRODUCT_NAME,
   writeState,
 } from './shared-state';
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
 
 // ─── Cleanup helpers ────────────────────
 async function cleanupTestData(prisma: PrismaClient) {
@@ -62,7 +67,7 @@ async function cleanupTestData(prisma: PrismaClient) {
 }
 
 async function globalSetup() {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({ adapter });
 
   try {
     console.log('\nE2E global setup starting…');

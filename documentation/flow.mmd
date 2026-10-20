@@ -91,7 +91,8 @@ flowchart TD
         S_DELETE["Delete product"]:::action
         PR_CREATED[("ProductRequest(s) created\nstatus = AVAILABLE 🟢")]:::db
         EMAIL_NP_AVAIL["📧  Batch Email → Approved Nonprofits\nwhose interests match the product type\nNew product available"]:::email
-        S_TABLE["Pickup Request Table\nMonitor status changes"]:::action
+        S_TABLE["Pickup Request Table\nMonitor status changes\nAVAILABLE · RESERVED · partially claimed"]:::action
+        S_CONTACTS["📋  View Contacts Modal\nAll claiming nonprofit contacts\n(full & partial claimants)"]:::action
     end
 
     SUP_DASH --> S_OV
@@ -101,6 +102,7 @@ flowchart TD
     S_FORM   -->|"POST /api/product-requests/multiple"| PR_CREATED
     PR_CREATED -->|"POST /api/product-availability-emails"| EMAIL_NP_AVAIL
     PR_CREATED --> S_TABLE
+    S_TABLE  --> S_CONTACTS
 
     %% ═══════════════════════════════════════════════════════
     %%  SECTION 5 — NONPROFIT
@@ -113,10 +115,13 @@ flowchart TD
         NP_DASH(["🏢  Nonprofit"]):::user
         NP_OV["Overview Tab\nOrg profile & preferences"]:::action
         NP_AVAIL["Available Products Tab"]:::action
-        NP_CLAIMS["My Claims Tab"]:::action
+        NP_CLAIMS["My Claims Tab\nSort: pickup soonest · recently claimed\nUnclaim individual items"]:::action
         NP_BROWSE["Browse available products\nSupplier · Qty · Pickup details"]:::action
-        NP_CLAIM_BTN["Click 'Claim This Product'\nConfirmation modal"]:::action
-        PR_RESERVED[("status = RESERVED 🔵\nclaimedById = nonprofit")]:::db
+        NP_CLAIM_BTN["Click 'Claim This Product'\nConfirmation modal\nEnter qty + pickup contact info"]:::action
+        NP_CLAIM_QTY{"Full or\nPartial claim?"}:::decision
+        PR_RESERVED[("FULL CLAIM\nstatus = RESERVED 🔵\nclaimedById = nonprofit")]:::db
+        PR_PARTIAL[("PARTIAL CLAIM\nNew RESERVED record for claimed qty\nOriginal qty reduced — stays AVAILABLE 🟢\nMultiple claims merge into one card")]:::db
+        NP_UNCLAIM[("UNCLAIM\nPartial → qty merged back to original\nFull → status reset to AVAILABLE")]:::db
         EMAIL_SUP["📧  Email → Supplier Contact\nProduct claimed by [Nonprofit]\nIncludes pickup & contact info"]:::email
     end
 
@@ -133,9 +138,15 @@ flowchart TD
     NP_DASH --> NP_CLAIMS
     NP_AVAIL   --> NP_BROWSE
     NP_BROWSE  --> NP_CLAIM_BTN
-    NP_CLAIM_BTN -->|"PATCH /api/item-availability"| PR_RESERVED
+    NP_CLAIM_BTN -->|"PATCH /api/item-availability"| NP_CLAIM_QTY
+    NP_CLAIM_QTY -- "qty = all available" --> PR_RESERVED
+    NP_CLAIM_QTY -- "qty < available"     --> PR_PARTIAL
     PR_RESERVED  -->|"POST /api/product-request-claimed-emails"| EMAIL_SUP
+    PR_PARTIAL   -->|"POST /api/product-request-claimed-emails"| EMAIL_SUP
     PR_RESERVED  --> NP_CLAIMS
+    PR_PARTIAL   --> NP_CLAIMS
+    NP_CLAIMS    -->|"PATCH /api/item-availability\naction = unclaim"| NP_UNCLAIM
+    NP_UNCLAIM   --> NP_AVAIL
 
     %% ═══════════════════════════════════════════════════════
     %%  SECTION 6 — SHARED
