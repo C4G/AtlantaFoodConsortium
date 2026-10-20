@@ -86,11 +86,8 @@ jobs:
       - name: Create file upload directory
         run: mkdir -p /tmp/e2e-uploads
 
-      - name: Run database migrations
-        run: pnpx prisma migrate deploy
-
       - name: Seed database
-        run: pnpx prisma db seed
+        run: pnpm test:e2e:seed
 
       - name: Build Next.js application
         run: pnpm run build
