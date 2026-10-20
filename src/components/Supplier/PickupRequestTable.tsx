@@ -38,6 +38,22 @@ function SortableHeader({
   return (
     <th
       onClick={() => onSort(sortKey)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onSort(sortKey);
+        }
+      }}
+      tabIndex={0}
+      aria-sort={
+        isActive
+          ? activeSortDir === 'asc'
+            ? 'ascending'
+            : activeSortDir === 'desc'
+              ? 'descending'
+              : 'none'
+          : 'none'
+      }
       className='cursor-pointer select-none px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-500 transition-colors hover:text-slate-800 dark:text-muted-foreground dark:hover:text-foreground'
     >
       <div className='flex items-center gap-1'>

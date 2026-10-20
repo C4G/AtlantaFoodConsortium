@@ -29,6 +29,14 @@ export function KPICard({
   return (
     <div
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      tabIndex={onClick ? 0 : undefined}
+      role={onClick ? 'button' : undefined}
       className={`rounded-lg border p-4 shadow-md transition-all sm:p-6 ${
         onClick ? 'cursor-pointer' : ''
       } ${
@@ -63,15 +71,13 @@ export function KPICard({
                     ? 'text-green-600'
                     : trend.value < 0
                       ? 'text-red-600'
-                      : 'text-muted-foreground'
+                      : 'text-slate-600'
                 }`}
               >
                 {trend.value > 0 ? '↑' : trend.value < 0 ? '↓' : '→'}{' '}
                 {Math.abs(trend.value)}%
               </span>
-              <span className='ml-2 text-sm text-muted-foreground'>
-                {trend.label}
-              </span>
+              <span className='ml-2 text-sm text-slate-500'>{trend.label}</span>
             </div>
           )}
         </div>
