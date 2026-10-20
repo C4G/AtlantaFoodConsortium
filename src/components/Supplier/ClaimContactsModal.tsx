@@ -40,7 +40,7 @@ export function ClaimContactsModal({
       aria-labelledby='contacts-modal-title'
     >
       <div
-        className='fixed inset-0 bg-black/50 transition-opacity dark:bg-black/70'
+        className='fixed inset-0 bg-black/50 transition-opacity'
         aria-hidden='true'
         onClick={onClose}
       />
@@ -61,7 +61,7 @@ export function ClaimContactsModal({
             </div>
             <button
               onClick={onClose}
-              className='ml-4 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-secondary dark:hover:text-foreground'
+              className='ml-4 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:text-muted-foreground dark:hover:bg-secondary dark:hover:text-foreground'
             >
               <X className='h-5 w-5' />
             </button>
@@ -157,34 +157,34 @@ export function ClaimContactsModal({
                         </p>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Timeframe */}
-                  {c.timeframe.length > 0 && (
-                    <div className='flex items-start gap-2 text-sm'>
-                      <Clock className='mt-0.5 h-4 w-4 shrink-0 text-slate-400 dark:text-muted-foreground' />
-                      <div>
-                        <p className='text-xs text-slate-400 dark:text-muted-foreground'>
-                          Time Window
-                        </p>
-                        <p className='text-slate-700 dark:text-foreground'>
-                          {c.timeframe
-                            .map((t) => TIMEFRAME_LABELS[t] ?? t)
-                            .join(', ')}
-                        </p>
+                    {/* Time window */}
+                    {c.timeframe && c.timeframe.length > 0 && (
+                      <div className='col-span-2 flex items-start gap-2'>
+                        <Clock className='mt-0.5 h-4 w-4 shrink-0 text-slate-400 dark:text-muted-foreground' />
+                        <div>
+                          <p className='text-xs text-slate-400 dark:text-muted-foreground'>
+                            Time Window
+                          </p>
+                          <p className='text-slate-700 dark:text-foreground'>
+                            {c.timeframe
+                              .map((t) => TIMEFRAME_LABELS[t] ?? t)
+                              .join(', ')}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               ))
             )}
           </div>
 
           {/* Footer */}
-          <div className='flex justify-end border-t border-slate-200 px-6 py-3 dark:border-border'>
+          <div className='flex justify-end border-t border-slate-200 px-6 py-4 dark:border-border'>
             <button
               onClick={onClose}
-              className='rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-border dark:bg-secondary dark:text-muted-foreground dark:hover:bg-secondary/80'
+              className='rounded-md bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 dark:bg-secondary dark:text-foreground dark:hover:bg-secondary/70'
             >
               Close
             </button>

@@ -62,10 +62,6 @@ ENV NODE_ENV=production
 # We disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Allow enabling test login via build arg (for staging)
-ARG ENABLE_TEST_LOGIN=false
-ENV ENABLE_TEST_LOGIN=$ENABLE_TEST_LOGIN
-
 # Install wget for healthcheck
 RUN apk add --no-cache wget
 

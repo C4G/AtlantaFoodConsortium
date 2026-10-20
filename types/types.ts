@@ -103,7 +103,6 @@ export interface User {
   role: UserRole | null;
   createdAt: Date;
   updatedAt: Date;
-  announcementEmailOptOut: boolean | null;
 }
 
 export interface Supplier {

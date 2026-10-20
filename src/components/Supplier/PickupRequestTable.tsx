@@ -2,39 +2,39 @@
 
 import { useMemo, useState } from 'react';
 import {
-  Trash2,
-  Copy,
   Search,
   ChevronUp,
   ChevronDown,
   ChevronsUpDown,
+  Trash2,
+  Copy,
   Users,
 } from 'lucide-react';
 import { DeletionConfirmationPopup } from '@/components/Supplier/DeletionConfirmationPopup';
 import { CopyRequestForm } from '@/components/Supplier/CopyRequestForm';
 import {
   ClaimContactsModal,
-  ClaimContact,
+  type ClaimContact,
 } from '@/components/Supplier/ClaimContactsModal';
 import { SupplierRowData } from '@/app/supplier/_types';
 
 type SortKey = 'foodName' | 'foodType' | 'foodStatus' | 'foodClaimer';
-type SortDir = 'asc' | 'desc';
+type SortDir = 'asc' | 'desc' | null;
 
 function SortableHeader({
   label,
   sortKey,
-  currentKey,
-  currentDir,
+  activeSortKey,
+  activeSortDir,
   onSort,
 }: {
   label: string;
   sortKey: SortKey;
-  currentKey: SortKey;
-  currentDir: SortDir;
+  activeSortKey: SortKey | null;
+  activeSortDir: SortDir;
   onSort: (_key: SortKey) => void;
 }) {
-  const isActive = currentKey === sortKey;
+  const isActive = activeSortKey === sortKey;
   return (
     <th
       onClick={() => onSort(sortKey)}
@@ -43,12 +43,10 @@ function SortableHeader({
       <div className='flex items-center gap-1'>
         {label}
         <span className='inline-flex flex-col'>
-          {isActive ? (
-            currentDir === 'asc' ? (
-              <ChevronUp className='h-3.5 w-3.5 text-blue-600' />
-            ) : (
-              <ChevronDown className='h-3.5 w-3.5 text-blue-600' />
-            )
+          {isActive && activeSortDir === 'asc' ? (
+            <ChevronUp className='h-3.5 w-3.5 text-blue-600' />
+          ) : isActive && activeSortDir === 'desc' ? (
+            <ChevronDown className='h-3.5 w-3.5 text-blue-600' />
           ) : (
             <ChevronsUpDown className='h-3.5 w-3.5 text-slate-300' />
           )}
@@ -58,7 +56,18 @@ function SortableHeader({
   );
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+function rowToContact(row: SupplierRowData): ClaimContact {
+  return {
+    nonprofitName: row.prod.claimingNonprofit?.name ?? null,
+    contactName: row.prod.nonprofitPickupContactName,
+    contactPhone: row.prod.nonprofitPickupContactPhone,
+    pickupDate: row.prod.nonprofitPickupDate,
+    timeframe: row.prod.nonprofitPickupTimeframe as string[],
+    quantity: row.prod.quantity,
+    isPartial: !!row.prod.originalProductId,
+  };
+}
+
 export function PickupRequestTable({
   rowData,
   deleteProductRequest,
@@ -68,114 +77,107 @@ export function PickupRequestTable({
 }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showCopyRequestForm, setShowCopyRequestForm] = useState(false);
+  const [foodId, setFoodId] = useState('');
+  const [foodInfo, setFoodInfo] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortKey, setSortKey] = useState<SortKey | null>(null);
+  const [sortDir, setSortDir] = useState<SortDir>(null);
   const [showContactsModal, setShowContactsModal] = useState(false);
   const [contactsModalProduct, setContactsModalProduct] = useState('');
   const [contactsModalData, setContactsModalData] = useState<ClaimContact[]>(
     []
   );
-  const [foodId, setFoodId] = useState('');
-  const [foodInfo, setFoodInfo] = useState({});
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortKey, setSortKey] = useState<SortKey>('foodName');
-  const [sortDir, setSortDir] = useState<SortDir>('asc');
-
-  const handleSort = (key: SortKey) => {
-    if (sortKey === key) {
-      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortKey(key);
-      setSortDir('asc');
-    }
-  };
-
-  // Map each original product ID → its partial claim rows
-  const partialClaimsMap = useMemo(() => {
-    const map = new Map<string, SupplierRowData[]>();
-    for (const row of rowData) {
-      const origId = row.prod.originalProductId;
-      if (origId) {
-        if (!map.has(origId)) map.set(origId, []);
-        map.get(origId)!.push(row);
-      }
-    }
-    return map;
-  }, [rowData]);
-
-  const rowToContact = (row: SupplierRowData): ClaimContact => ({
-    nonprofitName: row.prod.claimingNonprofit?.name ?? null,
-    contactName: row.prod.nonprofitPickupContactName,
-    contactPhone: row.prod.nonprofitPickupContactPhone,
-    pickupDate: row.prod.nonprofitPickupDate,
-    timeframe: row.prod.nonprofitPickupTimeframe as string[],
-    quantity: row.prod.quantity,
-    isPartial: !!row.prod.originalProductId,
-  });
-
-  const openContactsModal = (row: SupplierRowData) => {
-    const partials = partialClaimsMap.get(row.foodId) ?? [];
-
-    let contacts: ClaimContact[];
-    if (partials.length > 0) {
-      // Include all partial-claim children
-      contacts = partials.map(rowToContact);
-      // If the parent record itself is also directly claimed (the last chunk was
-      // claimed as a "full claim" of the remaining quantity), include it too.
-      if (row.prod.claimedById) {
-        contacts.push({ ...rowToContact(row), isPartial: true });
-      }
-    } else {
-      contacts = [rowToContact(row)];
-    }
-
-    setContactsModalProduct(row.foodName);
-    setContactsModalData(contacts);
-    setShowContactsModal(true);
-  };
 
   const confirmDeletion = (prodId: string) => {
     setShowDeleteConfirmation(true);
     setFoodId(prodId);
   };
 
-  const duplicateRequest = (prodInfo: any) => {
+  const duplicateRequest = (prodInfo: object) => {
     setShowCopyRequestForm(true);
     setFoodInfo(prodInfo);
   };
 
+  // Map originalProductId → partial-claim child rows
+  const partialClaimsMap = useMemo(() => {
+    const map = new Map<string, SupplierRowData[]>();
+    for (const row of rowData) {
+      if (row.prod.originalProductId) {
+        if (!map.has(row.prod.originalProductId)) {
+          map.set(row.prod.originalProductId, []);
+        }
+        map.get(row.prod.originalProductId)!.push(row);
+      }
+    }
+    return map;
+  }, [rowData]);
+
+  // Only show parent rows in the table
   const displayRows = useMemo(
     () => rowData.filter((r) => !r.prod.originalProductId),
     [rowData]
   );
 
-  const filteredAndSorted = useMemo(() => {
-    let list = displayRows;
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(
-        (r) =>
-          r.foodName.toLowerCase().includes(q) ||
-          r.foodType.toLowerCase().includes(q) ||
-          r.foodStatus.toLowerCase().includes(q)
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir((prev) =>
+        prev === 'asc' ? 'desc' : prev === 'desc' ? null : 'asc'
       );
+      if (sortDir === 'desc') setSortKey(null);
+    } else {
+      setSortKey(key);
+      setSortDir('asc');
     }
-    return [...list].sort((a, b) => {
-      const cmp = a[sortKey].localeCompare(b[sortKey]);
-      return sortDir === 'asc' ? cmp : -cmp;
-    });
+  };
+
+  const filteredAndSorted = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    let rows = displayRows.filter(
+      (r) =>
+        r.foodName.toLowerCase().includes(q) ||
+        r.foodType.toLowerCase().includes(q) ||
+        r.foodStatus.toLowerCase().includes(q)
+    );
+    if (sortKey && sortDir) {
+      rows = [...rows].sort((a, b) => {
+        const av = (a[sortKey] ?? '').toLowerCase();
+        const bv = (b[sortKey] ?? '').toLowerCase();
+        const cmp = av < bv ? -1 : av > bv ? 1 : 0;
+        return sortDir === 'asc' ? cmp : -cmp;
+      });
+    }
+    return rows;
   }, [displayRows, searchQuery, sortKey, sortDir]);
+
+  const openContactsModal = (row: SupplierRowData) => {
+    const partials = partialClaimsMap.get(row.foodId) ?? [];
+    let contacts: ClaimContact[];
+    if (partials.length > 0) {
+      contacts = partials.map(rowToContact);
+      if (row.prod.claimedById) {
+        contacts.push({ ...rowToContact(row), isPartial: true });
+      }
+    } else {
+      contacts = [rowToContact(row)];
+    }
+    setContactsModalProduct(row.foodName);
+    setContactsModalData(contacts);
+    setShowContactsModal(true);
+  };
 
   return (
     <div className='h-full w-full'>
-      <div className='rounded-lg border border-slate-200 bg-white shadow-md dark:border-border dark:bg-card'>
+      <div className='mb-8 rounded-lg border border-slate-200 bg-white shadow-md dark:border-border dark:bg-card'>
+        {/* Header */}
         <div className='flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-border sm:px-6'>
-          <h3 className='text-lg font-semibold text-slate-800 dark:text-foreground'>
+          <h2 className='font-semibold text-slate-800 dark:text-foreground'>
             Pickup Request History
-          </h3>
+          </h2>
           <div className='relative'>
-            <Search className='pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400' />
+            <Search className='pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-muted-foreground' />
             <input
               type='text'
-              placeholder='Search requests...'
+              placeholder='Search requests…'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className='rounded-md border border-slate-200 bg-slate-50 py-1.5 pl-9 pr-3 text-sm text-slate-600 placeholder:text-slate-400 focus:border-blue-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-border dark:bg-secondary dark:text-muted-foreground dark:placeholder:text-muted-foreground dark:focus:bg-secondary dark:focus:ring-blue-800'
@@ -190,29 +192,29 @@ export function PickupRequestTable({
                 <SortableHeader
                   label='Food Item'
                   sortKey='foodName'
-                  currentKey={sortKey}
-                  currentDir={sortDir}
+                  activeSortKey={sortKey}
+                  activeSortDir={sortDir}
                   onSort={handleSort}
                 />
                 <SortableHeader
                   label='Type'
                   sortKey='foodType'
-                  currentKey={sortKey}
-                  currentDir={sortDir}
+                  activeSortKey={sortKey}
+                  activeSortDir={sortDir}
                   onSort={handleSort}
                 />
                 <SortableHeader
                   label='Status'
                   sortKey='foodStatus'
-                  currentKey={sortKey}
-                  currentDir={sortDir}
+                  activeSortKey={sortKey}
+                  activeSortDir={sortDir}
                   onSort={handleSort}
                 />
                 <SortableHeader
                   label='Recipient'
                   sortKey='foodClaimer'
-                  currentKey={sortKey}
-                  currentDir={sortDir}
+                  activeSortKey={sortKey}
+                  activeSortDir={sortDir}
                   onSort={handleSort}
                 />
                 <th className='px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-muted-foreground'>
@@ -221,100 +223,89 @@ export function PickupRequestTable({
               </tr>
             </thead>
             <tbody className='divide-y divide-slate-100 dark:divide-border'>
-              {filteredAndSorted.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className='px-4 py-10 text-center text-slate-400'
-                  >
-                    {searchQuery
-                      ? 'No requests match your search.'
-                      : 'No pickup requests yet.'}
-                  </td>
-                </tr>
-              ) : (
-                filteredAndSorted.map((row) => (
+              {filteredAndSorted.map((row) => {
+                const status = row.prod.status;
+                const hasPartials = partialClaimsMap.has(row.foodId);
+                const fullyClaimedViaPartials =
+                  hasPartials && status === 'RESERVED';
+                const showContactButton = status === 'RESERVED' || hasPartials;
+
+                return (
                   <tr
                     key={row.foodId}
                     className='transition-colors hover:bg-slate-50 dark:hover:bg-secondary'
                   >
+                    {/* Food Item */}
                     <td className='px-4 py-3 font-medium text-slate-900 dark:text-foreground'>
                       {row.foodName}
                     </td>
+
+                    {/* Type badge */}
                     <td className='px-4 py-3'>
                       <span className='inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-secondary dark:text-muted-foreground'>
                         {row.foodType}
                       </span>
                     </td>
+
+                    {/* Status badge */}
                     <td className='px-4 py-3'>
                       <span
-                        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-                          row.foodStatus === 'AVAILABLE'
-                            ? 'bg-green-50 text-green-700 ring-1 ring-green-200 dark:bg-green-900/40 dark:text-green-400 dark:ring-green-800'
-                            : row.foodStatus === 'RESERVED'
-                              ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'
-                              : 'bg-amber-50 text-amber-700 ring-1 ring-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:ring-amber-800'
+                        className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ring-1 ${
+                          status === 'AVAILABLE'
+                            ? 'bg-green-50 text-green-700 ring-green-200 dark:bg-green-900/40 dark:text-green-400 dark:ring-green-800'
+                            : status === 'RESERVED'
+                              ? 'bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'
+                              : 'bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:ring-amber-800'
                         }`}
                       >
-                        {row.foodStatus}
+                        {status}
                       </span>
                     </td>
+
+                    {/* Recipient badge */}
                     <td className='px-4 py-3'>
-                      {(() => {
-                        const hasPartials = partialClaimsMap.has(row.foodId);
-                        // All units claimed when parent is RESERVED (last chunk was
-                        // a full-claim of remaining qty) and partial children exist
-                        const fullyClaimedViaPartials =
-                          hasPartials && row.prod.status === 'RESERVED';
-                        const isClaimed =
-                          row.foodClaimer === 'Claimed' ||
-                          fullyClaimedViaPartials;
-                        const label =
-                          hasPartials && !fullyClaimedViaPartials
-                            ? 'Partially Claimed'
-                            : isClaimed
-                              ? 'Claimed'
-                              : 'Not claimed';
-                        const style =
-                          hasPartials && !fullyClaimedViaPartials
-                            ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
-                            : isClaimed
-                              ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400'
-                              : 'bg-slate-100 text-slate-500 dark:bg-secondary dark:text-muted-foreground';
-                        return (
-                          <span
-                            className={`inline-flex rounded-md px-2 py-0.5 text-xs font-medium ${style}`}
-                          >
-                            {label}
-                          </span>
-                        );
-                      })()}
+                      {fullyClaimedViaPartials ? (
+                        <span className='inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'>
+                          Claimed
+                        </span>
+                      ) : hasPartials ? (
+                        <span className='inline-flex rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-amber-200 dark:bg-amber-900/40 dark:text-amber-400 dark:ring-amber-800'>
+                          Partially Claimed
+                        </span>
+                      ) : status === 'RESERVED' ? (
+                        <span className='inline-flex rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 ring-1 ring-blue-200 dark:bg-blue-900/40 dark:text-blue-400 dark:ring-blue-800'>
+                          Claimed
+                        </span>
+                      ) : (
+                        <span className='inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 ring-1 ring-slate-200 dark:bg-secondary dark:text-muted-foreground dark:ring-border'>
+                          Not claimed
+                        </span>
+                      )}
                     </td>
+
+                    {/* Actions */}
                     <td className='px-4 py-3'>
-                      <div className='flex items-center gap-2'>
-                        {/* Contact button — visible when the product has been claimed
-                            (full RESERVED, partial RESERVED row, or AVAILABLE with
-                             partial claims pointing to it) */}
-                        {(row.prod.status === 'RESERVED' ||
-                          partialClaimsMap.has(row.foodId)) && (
+                      <div className='flex items-center gap-3'>
+                        {showContactButton && (
                           <button
                             onClick={() => openContactsModal(row)}
-                            className='flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-50 hover:text-blue-800 dark:text-blue-400 dark:hover:bg-blue-900/30 dark:hover:text-blue-300'
+                            title='View claimant contacts'
+                            className='flex items-center gap-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
                           >
                             <Users className='h-3.5 w-3.5' />
-                            Contact
+                            Contacts
                           </button>
                         )}
                         <button
                           onClick={() => duplicateRequest(row.prod)}
-                          className='flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-muted-foreground dark:hover:bg-secondary dark:hover:text-foreground'
+                          className='flex items-center gap-1 text-slate-600 hover:text-slate-900 dark:text-muted-foreground dark:hover:text-foreground'
                         >
                           <Copy className='h-3.5 w-3.5' />
                           Copy
                         </button>
                         <button
                           onClick={() => confirmDeletion(row.foodId)}
-                          className='flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-red-500 transition-colors hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/30 dark:hover:text-red-400'
+                          className='flex items-center gap-1 text-red-400 hover:text-red-600 dark:text-red-500 dark:hover:text-red-400'
                         >
                           <Trash2 className='h-3.5 w-3.5' />
                           Delete
@@ -322,14 +313,27 @@ export function PickupRequestTable({
                       </div>
                     </td>
                   </tr>
-                ))
+                );
+              })}
+
+              {filteredAndSorted.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className='px-4 py-10 text-center text-sm text-slate-400 dark:text-muted-foreground'
+                  >
+                    {searchQuery
+                      ? 'No requests match your search.'
+                      : 'No requests found.'}
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
 
         {filteredAndSorted.length > 0 && (
-          <div className='border-t border-slate-100 px-4 py-2.5 text-xs text-slate-400 dark:border-border'>
+          <div className='border-t border-slate-100 px-4 py-2.5 text-xs text-slate-400 dark:border-border dark:text-muted-foreground'>
             Showing {filteredAndSorted.length} of {displayRows.length} requests
           </div>
         )}
