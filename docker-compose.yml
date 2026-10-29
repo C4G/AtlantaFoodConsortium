@@ -11,16 +11,13 @@ services:
       - atlanta-food-consortium-db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}"]
-      interval: 5s
+      interval: 30s
       timeout: 5s
       retries: 5
 
   # Database migrations (production only)
   atlanta-food-consortium-migrations:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: migrations
+    image: ghcr.io/c4g/atlanta-food-consortium-migrations:${IMAGE_TAG:-latest}
     environment:
       - DATABASE_URL=postgresql://${DATABASE_USER}:${DATABASE_PW}@atlanta-food-consortium-db:5432/${DATABASE_NAME}
     restart: "no"
@@ -32,12 +29,7 @@ services:
 
   # Next.js application (production only)
   atlanta-food-consortium-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - NEXT_PUBLIC_VAPID_PUBLIC_KEY=${NEXT_PUBLIC_VAPID_PUBLIC_KEY}
-        - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+    image: ghcr.io/c4g/atlanta-food-consortium:${IMAGE_TAG:-latest}
     ports:
       - "${APP_PORT:-3001}:3000"
     environment:
@@ -66,7 +58,7 @@ services:
         condition: service_completed_successfully
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1"]
-      interval: 10s
+      interval: 30s
       timeout: 5s
       retries: 5
       start_period: 30s
