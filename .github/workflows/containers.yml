@@ -107,6 +107,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    needs: [server, migrations]
     steps:
       - name: Deploy Staging
         if: github.ref_name == 'staging'
