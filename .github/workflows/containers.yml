@@ -114,11 +114,11 @@ jobs:
         run: |
           curl --fail-with-body --silent --show-error --request POST \
             '${{ secrets.STAGING_DEPLOY_URL }}' \
-            --header 'Authorization: Bearer ${{ secrets.DEPLOY_KEY }}'
+            --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
 
       - name: Deploy Production
         if: github.ref_name == 'main'
         run: |
           curl --fail-with-body --silent --show-error --request POST \
             '${{ secrets.PRODUCTION_DEPLOY_URL }}' \
-            --header 'Authorization: Bearer ${{ secrets.DEPLOY_KEY }}'
+            --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
